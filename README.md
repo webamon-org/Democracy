@@ -57,7 +57,7 @@ We welcome contributions from everyone! Whether it's reporting bugs, suggesting 
 
 ## Community & Support
 
-Join our community forum at [community.webamon.co.uk](https://community.webamon.co.uk) for discussions, support, and more.
+Join our community  at [hunt.webamon.co.uk](https://hunt.webamon.co.uk) for discussions, support, and more.
 
 ## License
 
