@@ -1,3 +1,4 @@
+![Webamon Logo](https://i.ibb.co/ggbMv7C/weblogo.png)
 # Webamon Democracy
 
 ## Description
