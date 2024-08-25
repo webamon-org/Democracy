@@ -1,0 +1,11 @@
+selenium==4.19.0
+beautifulsoup4
+requests
+opensearch-py
+flask
+flask-cors
+geoip2
+dnspython
+python-whois
+tldextract
+pillow

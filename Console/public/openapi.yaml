@@ -1,0 +1,413 @@
+openapi: 3.0.3
+info:
+  title: Webamon Community API
+  description: Hunt across the web, retrieve enriched and contextualised server/IP/domain/resource information and submit scans to the Webamon sandbox + AI Model.
+  version: 1.5.0
+
+
+tags:
+  - name: Authentication
+    description: Endpoints related to user authentication
+  - name: Sandbox
+    description: Endpoints for sandbox scanning
+  - name: Reports
+    description: Endpoints for querying and retrieving reports
+  - name: Domains
+    description: Endpoints for querying and retrieving domains
+  - name: Servers
+    description: Endpoints for querying and retrieving servers
+  - name: Resources
+    description: Endpoints for querying and retrieving resources
+  - name: Screenshots
+    description: Endpoints for querying and retrieving resources
+  - name: ThreatAI
+    description: Endpoints for querying and retrieving resources
+
+servers:
+  - url: https://community.webamon.co.uk
+    description: Community Server
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+
+security:
+  - BearerAuth: []
+
+paths:
+  /auth:
+    post:
+      summary: Authenticate and get a Bearer token
+      description: Returns a Bearer token in exchange for client credentials.
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                client_id:
+                  type: string
+                  description: The client ID for authentication.
+                client_secret:
+                  type: string
+                  description: The client secret for authentication.
+              required:
+                - client_id
+                - client_secret
+      responses:
+        '200':
+          description: Authentication successful, returns a Bearer token.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  bearer:
+                    type: string
+                    description: The Bearer token to be used for authenticated requests.
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        '400':
+          description: Bad Request. Invalid client credentials.
+        '401':
+          description: Unauthorized. Authentication failed.
+
+  /scan:
+    post:
+      summary: Submit URL/Domain to Sandbox
+      description: Scan A URL to retrieve 1st & 3rd party; resources, networks, locations, domains, dns, technology, screenshot, page DOM, certificates and more.
+      tags:
+        - Sandbox
+      operationId: submitScan
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                submission_url:
+                  type: string
+                  example: "https://webamon.co.uk"
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Scan submission successful
+        '401':
+          description: Unauthorized - Invalid or missing Bearer token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /report:
+    get:
+      summary: Hunt Across All Sandbox Reports
+      description: Lucene query every available fields found in scan reports
+      tags:
+        - Reports
+      operationId: getReports
+      parameters:
+        - name: urlparams
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Optional query parameters to filter reports.
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Returned reports matching query
+        '401':
+          description: Unauthorized - Invalid or missing Bearer token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /report/{report_id}:
+    get:
+      summary: Retrieve Full Scan Report
+      description: Retrieves a specific scan report by its ID
+      tags:
+        - Reports
+      operationId: getReportById
+      parameters:
+        - name: report_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the report to retrieve.
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Details of the requested report
+        '401':
+          description: Unauthorized - Invalid or missing Bearer token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not Found - Report not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /domain:
+    get:
+      summary: Hunt Across All Hosting Domains
+      description: Lucene query every available fields found in domain records.
+      tags:
+        - Domains
+      operationId: getDomains
+      parameters:
+        - name: urlparams
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Optional query parameters to filter domains.
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: List of domains
+        '401':
+          description: Unauthorized - Invalid or missing Bearer token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /domain/{name}:
+    get:
+      summary: Retrieve Full Domain Record
+      description: Retrieves a specific domain record by its name
+      tags:
+        - Domains
+      operationId: getDomainByName
+      parameters:
+        - name: name
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The name of the domain to retrieve.
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Details of the requested domain
+        '401':
+          description: Unauthorized - Invalid or missing Bearer token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not Found - Domain not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /server:
+    get:
+      summary: Hunt Across All Servers Hosting Web Infrastructure
+      description: Lucene query every available fields found in server records.
+      tags:
+        - Servers
+      operationId: getServers
+      parameters:
+        - name: urlparams
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Optional query parameters to filter servers.
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: List of servers
+        '401':
+          description: Unauthorized - Invalid or missing Bearer token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /server/{ip}:
+    get:
+      summary: Retrieve Full Server Record
+      description: Retrieve a full server record by its ip.
+      tags:
+        - Servers
+      operationId: getServerByIp
+      parameters:
+        - name: ip
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The IP address of the server to retrieve.
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Details of the requested server
+        '401':
+          description: Unauthorized - Invalid or missing Bearer token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not Found - Server not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /resource:
+    get:
+      summary: Search Raw Content Across All Web Resources
+      description: Lucene query every available fields found in resource records, including the raw content.
+      tags:
+        - Resources
+      parameters:
+        - name: param1
+          in: query
+          description: A query parameter for filtering.
+          required: false
+          schema:
+            type: string
+        - name: param2
+          in: query
+          description: Another query parameter for filtering.
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+
+  /resource/{sha256}:
+    get:
+      summary: Retrieve Raw Resource
+      description: Get a specific resource by its SHA256 identifier.
+      tags:
+        - Resources
+      parameters:
+        - name: sha256
+          in: path
+          description: SHA256 identifier of the resource.
+          required: true
+          schema:
+            type: string
+            format: sha256
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not Found
+
+  /screenshot/{report_id}:
+    get:
+      summary: Retrieve a screenshot
+      description: Get a screenshot by report ID.
+      tags:
+        - Screenshots
+      parameters:
+        - name: report_id
+          in: path
+          description: Identifier of the report.
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not Found
+
+  /web-assist:
+    post:
+      summary: Submit Prompt to Webamon AI Model
+      description: Submit a prompt to the Webamon AI Model.
+      tags:
+        - ThreatAI
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                prompt:
+                  type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "scan initiated"
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request

@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  console:
+    build: ./Console
+    ports:
+      - "3000:3000"
+
+
+  sandbox:
+    build: ./Sandbox
+    ports:
+      - "5000:5000"
+    environment:
+      - queue_worker=true
+      - community=true
+      - webamon_apikey=jVTkCD6HNg4oQg9yZE4o62sAooQoUaMD4tGXTPc0
+

@@ -1,0 +1,42 @@
+/* swagger-custom.css */
+
+/* Ensure Swagger UI container takes full viewport height */
+.swagger-container {
+  height: 100vh; /* Full viewport height */
+  width: 100%; /* Full width */
+  display: flex;
+  flex-direction: column;
+}
+
+/* General Background Color for Swagger UI */
+.swagger-ui {
+  background-color: #f0f2f5; /* Light grey background for the entire Swagger UI */
+  flex: 1; /* Ensure Swagger UI takes available space */
+}
+
+/* Optional: Ensure the HTML and body also take full height */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* Top Bar Background Color */
+.swagger-ui .topbar {
+  background-color: #007bff; /* Blue background for the top bar */
+}
+
+/* Main Content Background Color */
+.swagger-ui .main-content {
+  background-color: #ffffff; /* White background for main content area */
+}
+
+/* Operations Background Color */
+.swagger-ui .opblock {
+  background-color: #ffffff; /* White background for each operation block */
+}
+
+/* Model Background Color */
+.swagger-ui .models {
+  background-color: #ffffff; /* White background for model section */
+}

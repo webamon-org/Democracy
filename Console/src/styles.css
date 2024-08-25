@@ -1,0 +1,23 @@
+/* styles.css or App.css */
+.app {
+  display: flex;
+  height: 100vh;
+  background-color: #191b2d;
+}
+
+.sidebar {
+  width: 250px; /* Adjust as needed */
+  background-color: #f4f4f4; /* Example background color */
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  height: 100%;
+  left: 0;
+  top: 0;
+  z-index: 1000; /* Ensures the sidebar stays on top */
+}
+
+.content {
+  flex: 1;
+  overflow: auto;
+}
