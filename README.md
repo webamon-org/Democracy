@@ -20,8 +20,8 @@ First, clone the repository to your local machine:
 ```bash
 git clone https://github.com/webamon-org/Democracy.git
 cd Democracy
-add your "webamon_apikey" to docker-compose.yml
+#add your "webamon_apikey" to docker-compose.yml
 docker-compose up
-navigate to localhost:3000
+#navigate to localhost:3000
 
 
