@@ -4,28 +4,30 @@ import { Button, TextField, Container, Typography, Dialog, DialogTitle, DialogCo
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios'; // Import axios for the API request
 import './login.css';
+import { useAuth } from '../../AuthContext'; // Import the useAuth hook
 
 // AuthenticationPage Component
 const AuthenticationPage = () => {
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
+    const [apiKeyInput, setApiKeyInput] = useState(''); // State for the API key input
     const [message, setMessage] = useState('');
     const [openSignUpDialog, setOpenSignUpDialog] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [openSuccessDialog, setOpenSuccessDialog] = useState(false); // State for managing success dialog
-    const [loading, setLoading] = useState(false); // Add loading state
-
     const [signUpData, setSignUpData] = useState({
         name: '',
         email: '',
         linkedin: ''
     });
     const navigate = useNavigate();
+    const { setApiKey } = useAuth(); // Get the setApiKey function from AuthContext
 
     const handleSignIn = async () => {
         try {
-            await Auth.signIn(username, password);
+            // Here, you would typically validate the API key by sending a request to your backend
+            // Assuming the API key is valid, we set it in the global state
+            setApiKey(apiKeyInput);
             setMessage('Sign-in successful!');
-            navigate('/scans'); // Redirect to /feeds/newly-registered on successful sign-in
+            navigate('/scans'); // Redirect to the scans page
         } catch (error) {
             setMessage(`Error: ${error.message}`);
         }
@@ -81,8 +83,7 @@ const handleSignUp = async () => {
             [field]: value
         }));
     };
-
-    return (
+ return (
         <div className="auth-page">
             <a>
                 <img
@@ -98,21 +99,12 @@ const handleSignUp = async () => {
             <br />
             <Container maxWidth="sm" className="auth-form">
                 <TextField
-                    label="Username"
+                    label="API Key"
                     variant="outlined"
                     fullWidth
                     margin="normal"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                />
-                <TextField
-                    label="Password"
-                    type="password"
-                    variant="outlined"
-                    fullWidth
-                    margin="normal"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    value={apiKeyInput}
+                    onChange={(e) => setApiKeyInput(e.target.value)}
                 />
                 <Button variant="contained" color="primary" onClick={handleSignIn}>
                     Sign In
@@ -126,7 +118,7 @@ const handleSignUp = async () => {
             </Container>
 
             <Dialog open={openSignUpDialog} onClose={handleSignUpDialogClose}>
-                <DialogTitle>Join The Democracy</DialogTitle>
+                <DialogTitle>Sign Up</DialogTitle>
                 <DialogContent>
                     <TextField
                         label="Name"
@@ -147,12 +139,6 @@ const handleSignUp = async () => {
                         value={signUpData.email}
                         onChange={(e) => handleSignUpInputChange('email', e.target.value)}
                     />
-                    <Typography
-                        variant="body1"
-                        style={{ margin: '22px 0' }} // Adjust the margin to create spacing around the text
-                    >
-                        We ask for your linkedin profile as we expect the community to join with non-org emails. Putting a face and background to a user helps us. As this is a BETA will most likely ask you for feedback.
-                    </Typography>
                     <TextField
                         label="LinkedIn Profile"
                         variant="outlined"
@@ -167,14 +153,9 @@ const handleSignUp = async () => {
                     <Button onClick={handleSignUpDialogClose} color="primary">
                         Cancel
                     </Button>
-                    <Button
-                        onClick={handleSignUp}
-                        color="primary"
-                        disabled={loading}
-                    >
-                        {loading ? 'Submitting...' : 'Sign Up'}
+                    <Button onClick={handleSignUp} color="primary">
+                        Sign Up
                     </Button>
-
                 </DialogActions>
             </Dialog>
 
@@ -182,7 +163,7 @@ const handleSignUp = async () => {
                 <DialogTitle>Sign Up Successful</DialogTitle>
                 <DialogContent>
                     <Typography>
-                        Your signup request was successfully received! We will be in touch!
+                        Your signup request was successfully received! Please allow up to 12 hours for review and account creation.
                     </Typography>
                 </DialogContent>
                 <DialogActions>
@@ -194,5 +175,6 @@ const handleSignUp = async () => {
         </div>
     );
 };
+
 
 export default AuthenticationPage;
