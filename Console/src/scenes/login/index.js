@@ -1,75 +1,67 @@
 import React, { useState } from 'react';
-import { Button, TextField, Container, Typography, Link, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import { Auth } from 'aws-amplify';
+import { Button, TextField, Container, Typography, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios'; // Import axios for the API request
-import { useAuth } from '../../AuthContext'; // Import the useAuth hook
 import './login.css';
 
 // AuthenticationPage Component
 const AuthenticationPage = () => {
-    const [apiKeyInput, setApiKeyInput] = useState(''); // State for the API key input
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
     const [openSignUpDialog, setOpenSignUpDialog] = useState(false);
     const [openSuccessDialog, setOpenSuccessDialog] = useState(false); // State for managing success dialog
+    const [loading, setLoading] = useState(false); // Add loading state
+
     const [signUpData, setSignUpData] = useState({
         name: '',
         email: '',
         linkedin: ''
     });
     const navigate = useNavigate();
-    const { setApiKey } = useAuth(); // Get the setApiKey function from AuthContext
 
     const handleSignIn = async () => {
         try {
-            // Here, you would typically validate the API key by sending a request to your backend
-            // Assuming the API key is valid, we set it in the global state
-            setApiKey(apiKeyInput);
+            await Auth.signIn(username, password);
             setMessage('Sign-in successful!');
-            navigate('/scans'); // Redirect to the scans page
+            navigate('/scans'); // Redirect to /feeds/newly-registered on successful sign-in
         } catch (error) {
             setMessage(`Error: ${error.message}`);
         }
     };
-
 
     const validateEmail = (email) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
     };
 
-    const validateLinkedIn = (linkedin) => {
-        const linkedInRegex = /^https:\/\/www\.linkedin\.com\/in\/[a-zA-Z0-9-]+\/?$/;
-        return linkedInRegex.test(linkedin);
-    };
+const handleSignUp = async () => {
+    if (!signUpData.name || !signUpData.email || !signUpData.linkedin) {
+        setMessage('All fields are required.');
+        return;
+    }
 
-    const handleSignUp = async () => {
-        if (!signUpData.name || !signUpData.email || !signUpData.linkedin) {
-            setMessage('All fields are required.');
-            return;
+    if (!validateEmail(signUpData.email)) {
+        setMessage('Please enter a valid email address.');
+        return;
+    }
+
+    setLoading(true); // Set loading to true when the request starts
+
+    try {
+        const response = await axios.post('https://community.webamon.co.uk/signup', signUpData);
+
+        if (response.status === 200) {
+            setOpenSuccessDialog(true); // Open success dialog on successful signup
+            setOpenSignUpDialog(false); // Close the signup dialog
         }
-
-        if (!validateEmail(signUpData.email)) {
-            setMessage('Please enter a valid email address.');
-            return;
-        }
-
-        if (!validateLinkedIn(signUpData.linkedin)) {
-            setMessage('Please enter a valid LinkedIn profile link.');
-            return;
-        }
-
-        try {
-            const response = await axios.post('https://community.webamon.co.uk/signup', signUpData);
-
-            if (response.status === 200) {
-                setOpenSuccessDialog(true); // Open success dialog on successful signup
-                setOpenSignUpDialog(false); // Close the signup dialog
-            }
-        } catch (error) {
-            setMessage(`Sign-up failed: ${error.response ? error.response.data.message : error.message}`);
-        }
-    };
-
+    } catch (error) {
+        setMessage(`Sign-up failed: ${error.response ? error.response.data.message : error.message}`);
+    } finally {
+        setLoading(false); // Set loading to false when the request ends
+    }
+};
     const handleSignUpDialogOpen = () => {
         setOpenSignUpDialog(true);
     };
@@ -106,12 +98,21 @@ const AuthenticationPage = () => {
             <br />
             <Container maxWidth="sm" className="auth-form">
                 <TextField
-                    label="API Key"
+                    label="Username"
                     variant="outlined"
                     fullWidth
                     margin="normal"
-                    value={apiKeyInput}
-                    onChange={(e) => setApiKeyInput(e.target.value)}
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                />
+                <TextField
+                    label="Password"
+                    type="password"
+                    variant="outlined"
+                    fullWidth
+                    margin="normal"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                 />
                 <Button variant="contained" color="primary" onClick={handleSignIn}>
                     Sign In
@@ -125,7 +126,7 @@ const AuthenticationPage = () => {
             </Container>
 
             <Dialog open={openSignUpDialog} onClose={handleSignUpDialogClose}>
-                <DialogTitle>Sign Up</DialogTitle>
+                <DialogTitle>Join The Democracy</DialogTitle>
                 <DialogContent>
                     <TextField
                         label="Name"
@@ -146,6 +147,12 @@ const AuthenticationPage = () => {
                         value={signUpData.email}
                         onChange={(e) => handleSignUpInputChange('email', e.target.value)}
                     />
+                    <Typography
+                        variant="body1"
+                        style={{ margin: '22px 0' }} // Adjust the margin to create spacing around the text
+                    >
+                        We ask for your linkedin profile as we expect the community to join with non-org emails. Putting a face and background to a user helps us. As this is a BETA will most likely ask you for feedback.
+                    </Typography>
                     <TextField
                         label="LinkedIn Profile"
                         variant="outlined"
@@ -160,9 +167,14 @@ const AuthenticationPage = () => {
                     <Button onClick={handleSignUpDialogClose} color="primary">
                         Cancel
                     </Button>
-                    <Button onClick={handleSignUp} color="primary">
-                        Sign Up
+                    <Button
+                        onClick={handleSignUp}
+                        color="primary"
+                        disabled={loading}
+                    >
+                        {loading ? 'Submitting...' : 'Sign Up'}
                     </Button>
+
                 </DialogActions>
             </Dialog>
 
@@ -170,7 +182,7 @@ const AuthenticationPage = () => {
                 <DialogTitle>Sign Up Successful</DialogTitle>
                 <DialogContent>
                     <Typography>
-                        Your signup request was successfully received! Please allow up to 12 hours for review and account creation.
+                        Your signup request was successfully received! We will be in touch!
                     </Typography>
                 </DialogContent>
                 <DialogActions>
