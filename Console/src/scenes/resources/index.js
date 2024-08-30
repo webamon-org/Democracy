@@ -186,37 +186,9 @@ function TabPanel(props) {
     { field: 'malicious', headerName: 'Malicious', flex: 1, filterable: true },
 
   ];
-  const getStatusColor = () => {
-    if (loading) return 'yellow';
-    if (error) return 'red';
-    if (noResults) return 'blue';
-    if (results.length > 0) return 'green';
-    return 'transparent';
-  };
-
-
-  const getStatusMessage = () => {
-    if (loading) return 'Loading data...';
-    if (error) return 'Error fetching data';
-    if (noResults) return 'No results';
-    if (results.length > 0) return 'Data loaded successfully';
-    return 'Idle';
-  };
 
   return (
     <Box m="20px">
-        <Tooltip title={getStatusMessage()} arrow>
-            <Box sx={{
-              width: '20px',
-              height: '20px',
-              borderRadius: '50%',
-              backgroundColor: getStatusColor(),
-              position: 'absolute',
-              top: '20px',
-              right: '20px',
-              cursor: 'pointer', // Changes cursor to pointer on hover
-            }} />
-          </Tooltip>
       <Header title="RESOURCES" subtitle="Web Assets Discovered During Scans" />
       <Box m="40px 0 0 0" height="75vh">
         <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
