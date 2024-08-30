@@ -55,8 +55,10 @@ const Domains = () => {
       }));
 
       setResults(mappedResults);
+      setLoading(false);
     } catch (err) {
             if (err.response && err.response.status === 400) {
+            setLoading(false);
               setResults([]);
             }
           }
@@ -159,7 +161,7 @@ const Domains = () => {
                   sx={{ mr: '10px' }}
                 />
             <TextField
-              label="Country"
+              label="COUNTRY"
               variant="outlined"
               value={filters['country.name']}
               onChange={(e) => handleFilterChange('country.name', e.target.value)}
