@@ -201,38 +201,38 @@ const buildQueryParams = () => {
             sx={{ mr: '10px' }}
           />
             <TextField
-              label="ASN Name"
+              label="ASN NAME"
               variant="outlined"
-              value={filters['server.asn.asn_org']}
-              onChange={(e) => handleFilterChange('server.asn.asn_org', e.target.value)}
+              value={filters['server.asn.name']}
+              onChange={(e) => handleFilterChange('server.asn.name', e.target.value)}
               sx={{ mr: '10px' }}
             />
           <TextField
-            label="Country"
+            label="COUNTRY"
             variant="outlined"
-            value={filters['server.country.country']}
-            onChange={(e) => handleFilterChange('server.country.country', e.target.value)}
+            value={filters['server.country.name']}
+            onChange={(e) => handleFilterChange('server.country.name', e.target.value)}
             sx={{ mr: '10px' }}
           />
           <TextField
             label="DOMAIN"
             variant="outlined"
-            value={filters['domain.domain']}
-            onChange={(e) => handleFilterChange('domain.domain', e.target.value)}
+            value={filters['domain.name']}
+            onChange={(e) => handleFilterChange('domain.name', e.target.value)}
             sx={{ mr: '10px' }}
           />
             <TextField
-              label="Server"
+              label="SERVER"
               variant="outlined"
               value={filters['server.server']}
               onChange={(e) => handleFilterChange('server.server', e.target.value)}
               sx={{ mr: '10px' }}
             />
           <TextField
-          label="Technology"
+          label="TECHNOLOGY"
           variant="outlined"
-          value={filters['technology.technology']}
-          onChange={(e) => handleFilterChange('technology.technology', e.target.value)}
+          value={filters['technology.name']}
+          onChange={(e) => handleFilterChange('technology.name', e.target.value)}
           sx={{ mr: '10px' }}
         />
         </Box>
