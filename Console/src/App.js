@@ -14,13 +14,11 @@ import WebamonXtend from "./scenes/feeds/webamon_x";
 import NewlyRegistered from "./scenes/feeds/newly_registered";
 import ProtectedRoute from './ProtectedRoute';
 import { CssBaseline, ThemeProvider } from "@mui/material";
-import { ColorModeContext, useMode } from "./theme";
-import { useAuth } from './AuthContext';
+import { useMode } from "./theme";
 import './styles.css'; // Import the CSS file here
 
 function App() {
     const [theme, colorMode] = useMode();
-    const { user } = useAuth();
     const location = useLocation();
     const isLoginPage = location.pathname === '/login';
 

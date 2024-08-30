@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { Box, Button, TextField, Typography, Dialog, DialogTitle, DialogContent, DialogActions, Tabs, Tab, Tooltip  } from "@mui/material";
+import React, { useState, useEffect } from 'react';
+import { Box, Button, TextField  } from "@mui/material";
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import Header from '../../../components/Header';
 import axios from 'axios';
 import ReportDialog from '../../../components/scanDialog.js';
-import { Auth } from 'aws-amplify';
+import { useAuth } from '../../../AuthContext';
 import { debounce } from 'lodash';
 
 const axiosInstance = axios.create({
@@ -18,15 +18,10 @@ const axiosInstance = axios.create({
 const WebamonXtend = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [rawData, setRawData] = useState('');
-  const [selectedRow, setSelectedRow] = useState(null);
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [noResults, setNoResults] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [query, setQuery] = useState('');
-  const [totalCount, setTotalCount] = useState(0);
-  const [tabValue, setTabValue] = useState(0);
+    const { apiKey } = useAuth();
+
   const [filters, setFilters] = useState({
     'ip': '',
     'dom': '',
@@ -51,17 +46,15 @@ const WebamonXtend = () => {
      };
 
   const fetchAssets = async (filterParams) => {
-    setError(null);
 
     try {
-      const user = await Auth.currentAuthenticatedUser();
-      const token = user.signInUserSession.idToken.jwtToken;
+
               const queryParams = buildQueryParams();
       const response = await axiosInstance(`/feed?feed=webamon_x&${queryParams}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
+    headers: {
+          'x-api-key': apiKey,
         },
-      });
+        });
 
       const mappedResults = response.data.feed.map((hit) => ({
         time: hit.submissionUTC,
@@ -74,16 +67,10 @@ const WebamonXtend = () => {
       }));
 
       setResults(mappedResults);
-      setTotalCount(response.data.hits.total.value);
     } catch (err) {
                          if (err.response && err.response.status === 400) {
-                           setNoResults('true')
                            setResults([]);
-                         } else {
-                           setError('Error fetching data');
                          }
-                       } finally {
-                         setLoading(false);
                        }
   };
 
@@ -108,26 +95,18 @@ const WebamonXtend = () => {
     });
   };
 
-  const handleTabChange = (event, newValue) => {
-    setTabValue(newValue);
-  };
-
   const handleClickOpen = async (rowData) => {
-    setSelectedRow(rowData);
 
     try {
-            const user = await Auth.currentAuthenticatedUser();
-            const token = user.signInUserSession.idToken.jwtToken;
             const response = await axiosInstance(`/report/${rowData.id}`, {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            });
-
+    headers: {
+          'x-api-key': apiKey,
+        },
+        });
       setRawData(response.data.report);
       setOpenDialog(true);
     } catch (err) {
-      setError('Error fetching rawData');
+      console.log('Error fetching rawData');
     }
   };
 
