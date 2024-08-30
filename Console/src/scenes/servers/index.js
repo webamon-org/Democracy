@@ -56,10 +56,13 @@ headers: {
       }));
 
       setResults(mappedResults);
+      setLoading(false);
     } catch (err) {
-          console.log('error')
-                   setLoading(false);
-          }
+                  if (err.response && err.response.status === 400) {
+                  setLoading(false);
+                    setResults([]);
+                  }
+                }
   };
 
   useEffect(() => {
@@ -106,7 +109,7 @@ headers: {
         </Box>
         <Box sx={{ display: 'flex', mb: '20px' }}>
           <TextField
-            label="Server"
+            label="SERVER NAME"
             variant="outlined"
             value={filters.server}
             onChange={(e) => handleFilterChange('server', e.target.value)}
@@ -120,21 +123,21 @@ headers: {
             sx={{ mr: '10px' }}
           />
           <TextField
-            label="ASN"
+            label="ASN NAME"
             variant="outlined"
-            value={filters['asn.asn_org']}
-            onChange={(e) => handleFilterChange('asn.asn_org', e.target.value)}
+            value={filters['asn.name']}
+            onChange={(e) => handleFilterChange('asn.name', e.target.value)}
             sx={{ mr: '10px' }}
           />
           <TextField
-            label="Country"
+            label="COUNTRY"
             variant="outlined"
-            value={filters['country.country']}
-            onChange={(e) => handleFilterChange('country.country', e.target.value)}
+            value={filters['country.name']}
+            onChange={(e) => handleFilterChange('country.name', e.target.value)}
             sx={{ mr: '10px' }}
           />
           <TextField
-            label="Domain"
+            label="DOMAIN"
             variant="outlined"
             value={filters.domain}
             onChange={(e) => handleFilterChange('domain', e.target.value)}
