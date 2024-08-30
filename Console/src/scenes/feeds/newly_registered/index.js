@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { Box, Button, TextField, Typography, Dialog, DialogTitle, DialogContent, DialogActions, Tabs, Tab, Select, MenuItem, FormControl, InputLabel, Tooltip } from "@mui/material";
+import React, { useState, useEffect } from 'react';
+import { Box, TextField, Select, MenuItem, FormControl, InputLabel } from "@mui/material";
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import Header from '../../../components/Header';
 import axios from 'axios';
 import ReportDialog from '../../../components/scanDialog.js';
-import { Auth } from 'aws-amplify';
 import { debounce } from 'lodash';
+import { useAuth } from '../../../AuthContext';
 
 
 
@@ -13,15 +13,10 @@ import { debounce } from 'lodash';
 const NewlyRegistered = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [rawData, setRawData] = useState('');
-  const [selectedRow, setSelectedRow] = useState(null);
   const [results, setResults] = useState([]);
+    const { apiKey } = useAuth();
+
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [query, setQuery] = useState('');
-  const [totalCount, setTotalCount] = useState(0);
-  const [noResults, setNoResults] = useState(null);
-  const [tabValue, setTabValue] = useState(0); // State for managing active tab
   const [filters, setFilters] = useState({});
 const axiosInstance = axios.create({
   baseURL: 'https://community.webamon.co.uk',
@@ -45,33 +40,24 @@ const axiosInstance = axios.create({
 
   const fetchAssets = async () => {
     setLoading(true);
-    setError(null);
 
     try {
-      const user = await Auth.currentAuthenticatedUser();
-      const token = user.signInUserSession.idToken.jwtToken;
               const queryParams = buildQueryParams();
       const response = await axiosInstance(`/feed?feed=newly_registered&${queryParams}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
+    headers: {
+          'x-api-key': apiKey,
         },
-      });
+        });
 
       const mappedResults = response.data.feed.map((hit) => ({
         ...hit,
       }));
 
       setResults(mappedResults);
-      setTotalCount(response.data.hits.total.value);
     } catch (err) {
                     if (err.response && err.response.status === 400) {
-                      setNoResults('true')
                       setResults([]);
-                    } else {
-                      setError('Error fetching data');
                     }
-                  } finally {
-                    setLoading(false);
                   }
   };
 
@@ -98,12 +84,9 @@ const axiosInstance = axios.create({
     });
   };
 
-  const handleTabChange = (event, newValue) => {
-    setTabValue(newValue);
-  };
+
 
   const handleClickOpen = async (rowData) => {
-    setSelectedRow(rowData);
 
     try {
       const response = await axiosInstance.post(`/scans/_search`, {
@@ -122,7 +105,6 @@ const axiosInstance = axios.create({
       setOpenDialog(true); // Open the dialog
     } catch (err) {
       console.error('Error fetching rawData:', err);
-      setError('Error fetching rawData');
     }
   };
 

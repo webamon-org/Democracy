@@ -4,18 +4,10 @@ import 'vis-network/styles/vis-network.css';
 import {
   Dialog,
   DialogTitle,
-  DialogContent,
-  DialogContentText,
   DialogActions,
   Button,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  Typography,
 } from '@mui/material';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { materialLight } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+
 
 
 const GraphComponent = ({ data }) => {
@@ -24,21 +16,12 @@ const GraphComponent = ({ data }) => {
   const [network, setNetwork] = React.useState(null);
   const [selectedNode, setSelectedNode] = React.useState(null);
   const [open, setOpen] = React.useState(false);
-  const [selectedNodeData, setSelectedNodeData] = React.useState(null);
   const groups = [];
 
   const handleClose = () => {
     setOpen(false);
   };
 
-  const isDomain = (node) => {
-    try {
-      new URL(node);
-      return false;
-    } catch (error) {
-      return true;
-    }
-  };
 
   React.useEffect(() => {
     if (containerRef.current && !network) {
@@ -82,7 +65,6 @@ const GraphComponent = ({ data }) => {
       const rootNode = Object.entries(data.domain).find(([key, value]) => value.root === true);
       const existingNodes = Object.entries(data.domain).map(([key, value]) => key);
       const nodes = Object.entries(data.domain).map(([key, value]) => {
-        const isDomainNode = isDomain(value.domain);
         const newNodeTitle = `${key}\n\nType:Requests: ${value.request_count}\nTotal Response Size: ${value.total_response_size}\nMime Types: ${JSON.stringify(
           value.mime_type,
           null,
@@ -91,7 +73,7 @@ const GraphComponent = ({ data }) => {
 
         return {
           id: key,
-          label: value.domain,
+          label: value.name,
           title: newNodeTitle,
         };
       });
@@ -128,7 +110,6 @@ const GraphComponent = ({ data }) => {
           const isNewNode = !existingNodes.includes(requestedNode);
           if (isNewNode) {
             existingNodes.push(requestedNode);
-            const isDomainNode = isDomain(request.url);
             const newNodeLabel = `Mime: ${request.mime}\nSize: ${request.size}\nStatus: ${request.status}\nResponse IP: ${request.hosting_ip}`;
 
             const newNode = {
@@ -166,7 +147,6 @@ const GraphComponent = ({ data }) => {
   const handleNodeClick = (event) => {
     const nodeId = event.nodes[0];
     setSelectedNode(nodeId);
-    setSelectedNodeData(data);
     setOpen(false);
   };
 

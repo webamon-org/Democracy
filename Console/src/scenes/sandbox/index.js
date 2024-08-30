@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 import ReportDialog from '../../components/scanDialog.js';
 import {
@@ -9,22 +8,12 @@ import {
   CircularProgress,
   Dialog,
   DialogActions,
-  DialogContent,
-  DialogTitle,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  Tab,
-  Tabs,
   TextField,
   Typography,
-  Grid
 } from "@mui/material";
 import { useAuth } from '../../AuthContext';
 
 const ScanPage = () => {
-  const navigate = useNavigate();
   const [submission, setSubmission] = useState("");
   const [loading, setLoading] = useState(false);
   const [report, setReport] = useState(null);
@@ -34,17 +23,6 @@ const ScanPage = () => {
   const [error, setError] = useState(null);
   const [tabValue, setTabValue] = useState('single');
 const [screenshotData, setScreenshotData] = useState(false);  // State variables for argparse arguments
-  const [resources, setResources] = useState("scripts");
-  const [threads, setThreads] = useState(1);
-  const [elasticQuery, setElasticQuery] = useState("");
-  const [tag, setTag] = useState("");
-  const [saveScreenshot, setSaveScreenshot] = useState("false");
-  const [scanTimeout, setScanTimeout] = useState(30);
-  const [saveElastic, setSaveElastic] = useState("True");
-  const [userAgent, setUserAgent] = useState("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.3");
-  const [saveResources, setSaveResources] = useState("false");
-  const [skipIfExists, setSkipIfExists] = useState("true");
-  const [saveImages, setSaveImages] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const { apiKey } = useAuth();
 
@@ -56,8 +34,6 @@ const [screenshotData, setScreenshotData] = useState(false);  // State variables
     setReport("");
     setError(false);
     event.preventDefault();
-
-    const urlPattern = /^(https?:\/\/)([\w.-]+)\.([a-z]{2,})(:\d{1,5})?(\/\S*)?$/i;
 
 
     setValidationError(false);

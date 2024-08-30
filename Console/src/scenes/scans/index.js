@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Button, TextField, Tooltip } from "@mui/material";
+import { Box, Button, TextField } from "@mui/material";
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import Header from '../../components/Header';
 import axios from 'axios';
@@ -19,11 +19,8 @@ const Scans = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [rawData, setRawData] = useState('');
   const [screenshotData, setScreenshotData] = useState(false);
-  const [selectedRow, setSelectedRow] = useState(null);
   const [results, setResults] = useState([]);
-  const [noResults, setNoResults] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
   const [filters, setFilters] = useState({ });
   const { apiKey } = useAuth();
 const buildQueryParams = () => {
@@ -42,7 +39,6 @@ const buildQueryParams = () => {
 
   const fetchAssets = async () => {
     setLoading(true);
-    setError(null);
 
     try {
 
@@ -67,13 +63,8 @@ const buildQueryParams = () => {
       setResults(mappedResults);
     } catch (err) {
       if (err.response && err.response.status === 400) {
-        setNoResults(true);
         setResults([]);
-      } else {
-        setError('Error fetching data');
       }
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -97,7 +88,6 @@ const buildQueryParams = () => {
   };
 
   const handleClickOpen = async (rowData) => {
-    setSelectedRow(rowData);
 
     try {
 
@@ -123,7 +113,7 @@ const buildQueryParams = () => {
 
       setOpenDialog(true);
     } catch (err) {
-      setError('Error fetching data');
+      console.log('Error fetching data');
     }
 
   };

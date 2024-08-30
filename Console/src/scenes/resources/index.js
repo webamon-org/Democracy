@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { Box, Button, TextField, Typography, Dialog, DialogTitle, DialogContent, DialogActions, Tabs, Tab, Select, MenuItem, FormControl, InputLabel, Tooltip } from "@mui/material";
+import React, { useState, useEffect } from 'react';
+import { Box, Button, TextField, Typography, Dialog, DialogTitle, DialogContent, DialogActions, Tabs, Tab, Select, MenuItem, FormControl, InputLabel } from "@mui/material";
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import Header from '../../components/Header';
 import axios from 'axios';
@@ -18,11 +18,6 @@ const AssetsPage = () => {
   const [selectedRow, setSelectedRow] = useState(null);
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [noResults, setNoResults] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [query, setQuery] = useState('');
-  const [totalCount, setTotalCount] = useState(0);
     const [tabValue, setTabValue] = useState(0); // State for managing active tab
   const [filters, setFilters] = useState({ });
   const { apiKey } = useAuth();
@@ -69,7 +64,6 @@ function TabPanel(props) {
 
   const fetchAssets = async (filterParams) => {
     setLoading(true);
-    setError(null);
 
     try {
         const queryParams = buildQueryParams();
@@ -84,17 +78,10 @@ function TabPanel(props) {
       }));
 
       setResults(mappedResults);
-      setTotalCount(response.data.resources.total.value);
     } catch (err) {
               if (err.response && err.response.status === 400) {
-                // If a 400 error is returned, clear the results
-                setNoResults('true')
                 setResults([]);
-              } else {
-                setError('Error fetching data');
               }
-            } finally {
-              setLoading(false);
             }
   };
 
@@ -120,22 +107,6 @@ function TabPanel(props) {
     });
   };
 
-
-  const buildQuery = (filters) => {
-    const query = [];
-
-    for (const [key, value] of Object.entries(filters)) {
-      if (value.trim() !== '') {
-        query.push({
-          query_string: {
-            query: `${key}:${value}`,
-          },
-        });
-      }
-    }
-
-    return query;
-  };
 
 
     const handleTabChange = (event, newValue) => {
@@ -167,7 +138,6 @@ function TabPanel(props) {
       setOpenDialog(true); // Open the dialog
     } catch (err) {
       console.error('Error fetching rawData:', err);
-      setError('Error fetching rawData');
     }
   };
 

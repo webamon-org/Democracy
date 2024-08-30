@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from 'axios';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import { AppBar, Box, Tab, Tabs,  Table,
+import { Box, Tab, Tabs,  Table,
                                   TableBody,
                                   TableCell,
                                   TableContainer,
@@ -13,7 +13,6 @@ import { AppBar, Box, Tab, Tabs,  Table,
                                   TableRow, } from '@mui/material';
 import GraphComponent from './map';
 import DiffViewer from "react-diff-viewer";
-import JSONTree from 'react-json-view';
 import ClickAwayListener from '@mui/material/ClickAwayListener';
 import Modal from '@mui/material/Modal';
 import ChatBot from './threatai';
@@ -31,18 +30,10 @@ const axiosInstance = axios.create({
 
 
 
-function TabPanel({ children, value, index }) {
-  return (
-    <div role="tabpanel" hidden={value !== index}>
-      {value === index && <Box p={3}>{children}</Box>}
-    </div>
-  );
-}
 
 
 
 function MaterialTabs({ reportData, screenshot }) {
-  const [value, setValue] = React.useState(0);
     const [activeTab, setActiveTab] = useState(0);
   const [anchorEl, setAnchorEl] = useState(null);
   const [showRawTable, setShowRawTable] = useState(false);
@@ -172,11 +163,7 @@ const sha256 = resource ? resource.sha256 : null;
     setExpandedRow(expandedRow === index ? null : index);
   };
 
-const sanitizeFilename = (filename) => {
-  // Replace characters not allowed in filenames with an underscore
-  const invalidChars = /[\\/:"*?<>|]/g;
-  return filename.replace(invalidChars, "_");
-};
+
 const HeaderTable = ({ data }) => {
   return (
     <Paper elevation={3} style={{ margin: '20px', padding: '20px' }}>
@@ -261,23 +248,9 @@ const RawTable = ({ data }) => {
   );
 };
 
-const handleDownload = () => {
-  const data = JSON.stringify(reportData);
-  const blob = new Blob([data], { type: "application/json" });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  const sanitizedFilename = sanitizeFilename(`${reportData.resolved_url}.json`);
-  link.href = url;
-  link.download = sanitizedFilename;
-  link.click();
-  URL.revokeObjectURL(url);
-};
 
 
-  const handleSend = (prompt) => {
-    console.log("User prompt:", prompt);
-    // Add logic to handle sending the prompt to your LLM here
-  };
+
 
 function escapeHtml(html) {
   return html.replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -323,9 +296,6 @@ const PageScripts = ({ scripts }) => {
 
   const handleTabChange = (event, newValue) => {
     setActiveTab(newValue);
-  };
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
   };
 
 

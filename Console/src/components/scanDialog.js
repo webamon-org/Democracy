@@ -34,7 +34,6 @@ function ReportDialog({ open, onClose, rowData, screenshot}) {
     return null; // Return null if rowData is not available
   }
 
-  const meta = reportData.meta;
 
   return (
     <Dialog

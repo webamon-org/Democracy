@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
-import { Auth } from 'aws-amplify';
 import { Button, TextField, Container, Typography, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios'; // Import axios for the API request
 import './login.css';
-import { useAuth } from '../../AuthContext'; // Import the useAuth hook
-
+import { useAuth } from '../../AuthContext';
 // AuthenticationPage Component
 const AuthenticationPage = () => {
     const [apiKeyInput, setApiKeyInput] = useState(''); // State for the API key input
+
     const [message, setMessage] = useState('');
     const [openSignUpDialog, setOpenSignUpDialog] = useState(false);
-    const [loading, setLoading] = useState(false);
     const [openSuccessDialog, setOpenSuccessDialog] = useState(false); // State for managing success dialog
+    const [loading, setLoading] = useState(false); // Add loading state
+
     const [signUpData, setSignUpData] = useState({
         name: '',
         email: '',
@@ -23,8 +23,6 @@ const AuthenticationPage = () => {
 
     const handleSignIn = async () => {
         try {
-            // Here, you would typically validate the API key by sending a request to your backend
-            // Assuming the API key is valid, we set it in the global state
             setApiKey(apiKeyInput);
             setMessage('Sign-in successful!');
             navigate('/scans'); // Redirect to the scans page
@@ -32,6 +30,7 @@ const AuthenticationPage = () => {
             setMessage(`Error: ${error.message}`);
         }
     };
+
 
     const validateEmail = (email) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -83,7 +82,8 @@ const handleSignUp = async () => {
             [field]: value
         }));
     };
- return (
+
+    return (
         <div className="auth-page">
             <a>
                 <img
@@ -98,7 +98,7 @@ const handleSignUp = async () => {
             </a>
             <br />
             <Container maxWidth="sm" className="auth-form">
-                <TextField
+  <TextField
                     label="API Key"
                     variant="outlined"
                     fullWidth
@@ -118,7 +118,7 @@ const handleSignUp = async () => {
             </Container>
 
             <Dialog open={openSignUpDialog} onClose={handleSignUpDialogClose}>
-                <DialogTitle>Sign Up</DialogTitle>
+                <DialogTitle>Join The Democracy</DialogTitle>
                 <DialogContent>
                     <TextField
                         label="Name"
@@ -139,6 +139,12 @@ const handleSignUp = async () => {
                         value={signUpData.email}
                         onChange={(e) => handleSignUpInputChange('email', e.target.value)}
                     />
+                    <Typography
+                        variant="body1"
+                        style={{ margin: '22px 0' }} // Adjust the margin to create spacing around the text
+                    >
+                        We ask for your linkedin profile as we expect the community to join with non-org emails. Putting a face and background to a user helps us. As this is a BETA will most likely ask you for feedback.
+                    </Typography>
                     <TextField
                         label="LinkedIn Profile"
                         variant="outlined"
@@ -153,9 +159,14 @@ const handleSignUp = async () => {
                     <Button onClick={handleSignUpDialogClose} color="primary">
                         Cancel
                     </Button>
-                    <Button onClick={handleSignUp} color="primary">
-                        Sign Up
+                    <Button
+                        onClick={handleSignUp}
+                        color="primary"
+                        disabled={loading}
+                    >
+                        {loading ? 'Submitting...' : 'Sign Up'}
                     </Button>
+
                 </DialogActions>
             </Dialog>
 
@@ -163,7 +174,7 @@ const handleSignUp = async () => {
                 <DialogTitle>Sign Up Successful</DialogTitle>
                 <DialogContent>
                     <Typography>
-                        Your signup request was successfully received! Please allow up to 12 hours for review and account creation.
+                        Your signup request was successfully received! We will be in touch!
                     </Typography>
                 </DialogContent>
                 <DialogActions>
@@ -175,6 +186,5 @@ const handleSignUp = async () => {
         </div>
     );
 };
-
 
 export default AuthenticationPage;

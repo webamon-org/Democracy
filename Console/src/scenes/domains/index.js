@@ -1,4 +1,4 @@
-import { Box, Button, TextField, Tooltip } from "@mui/material";
+import { Box, Button, TextField } from "@mui/material";
 import { useState, useEffect } from "react";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import Header from "../../components/Header";
@@ -16,15 +16,8 @@ const axiosInstance = axios.create({
 
 
 const Domains = () => {
-  const [open, setOpen] = useState(false);
-  const [selectedRow, setSelectedRow] = useState(null);
   const [results, setResults] = useState([]);
-  const [noResults, setNoResults] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [query, setQuery] = useState('');
-  const [totalCount, setTotalCount] = useState(0);
   const { apiKey } = useAuth();
 
   const [filters, setFilters] = useState({});
@@ -45,7 +38,6 @@ const Domains = () => {
 
   const fetchAssets = async () => {
     setLoading(true);
-    setError(null);
 
     try {
 
@@ -65,13 +57,8 @@ const Domains = () => {
       setResults(mappedResults);
     } catch (err) {
             if (err.response && err.response.status === 400) {
-            setNoResults('true')
               setResults([]);
-            } else {
-              setError('Error fetching data');
             }
-          } finally {
-            setLoading(false);
           }
   };
 
@@ -110,14 +97,7 @@ const Domains = () => {
     { field: "ip", headerName: "Hosting IP", flex: 1, filterable: true },
   ];
 
-  const handleClickOpen = (rowData) => {
-    setSelectedRow(rowData);
-    setOpen(true);
-  };
 
-  const handleClose = () => {
-    setOpen(false);
-  };
 
   return (
     <Box m="20px" sx={{backgroundColor: '#191b2d'}}>
@@ -191,7 +171,6 @@ const Domains = () => {
           rows={results}
           columns={columns}
           getRowId={(row) => row.id}
-          onRowClick={(params) => handleClickOpen(params.row)}
           disableColumnMenu={false}
           loading={loading}
           components={{ Toolbar: GridToolbar }}
