@@ -7,11 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ## [v0.1.1] - 2024-08-30
-### Added
-- Initial release of the application with core features:
-    - User authentication (email/password).
-    - Basic dashboard layout.
-    - Initial set of APIs for data fetching and submission.
 
 ### Fixed
 - Fixed Signup (worked for hosted)
