@@ -38,7 +38,7 @@ const AuthenticationPage = () => {
     };
 
 const handleSignUp = async () => {
-    if (!signUpData.name || !signUpData.email || !signUpData.linkedin) {
+    if (!signUpData.name || !signUpData.email) {
         setMessage('All fields are required.');
         return;
     }
@@ -143,10 +143,10 @@ const handleSignUp = async () => {
                         variant="body1"
                         style={{ margin: '22px 0' }} // Adjust the margin to create spacing around the text
                     >
-                        We ask for your linkedin profile as we expect the community to join with non-org emails. Putting a face and background to a user helps us. As this is a BETA will most likely ask you for feedback.
+                        We ask for your linkedin profile as we expect the community to join with non-org emails. Putting a face and background to a user helps us. As this is an early BETA we will most likely ask you for feedback.
                     </Typography>
                     <TextField
-                        label="LinkedIn Profile"
+                        label="LinkedIn Profile (Optional)"
                         variant="outlined"
                         fullWidth
                         margin="normal"
