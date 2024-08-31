@@ -71,57 +71,60 @@ class Formatting:
 
     @staticmethod
     def clean_data(report):
-        for _request in report['request']:
-            _request['request'].pop('initialPriority', False)
-            _request['request'].pop('isLinkPreload', False)
-            _request['request'].pop('isSameSite', False)
-            _request['request'].pop('mixedContentType', False)
+        if 'request' in report:
+            for _request in report['request']:
+                _request['request'].pop('initialPriority', False)
+                _request['request'].pop('isLinkPreload', False)
+                _request['request'].pop('isSameSite', False)
+                _request['request'].pop('mixedContentType', False)
 
-            clean_keys = {"hasPostData": "has_post_data", "postData": "post_data", "postDataEntries": "post_data_entry", "referrerPolicy": "referrer_policy"}
-            for k, v in clean_keys.items():
-                try:
-                    _request['request'][v] = _request['request'].pop(k)
-                except:
-                    continue
-
-            if 'response' in _request:
-                _request['response'].pop('timing', False)
-                _request['response'].pop('alternateProtocolUsage', False)
-                _request['response'].pop('charset', False)
-                _request['response'].pop('connectionId', False)
-                _request['response'].pop('connectionReused', False)
-                _request['response'].pop('fromDiskCache', False)
-                _request['response'].pop('fromPrefetchCache', False)
-                _request['response'].pop('fromDiskCache', False)
-                _request['response'].pop('fromServiceWorker', False)
-
-                clean_keys = {"encodedDataLength": 'encoded_data_length', "mimeType": "mime_type", "remoteIPAddress": "ip", "remotePort": "port", "responseTime": "response_time", "securityDetails": "security_details", "securityState": "security_state", "statusText": "status_text"}
+                clean_keys = {"hasPostData": "has_post_data", "postData": "post_data", "postDataEntries": "post_data_entry", "referrerPolicy": "referrer_policy"}
                 for k, v in clean_keys.items():
                     try:
-                        _request['response'][v] = _request['response'].pop(k)
+                        _request['request'][v] = _request['request'].pop(k)
                     except:
                         continue
 
-        for certificate in report['certificate']:
+                if 'response' in _request:
+                    _request['response'].pop('timing', False)
+                    _request['response'].pop('alternateProtocolUsage', False)
+                    _request['response'].pop('charset', False)
+                    _request['response'].pop('connectionId', False)
+                    _request['response'].pop('connectionReused', False)
+                    _request['response'].pop('fromDiskCache', False)
+                    _request['response'].pop('fromPrefetchCache', False)
+                    _request['response'].pop('fromDiskCache', False)
+                    _request['response'].pop('fromServiceWorker', False)
 
-            certificate.pop('certificateId', False)
-            certificate.pop('certificateTransparencyCompliance', False)
-            certificate.pop('encryptedClientHello', False)
+                    clean_keys = {"encodedDataLength": 'encoded_data_length', "mimeType": "mime_type", "remoteIPAddress": "ip", "remotePort": "port", "responseTime": "response_time", "securityDetails": "security_details", "securityState": "security_state", "statusText": "status_text"}
+                    for k, v in clean_keys.items():
+                        try:
+                            _request['response'][v] = _request['response'].pop(k)
+                        except:
+                            continue
 
-            clean_keys = {"keyExchange": "key_exchange", "keyExchangeGroup": "key_exchange_group", "sanList": "san_list", "serverSignatureAlgorithm": "signature_algorithm", "subjectName": "subject_name", "validFrom": "valid_from", "validTo": "valid_to"}
-            for k, v in clean_keys.items():
-                try:
-                    certificate[v] = certificate.pop(k)
-                except:
-                    continue
+        if 'certificate' in report:
+            for certificate in report['certificate']:
 
-        for cookie in report['cookie']:
-            clean_keys = {"httpOnly": "http_only", "sameSite": "same_site"}
-            for k, v in clean_keys.items():
-                try:
-                    cookie[v] = cookie.pop(k)
-                except:
-                    continue
+                certificate.pop('certificateId', False)
+                certificate.pop('certificateTransparencyCompliance', False)
+                certificate.pop('encryptedClientHello', False)
+
+                clean_keys = {"keyExchange": "key_exchange", "keyExchangeGroup": "key_exchange_group", "sanList": "san_list", "serverSignatureAlgorithm": "signature_algorithm", "subjectName": "subject_name", "validFrom": "valid_from", "validTo": "valid_to"}
+                for k, v in clean_keys.items():
+                    try:
+                        certificate[v] = certificate.pop(k)
+                    except:
+                        continue
+
+        if 'cookie' in report:
+            for cookie in report['cookie']:
+                clean_keys = {"httpOnly": "http_only", "sameSite": "same_site"}
+                for k, v in clean_keys.items():
+                    try:
+                        cookie[v] = cookie.pop(k)
+                    except:
+                        continue
 
         return report
 
