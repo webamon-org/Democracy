@@ -67,8 +67,10 @@ const WebamonXtend = () => {
       }));
 
       setResults(mappedResults);
+      setLoading(false)
     } catch (err) {
                          if (err.response && err.response.status === 400) {
+                         setLoading(false)
                            setResults([]);
                          }
                        }

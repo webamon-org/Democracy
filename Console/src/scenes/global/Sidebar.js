@@ -112,11 +112,14 @@ const Sidebar = () => {
         },
       }}
     >
+
+
       <ProSidebar
         collapsed={isCollapsed}
         onMouseEnter={() => setIsCollapsed(false)}
         onMouseLeave={() => setIsCollapsed(true)}
       >
+      <Typography>v0.2.0</Typography>
         <Menu iconShape="square">
           {/* LOGO AND MENU ICON */}
           <MenuItem
@@ -275,6 +278,14 @@ const Sidebar = () => {
                 setSelected={setSelected}
                 setIsCollapsed={setIsCollapsed}
               />
+            <Item
+              title="All Domains"
+              to="/feeds/all-domains"
+              icon={<WysiwygOutlinedIcon style={{ fontSize: '1.5rem' }} />}
+              selected={selected}
+              setSelected={setSelected}
+              setIsCollapsed={setIsCollapsed}
+            />
               <Item
                 title="Webamon-Xtend"
                 to="/feeds/webamon-x"
