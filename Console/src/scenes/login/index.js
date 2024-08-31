@@ -123,7 +123,7 @@ const AuthenticationPage = () => {
                                     This is an open-source project under the Apache 2.0 License.
                                 </Typography>
                                             <Button
-                                                onClick={() => window.open('https://github.com/your-repo-url', '_blank')}
+                                                onClick={() => window.open('https://github.com/webamon-org/Democracy', '_blank')}
                                                 style={{
                                                     backgroundColor: '#FFFFFF', // White background
                                                     color: '#000000', // Black text
