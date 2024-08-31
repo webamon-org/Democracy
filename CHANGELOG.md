@@ -5,6 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- (Console) Added scan button to table rows, on the fly scanning
+- (Console) Clear filters button
+
+---
+
+## [v0.2.0] - 2024-08-31
+
+### Added
+- (Console) Added all available domains/zone_files feed 266million + known issue (duplicates)
+- (Console) Added version# display on console navbar
+- (Console) Added cloud/local sandbox toggle. Allows for running scans on Webamon cloud sandbox or local
+- (Sandbox) Added config['source'] == 'openphish' option - pulls and scans current public feed
+
+### Changed
+- Changed login page & link to github repo
+
+### Fixed
+- setLoading(false) feeds pages + scans + resources loading wheel continued when results returned
+
+---
 ## [v0.1.2] - 2024-08-30
 
 ### Removed
@@ -17,6 +40,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - setLoading(false) domains page, loading wheel continued when results returned
 - setLoading(false) servers page, loading wheel continued when results returned
 ---
+
 ## [v0.1.1] - 2024-08-30
 
 ### Fixed
