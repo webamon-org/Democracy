@@ -61,8 +61,10 @@ const buildQueryParams = () => {
       }));
 
       setResults(mappedResults);
+      setLoading(false)
     } catch (err) {
       if (err.response && err.response.status === 400) {
+      setLoading(false)
         setResults([]);
       }
     }
@@ -92,14 +94,12 @@ const buildQueryParams = () => {
     try {
 
 
-      // Fetch report data
       const response = await axiosInstance.get(`/report/${rowData.report_id}`, {
         headers: {
             'x-api-key': apiKey        },
       });
       setRawData(response.data.report);
 
-      // Fetch screenshot data
       const screenshotResponse = await axiosInstance.get(`/screenshot/${rowData.report_id}`, {
         headers: {
                 'x-api-key': apiKey        },

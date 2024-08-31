@@ -1,4 +1,5 @@
 import os
+import requests
 from report import Formatting, Technology, Resources, Enrichment
 from selenium.common.exceptions import WebDriverException
 import argparse
@@ -155,6 +156,16 @@ counter = 0
 success = 0
 failed = 0
 skipped = 0
+
+
+def get_openPhish():
+    response = requests.get("https://www.openphish.com/feed.txt")
+    if response.status_code == 200:
+        _urls = response.text.splitlines()
+        return _urls
+    else:
+        print(f"Failed to retrieve data: {response.status_code}")
+        sys.exit()
 
 
 @app.route('/scan', methods=['POST'])
@@ -378,6 +389,8 @@ def main():
                 except:
                     _urls.append(record['fields']['domain'])
             urls = _urls
+        elif config['source'] == 'openphish':
+            urls = get_openPhish()
         elif config['url']:
             logger.debug('Scanning Single URL')
             urls = [config['url']]
