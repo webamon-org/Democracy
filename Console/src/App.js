@@ -12,6 +12,7 @@ import ServerPage from "./scenes/servers";
 import AssetsPage from "./scenes/resources";
 import WebamonXtend from "./scenes/feeds/webamon_x";
 import NewlyRegistered from "./scenes/feeds/newly_registered";
+import AllDomains from "./scenes/feeds/all_domains";
 import ProtectedRoute from './ProtectedRoute';
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { useMode } from "./theme";
@@ -51,6 +52,7 @@ function App() {
                         <Route path="/hunting" element={<ProtectedRoute element={<ComingSoon />} />} />
                         <Route path="/campaigns" element={<ProtectedRoute element={<ComingSoon />} />} />
                         <Route path="/feeds/webamon-x" element={<ProtectedRoute element={<WebamonXtend />} />} />
+                        <Route path="/feeds/all-domains" element={<ProtectedRoute element={<AllDomains />} />} />
                         <Route path="/feeds/newly-registered" element={<ProtectedRoute element={<NewlyRegistered />} />} />
                     </Routes>
                 </main>
