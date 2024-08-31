@@ -54,8 +54,10 @@ const axiosInstance = axios.create({
       }));
 
       setResults(mappedResults);
+      setLoading(false)
     } catch (err) {
                     if (err.response && err.response.status === 400) {
+                    setLoading(false)
                       setResults([]);
                     }
                   }
@@ -74,6 +76,7 @@ const axiosInstance = axios.create({
     // Clean up the debounce on unmount
     return () => {
       debouncedPostFilters.cancel();
+
     };
   }, [filters]);
 
