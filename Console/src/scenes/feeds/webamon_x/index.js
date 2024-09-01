@@ -21,15 +21,8 @@ const WebamonXtend = () => {
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
     const { apiKey } = useAuth();
+  const [filters, setFilters] = useState({ });
 
-  const [filters, setFilters] = useState({
-    'ip': '',
-    'dom': '',
-    'url': '',
-    'tag': '',
-    'contacted.domain': '',
-    'date': ''
-  });
 
 
      const buildQueryParams = () => {
@@ -45,36 +38,38 @@ const WebamonXtend = () => {
        return params.toString();
      };
 
-  const fetchAssets = async (filterParams) => {
+    const fetchAssets = async () => {
+      setLoading(true);
 
-    try {
+      try {
 
-              const queryParams = buildQueryParams();
-      const response = await axiosInstance(`/feed?feed=webamon_x&${queryParams}`, {
-    headers: {
-          'x-api-key': apiKey,
-        },
+
+        const queryParams = buildQueryParams();
+        const response = await axiosInstance(`/report?feed=webamon_x&${queryParams}`, {
+          headers: {
+            'x-api-key': apiKey,
+          },
         });
 
-      const mappedResults = response.data.feed.map((hit) => ({
-        time: hit.submissionUTC,
-        scanUrl: hit.meta.submission,
-        scriptCount: hit.meta.scriptCount,
-        requestCount: hit.meta.requestCount,
-        contactCount: hit.meta.contactCount,
-        id: hit.id,
-        tag: hit.tag
-      }));
+        const mappedResults = response.data.reports.map((hit) => ({
+          report_id: hit.meta.report_id,
+          tag: hit.tag,
+          submission_utc: hit.meta.submission_utc,
+          submission_url: hit.meta.submission_url,
+          script_count: hit.meta.script_count,
+          request_count: hit.meta.request_count,
+          domain_count: hit.meta.domain_count,
+        }));
 
-      setResults(mappedResults);
-      setLoading(false)
-    } catch (err) {
-                         if (err.response && err.response.status === 400) {
-                         setLoading(false)
-                           setResults([]);
-                         }
-                       }
-  };
+        setResults(mappedResults);
+        setLoading(false)
+      } catch (err) {
+        if (err.response && err.response.status === 400) {
+        setLoading(false)
+          setResults([]);
+        }
+      }
+    };
 
   useEffect(() => {
   setLoading(true)
@@ -118,13 +113,12 @@ const WebamonXtend = () => {
   };
 
   const columns = [
-    { field: 'time', headerName: 'Scan Time', flex: 0.35, filterable: true },
-    { field: 'scanUrl', headerName: 'URL', flex: 1.5, filterable: true },
-    { field: 'contactCount', headerName: 'Domains Contacted', flex: 0.3, filterable: true },
-    { field: 'requestCount', headerName: 'Requests', flex: 0.3, filterable: true },
-    { field: 'scriptCount', headerName: 'Scripts', flex: 0.3, filterable: true },
-    { field: 'tag', headerName: 'Community Feed', flex: 0.3, filterable: true },
-
+    { field: 'submission_utc', headerName: 'Scan Time', flex: 0.4, filterable: true },
+    { field: 'submission_url', headerName: 'Submission', flex: 1.5, filterable: true },
+    { field: 'domain_count', headerName: 'Domains', flex: 0.3, filterable: true },
+    { field: 'request_count', headerName: 'Requests', flex: 0.3, filterable: true },
+    { field: 'script_count', headerName: 'Scripts', flex: 0.3, filterable: true },
+    { field: 'tag', headefffrName: 'Tag', flex: 0.3, filterable: true },
   ];
 
 
@@ -138,68 +132,103 @@ const WebamonXtend = () => {
           </Button>
         </Box>
         <Box sx={{ display: 'flex', mb: '20px' }}>
-           <TextField
-                      label="DATE"
-                      variant="outlined"
-                      value={filters.date}
-                      onChange={(e) => handleFilterChange('date', e.target.value)}
-                      sx={{ mr: '10px' }}
-                    />
+          <TextField
+                     label="DATE"
+                     variant="outlined"
+                     value={filters.submission_utc}
+                     onChange={(e) => handleFilterChange('submission_utc', e.target.value)}
+                     sx={{ mr: '10px' }}
+                   />
+                   <TextField
+                     label="URL"
+                     variant="outlined"
+                     value={filters['request.response.url']}
+                     onChange={(e) => handleFilterChange('request.response.url', e.target.value)}
+                     sx={{ mr: '10px' }}
+                   />
+                   <TextField
+                     label="TAG"
+                     variant="outlined"
+                     value={filters.tag}
+                     onChange={(e) => handleFilterChange('tag', e.target.value)}
+                     sx={{ mr: '10px' }}
+                   />
+                   <TextField
+                     label="Report ID"
+                     variant="outlined"
+                     value={filters.report_id}
+                     onChange={(e) => handleFilterChange('report_id', e.target.value)}
+                     sx={{ mr: '10px' }}
+                   />
+                   <TextField
+                     label="Page DOM"
+                     variant="outlined"
+                     value={filters.dom}
+                     onChange={(e) => handleFilterChange('dom', e.target.value)}
+                     sx={{ mr: '10px' }}
+                   />
                     <TextField
-                      label="URL"
-                      variant="outlined"
-                      value={filters.url}
-                      onChange={(e) => handleFilterChange('url', e.target.value)}
-                      sx={{ mr: '10px' }}
-                    />
-                    <TextField
-                      label="TAG"
-                      variant="outlined"
-                      value={filters.tag}
-                      onChange={(e) => handleFilterChange('tag', e.target.value)}
-                      sx={{ mr: '10px' }}
-                    />
-                    <TextField
-                      label="Report ID"
-                      variant="outlined"
-                      value={filters.reportID}
-                      onChange={(e) => handleFilterChange('reportID', e.target.value)}
-                      sx={{ mr: '10px' }}
-                    />
-                    <TextField
-                      label="Page DOM"
-                      variant="outlined"
-                      value={filters.dom}
-                      onChange={(e) => handleFilterChange('dom', e.target.value)}
-                      sx={{ mr: '10px' }}
-                    />
-                  <TextField
-                    label="SHA256"
-                    variant="outlined"
-                    value={filters.sha256}
-                    onChange={(e) => handleFilterChange('sha256', e.target.value)}
-                      sx={{ mr: '10px' }}
-                  />
-                    <TextField
-                      label="IP"
-                      variant="outlined"
-                    value={filters.ip}
-                      onChange={(e) => handleFilterChange('ip', e.target.value)}
-                      sx={{ mr: '10px' }}
-                    />
-                  <TextField
-                    label="DOMAIN"
-                    variant="outlined"
-                    value={filters.domain}
-                    onChange={(e) => handleFilterChange('domain', e.target.value)}
-                    sx={{ mr: '10px' }}
-                  />
+                       label="Page Title"
+                       variant="outlined"
+                       value={filters.page_title}
+                       onChange={(e) => handleFilterChange('page_title', e.target.value)}
+                       sx={{ mr: '10px' }}
+                     />
+                   <TextField
+                     label="SHA256"
+                     variant="outlined"
+                     value={filters['resource.sha256']}
+                     onChange={(e) => handleFilterChange('resource.sha256', e.target.value)}
+                     sx={{ mr: '10px' }}
+                   />
+                   <TextField
+                     label="IP"
+                     variant="outlined"
+                     value={filters['server.ip']}
+                     onChange={(e) => handleFilterChange('server.ip', e.target.value)}
+                     sx={{ mr: '10px' }}
+                   />
+                     <TextField
+                       label="ASN NAME"
+                       variant="outlined"
+                       value={filters['server.asn.name']}
+                       onChange={(e) => handleFilterChange('server.asn.name', e.target.value)}
+                       sx={{ mr: '10px' }}
+                     />
+                   <TextField
+                     label="COUNTRY"
+                     variant="outlined"
+                     value={filters['server.country.name']}
+                     onChange={(e) => handleFilterChange('server.country.name', e.target.value)}
+                     sx={{ mr: '10px' }}
+                   />
+                   <TextField
+                     label="DOMAIN"
+                     variant="outlined"
+                     value={filters['domain.name']}
+                     onChange={(e) => handleFilterChange('domain.name', e.target.value)}
+                     sx={{ mr: '10px' }}
+                   />
+                     <TextField
+                       label="SERVER"
+                       variant="outlined"
+                       value={filters['server.server']}
+                       onChange={(e) => handleFilterChange('server.server', e.target.value)}
+                       sx={{ mr: '10px' }}
+                     />
+                   <TextField
+                   label="TECHNOLOGY"
+                   variant="outlined"
+                   value={filters['technology.name']}
+                   onChange={(e) => handleFilterChange('technology.name', e.target.value)}
+                   sx={{ mr: '10px' }}
+                 />
         </Box>
         <DataGrid
           sx={{ fontSize: '20px' }}
           rows={results}
           columns={columns}
-          getRowId={(row) => row.id}
+          getRowId={(row) => row.report_id}
           onRowClick={(params) => handleClickOpen(params.row)}
           disableColumnMenu={false}
           loading={loading}
