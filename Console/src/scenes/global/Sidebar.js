@@ -119,7 +119,7 @@ const Sidebar = () => {
         onMouseEnter={() => setIsCollapsed(false)}
         onMouseLeave={() => setIsCollapsed(true)}
       >
-      <Typography>v0.2.0</Typography>
+      <Typography>v0.2.1</Typography>
         <Menu iconShape="square">
           {/* LOGO AND MENU ICON */}
           <MenuItem
