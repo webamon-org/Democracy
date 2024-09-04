@@ -17,6 +17,7 @@ const axiosInstance = axios.create({
 
 const WebamonXtend = () => {
   const [openDialog, setOpenDialog] = useState(false);
+    const [screenshotData, setScreenshotData] = useState(false);
   const [rawData, setRawData] = useState('');
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -95,12 +96,22 @@ const WebamonXtend = () => {
   const handleClickOpen = async (rowData) => {
 
     try {
-            const response = await axiosInstance(`/report/${rowData.id}`, {
+            const response = await axiosInstance(`/report/${rowData.report_id}`, {
     headers: {
           'x-api-key': apiKey,
         },
         });
       setRawData(response.data.report);
+            const screenshotResponse = await axiosInstance.get(`/screenshot/${rowData.report_id}`, {
+              headers: {
+                      'x-api-key': apiKey        },
+            });
+
+            if (screenshotResponse.data.screenshot) {
+              setScreenshotData(screenshotResponse.data.screenshot.screenshot);
+            } else {
+              setScreenshotData(false);
+            }
       setOpenDialog(true);
     } catch (err) {
       console.log('Error fetching rawData');
@@ -238,6 +249,7 @@ const WebamonXtend = () => {
           open={openDialog}
           onClose={handleCloseDialog}
           rowData={rawData}
+          screenshot={screenshotData}
         />
       </Box>
     </Box>
