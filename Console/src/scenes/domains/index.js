@@ -79,6 +79,10 @@ const Domains = () => {
   }, [filters]);
 
 
+  const handleClearFilters = () => {
+    setFilters({});
+    fetchAssets();
+  };
 
 
   const handleFilterChange = (key, value) => {
@@ -89,14 +93,14 @@ const Domains = () => {
   };
 
   const columns = [
-    { field: "last_update", headerName: "Updated", flex: 1, filterable: true },
-    { field: "sub_domain", headerName: "Sub Domain", flex: 1, filterable: true },
-    { field: "name", headerName: "Domain", flex: 1, filterable: true },
-    { field: "server", headerName: "Server", flex: 1, filterable: true },
-    { field: "hosting_scripts", headerName: "Hosting Scripts", flex: 1, filterable: true },
-    { field: "country_name", headerName: "Hosting Country", flex: 1, filterable: true },
-    { field: "asn_org", headerName: "ASN", flex: 1, filterable: true },
-    { field: "ip", headerName: "Hosting IP", flex: 1, filterable: true },
+    { field: "last_update", headerName: "Updated", flex: 0.2, filterable: true },
+    { field: "sub_domain", headerName: "Sub Domain", flex: 0.2, filterable: true },
+    { field: "name", headerName: "Domain", flex: 0.4, filterable: true },
+    { field: "server", headerName: "Server", flex: 0.3, filterable: true },
+    { field: "hosting_scripts", headerName: "Hosting Scripts", flex: 0.1, filterable: true },
+    { field: "country_name", headerName: "Hosting Country", flex: 0.2, filterable: true },
+    { field: "asn_org", headerName: "ASN", flex: 0.3, filterable: true },
+    { field: "ip", headerName: "Hosting IP", flex: 0.2, filterable: true },
   ];
 
 
@@ -105,7 +109,10 @@ const Domains = () => {
     <Box m="20px" sx={{backgroundColor: '#191b2d'}}>
       <Header title="DOMAINS" subtitle="Collection of all discovered domains" />
       <Box m="40px 0 0 0" height="75vh">
-        <Box sx={{ display: "flex", justifyContent: "flex-end"}}>
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: '20px'}}>
+                  <Button variant="contained" color="primary" onClick={handleClearFilters}>
+                    Clear Filters
+                  </Button>
           <Button variant="contained" color="primary" onClick={fetchAssets}>
             Refresh
           </Button>
@@ -114,56 +121,56 @@ const Domains = () => {
           <TextField
             label="DOMAIN"
             variant="outlined"
-            value={filters.name}
+            value={filters.name || ''}
             onChange={(e) => handleFilterChange('name', e.target.value)}
             sx={{ mr: '10px' }}
           />
           <TextField
             label="SHA256"
             variant="outlined"
-            value={filters['resource.sha256']}
+            value={filters['resource.sha256'] || ''}
             onChange={(e) => handleFilterChange('resource.sha256', e.target.value)}
             sx={{ mr: '10px' }}
           />
           <TextField
             label="SUB DOMAIN"
             variant="outlined"
-            value={filters.sub_domain}
+            value={filters.sub_domain || ''}
             onChange={(e) => handleFilterChange('sub_domain', e.target.value)}
             sx={{ mr: '10px' }}
           />
           <TextField
             label="A Record"
             variant="outlined"
-            value={filters['dns.a']}
+            value={filters['dns.a'] || ''}
             onChange={(e) => handleFilterChange('dns.a', e.target.value)}
             sx={{ mr: '10px' }}
           />
         <TextField
           label="MX Record"
           variant="outlined"
-          value={filters['dns.mx']}
+          value={filters['dns.mx'] || ''}
           onChange={(e) => handleFilterChange('dns.mx', e.target.value)}
           sx={{ mr: '10px' }}
         />
               <TextField
                 label="NS Record"
                 variant="outlined"
-                value={filters['dns.ns']}
+                value={filters['dns.ns'] || ''}
                 onChange={(e) => handleFilterChange('dns.ns', e.target.value)}
                 sx={{ mr: '10px' }}
               />
                 <TextField
                   label="TXT Record"
                   variant="outlined"
-                  value={filters['dns.txt']}
+                  value={filters['dns.txt'] || ''}
                   onChange={(e) => handleFilterChange('dns.txt', e.target.value)}
                   sx={{ mr: '10px' }}
                 />
             <TextField
               label="COUNTRY"
               variant="outlined"
-              value={filters['country.name']}
+              value={filters['country.name'] || ''}
               onChange={(e) => handleFilterChange('country.name', e.target.value)}
               sx={{ mr: '10px' }}
             />

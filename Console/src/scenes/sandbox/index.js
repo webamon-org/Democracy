@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from 'axios';
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import ReportDialog from '../../components/scanDialog.js';
 import {
   Alert,
@@ -11,7 +12,7 @@ import {
   TextField,
   Typography,
   Switch,
-  FormControlLabel,
+  FormControlLabel, Tooltip, InputAdornment, IconButton
 } from "@mui/material";
 import { useAuth } from '../../AuthContext';
 
@@ -187,33 +188,51 @@ const ScanPage = () => {
                 Enter a valid URL
               </Typography>
             )}
-            <TextField
-              label="URL"
-              value={submission}
-              onChange={handleDomainChange}
-              variant="outlined"
-              size="medium"
-              fullWidth
-              style={{
-                borderRadius: "4px",
-              }}
-            />
+  <TextField
+     label="Url or Domain"
+     value={submission}
+     onChange={handleDomainChange}
+     variant="outlined"
+     size="medium" // Default is medium; you can try large if needed
+     fullWidth
+     style={{ color: "#ffffff", marginBottom: "1rem" }}
+     InputProps={{
+       style: { fontSize: "1.3rem" }, // Increase input font size
+       endAdornment: (
+         <InputAdornment position="end">
+           <Tooltip
+             title="With or without https://"
+             placement="top"
+             arrow
+           >
+             <IconButton>
+               <HelpOutlineIcon fontSize="large" />
+             </IconButton>
+           </Tooltip>
+         </InputAdornment>
+       ),
+     }}
+     InputLabelProps={{
+       style: { fontSize: "1.1rem" },
+     }}
+   />
           </TabPanel>
         </Box>
-        <Button
-          type="submit"
-          disabled={loading}
-          variant="contained"
-          size="large"
-          fullWidth
-          style={{ color: "#FFFFFF", marginBottom: "1rem" }}
-        >
-          {loading ? (
-            <CircularProgress color="inherit" size={24} />
-          ) : (
-            "Submit Scan"
-          )}
-        </Button>
+<Button
+  type="submit"
+  disabled={loading}
+  variant="contained"
+  size="large"
+  fullWidth
+  style={{ backgroundColor: "#ffffff", color: "#343b6f", marginBottom: "1rem" }} // Set the background color here
+>
+  {loading ? (
+    <CircularProgress style={{ color: "#343b6f", marginBottom: "1rem" }} size={32} />
+  ) : (
+    "Submit Scan"
+  )}
+</Button>
+
 
         {error && (
           <Box sx={{ marginBottom: "1rem" }}>

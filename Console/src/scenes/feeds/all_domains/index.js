@@ -177,7 +177,7 @@ const axiosInstance = axios.create({
           </FormControl>
         </Box>
         <DataGrid
-          sx={{ fontSize: '14px' }}
+          sx={{ fontSize: '20px' }}
           rows={results}
           columns={columns}
           getRowId={(row) => row.id}
