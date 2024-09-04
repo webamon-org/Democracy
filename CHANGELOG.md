@@ -12,6 +12,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - (Console) Clear filters button
 
 ---
+## [v0.3.0] - 2024-09-04
+
+### Fixed
+- (Console) - XTend Feed page - Click on row did not load report
+
+---
 ## [v0.2.2] - 2024-09-01
 
 ### Fixed
