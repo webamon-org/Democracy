@@ -155,15 +155,15 @@ const GraphComponent = ({ data }) => {
   <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
     <div style={{ display: 'flex', alignItems: 'center', marginRight: '20px' }}>
       <div style={{ width: '20px', height: '20px', backgroundColor: 'black', marginRight: '10px' }} />
-      <span>1st Party Resource</span>
-    </div>
+  <span style={{ color: 'white' }}>1st Party Resource</span>
+      </div>
     <div style={{ display: 'flex', alignItems: 'center', marginRight: '20px' }}>
       <div style={{ width: '20px', height: '20px', backgroundColor: 'orange', marginRight: '10px' }} />
-      <span>3rd Party Domain</span>
+      <span style={{ color: 'white' }}>3rd Party Domain</span>
     </div>
     <div style={{ display: 'flex', alignItems: 'center' }}>
       <div style={{ width: '20px', height: '20px', backgroundColor: 'green', marginRight: '10px' }} />
-      <span>3rd Party Resource</span>
+      <span style={{ color: 'white' }}>3rd Party Resource</span>
     </div>
   </div>
   <div ref={containerRef} style={{ position: 'relative', height: '650px', border: '1px solid #ccc' }}>

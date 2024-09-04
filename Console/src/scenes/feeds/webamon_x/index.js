@@ -86,6 +86,11 @@ const WebamonXtend = () => {
     };
   }, [filters]);
 
+  const handleClearFilters = () => {
+    setFilters({});
+    fetchAssets();
+  };
+
   const handleFilterChange = (key, value) => {
     setFilters({
       ...filters,
@@ -124,12 +129,12 @@ const WebamonXtend = () => {
   };
 
   const columns = [
-    { field: 'submission_utc', headerName: 'Scan Time', flex: 0.4, filterable: true },
-    { field: 'submission_url', headerName: 'Submission', flex: 1.5, filterable: true },
-    { field: 'domain_count', headerName: 'Domains', flex: 0.3, filterable: true },
-    { field: 'request_count', headerName: 'Requests', flex: 0.3, filterable: true },
-    { field: 'script_count', headerName: 'Scripts', flex: 0.3, filterable: true },
-    { field: 'tag', headefffrName: 'Tag', flex: 0.3, filterable: true },
+    { field: 'submission_utc', headerName: 'Scan Time', flex: 0.3, filterable: true },
+    { field: 'submission_url', headerName: 'Submission', flex: 0.7, filterable: true },
+    { field: 'domain_count', headerName: 'Domains', flex: 0.2, filterable: true },
+    { field: 'request_count', headerName: 'Requests', flex: 0.2, filterable: true },
+    { field: 'script_count', headerName: 'Scripts', flex: 0.2, filterable: true },
+    { field: 'tag', headerName: 'Tag', flex: 0.3, filterable: true },
   ];
 
 
@@ -137,8 +142,11 @@ const WebamonXtend = () => {
     <Box m="20px" sx={{backgroundColor: '#171b2d'}}>
       <Header title="Webamon Xtend" subtitle="Webamon Enriched Public Feeds" />
       <Box m="40px 0 0 0" height="75vh">
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <Button variant="contained" color="primary" onClick={() => fetchAssets(filters)}>
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: '20px'}}>
+                  <Button variant="contained" color="primary" onClick={handleClearFilters}>
+                    Clear Filters
+                  </Button>
+          <Button variant="contained" color="primary" onClick={fetchAssets}>
             Refresh
           </Button>
         </Box>
@@ -146,91 +154,91 @@ const WebamonXtend = () => {
           <TextField
                      label="DATE"
                      variant="outlined"
-                     value={filters.submission_utc}
+                     value={filters.submission_utc || ''}
                      onChange={(e) => handleFilterChange('submission_utc', e.target.value)}
                      sx={{ mr: '10px' }}
                    />
                    <TextField
                      label="URL"
                      variant="outlined"
-                     value={filters['request.response.url']}
+                     value={filters['request.response.url'] || ''}
                      onChange={(e) => handleFilterChange('request.response.url', e.target.value)}
                      sx={{ mr: '10px' }}
                    />
                    <TextField
                      label="TAG"
                      variant="outlined"
-                     value={filters.tag}
+                     value={filters.tag || ''}
                      onChange={(e) => handleFilterChange('tag', e.target.value)}
                      sx={{ mr: '10px' }}
                    />
                    <TextField
                      label="Report ID"
                      variant="outlined"
-                     value={filters.report_id}
+                     value={filters.report_id || ''}
                      onChange={(e) => handleFilterChange('report_id', e.target.value)}
                      sx={{ mr: '10px' }}
                    />
                    <TextField
                      label="Page DOM"
                      variant="outlined"
-                     value={filters.dom}
+                     value={filters.dom || ''}
                      onChange={(e) => handleFilterChange('dom', e.target.value)}
                      sx={{ mr: '10px' }}
                    />
                     <TextField
                        label="Page Title"
                        variant="outlined"
-                       value={filters.page_title}
+                       value={filters.page_title || ''}
                        onChange={(e) => handleFilterChange('page_title', e.target.value)}
                        sx={{ mr: '10px' }}
                      />
                    <TextField
                      label="SHA256"
                      variant="outlined"
-                     value={filters['resource.sha256']}
+                     value={filters['resource.sha256'] || ''}
                      onChange={(e) => handleFilterChange('resource.sha256', e.target.value)}
                      sx={{ mr: '10px' }}
                    />
                    <TextField
                      label="IP"
                      variant="outlined"
-                     value={filters['server.ip']}
+                     value={filters['server.ip'] || ''}
                      onChange={(e) => handleFilterChange('server.ip', e.target.value)}
                      sx={{ mr: '10px' }}
                    />
                      <TextField
                        label="ASN NAME"
                        variant="outlined"
-                       value={filters['server.asn.name']}
+                       value={filters['server.asn.name'] || ''}
                        onChange={(e) => handleFilterChange('server.asn.name', e.target.value)}
                        sx={{ mr: '10px' }}
                      />
                    <TextField
                      label="COUNTRY"
                      variant="outlined"
-                     value={filters['server.country.name']}
+                     value={filters['server.country.name'] || ''}
                      onChange={(e) => handleFilterChange('server.country.name', e.target.value)}
                      sx={{ mr: '10px' }}
                    />
                    <TextField
                      label="DOMAIN"
                      variant="outlined"
-                     value={filters['domain.name']}
+                     value={filters['domain.name'] || ''}
                      onChange={(e) => handleFilterChange('domain.name', e.target.value)}
                      sx={{ mr: '10px' }}
                    />
                      <TextField
                        label="SERVER"
                        variant="outlined"
-                       value={filters['server.server']}
+                       value={filters['server.server'] || ''}
                        onChange={(e) => handleFilterChange('server.server', e.target.value)}
                        sx={{ mr: '10px' }}
                      />
                    <TextField
                    label="TECHNOLOGY"
                    variant="outlined"
-                   value={filters['technology.name']}
+                   value={filters['technology.name'] || ''}
                    onChange={(e) => handleFilterChange('technology.name', e.target.value)}
                    sx={{ mr: '10px' }}
                  />
