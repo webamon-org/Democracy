@@ -88,8 +88,12 @@ const Sidebar = () => {
     );
   };
 
+  const toggleSidebar = () => {
+    setIsCollapsed(!isCollapsed);
+  };
+
   return (
-    <Box
+   <Box
       sx={{
         "& .pro-sidebar-inner": {
           background: `${colors.primary[400]} !important`,
@@ -98,7 +102,7 @@ const Sidebar = () => {
           backgroundColor: "transparent !important",
         },
         "& .pro-inner-item": {
-          padding: "5px 20px 5px 15px !important", // Adjust padding to make the sidebar slightly narrower
+          padding: "5px 20px 5px 15px !important",
         },
         "& .pro-inner-item:hover": {
           color: "#868dfb !important",
@@ -107,27 +111,23 @@ const Sidebar = () => {
           color: "#6870fa !important",
         },
         "& .pro-sidebar": {
-          width: isCollapsed ? '80px' : '200px', // Adjust width to be slightly smaller
+          width: isCollapsed ? '80px' : '200px',
           transition: 'width 0.3s ease',
         },
       }}
     >
 
-
-      <ProSidebar
-        collapsed={isCollapsed}
-        onMouseEnter={() => setIsCollapsed(false)}
-        onMouseLeave={() => setIsCollapsed(true)}
-      >
-      <Typography>v0.2.2</Typography>
+ <ProSidebar collapsed={isCollapsed}>
+        <Typography>v0.2.3</Typography>
         <Menu iconShape="square">
           {/* LOGO AND MENU ICON */}
           <MenuItem
-            icon={isCollapsed ? <MenuOutlinedIcon /> : undefined}
+            icon={<MenuOutlinedIcon />}
             style={{
               margin: "10px 0 20px 0",
               color: colors.grey[100],
             }}
+            onClick={toggleSidebar} // Toggle sidebar on click
           >
             {!isCollapsed && (
               <Box
@@ -136,9 +136,6 @@ const Sidebar = () => {
                 alignItems="center"
                 ml="15px"
               >
-                <IconButton >
-                  <MenuOutlinedIcon />
-                </IconButton>
               </Box>
             )}
           </MenuItem>
@@ -146,10 +143,10 @@ const Sidebar = () => {
           {!isCollapsed && (
             <Box mb="25px">
               <Box display="flex" justifyContent="center" alignItems="center">
-                <a >
+                <a>
                   <img
                     alt="webamon-logo"
-                    width="180px" // Adjust logo width to fit the narrower sidebar
+                    width="180px"
                     height="90px"
                     src={`../../assets/footer-logo.png`}
                     style={{ cursor: "pointer" }}

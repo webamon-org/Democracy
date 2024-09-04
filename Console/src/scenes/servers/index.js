@@ -79,6 +79,13 @@ headers: {
     };
   }, [filters]);
 
+
+    const handleClearFilters = () => {
+      setFilters({});
+      fetchAssets();
+    };
+
+
   const handleFilterChange = (key, value) => {
     setFilters({
       ...filters,
@@ -87,22 +94,25 @@ headers: {
   };
 
   const columns = [
-    { field: "last_update_utc", headerName: "Last Seen", flex: 1, filterable: true },
-        { field: "server", headerName: "Server", flex: 1, filterable: true },
+    { field: "last_update", headerName: "Last Seen", flex: 0.2, filterable: true },
+        { field: "server", headerName: "Server", flex: 0.3, filterable: true },
 
-    { field: "ip", headerName: "IP", flex: 1, filterable: true },
-    { field: "asn_num", headerName: "ASN", flex: 1, filterable: true },
-    { field: "asn_org", headerName: "ASN ORG", flex: 1, filterable: true },
-    { field: "resource_count", headerName: "Resources", flex: 1, filterable: true },
-    { field: "country_name", headerName: "Country", flex: 1, filterable: true },
-    { field: "domain", headerName: "Domain", flex: 1, filterable: true },
+    { field: "ip", headerName: "IP", flex: 0.2, filterable: true },
+    { field: "asn_num", headerName: "ASN", flex: 0.1, filterable: true },
+    { field: "asn_org", headerName: "ASN ORG", flex: 0.3, filterable: true },
+    { field: "resource_count", headerName: "Resources", flex: 0.2, filterable: true },
+    { field: "country_name", headerName: "Country", flex: 0.2, filterable: true },
+    { field: "domain", headerName: "Domain", flex: 0.4, filterable: true },
   ];
 
   return (
     <Box m="20px" sx={{backgroundColor: '#191b2d'}}>
       <Header title="SERVERS" subtitle="Collection of all discovered servers" />
       <Box m="40px 0 0 0" height="75vh">
-        <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: '20px'}}>
+                  <Button variant="contained" color="primary" onClick={handleClearFilters}>
+                    Clear Filters
+                  </Button>
           <Button variant="contained" color="primary" onClick={fetchAssets}>
             Refresh
           </Button>
@@ -111,35 +121,35 @@ headers: {
           <TextField
             label="SERVER NAME"
             variant="outlined"
-            value={filters.server}
+            value={filters.server || ''}
             onChange={(e) => handleFilterChange('server', e.target.value)}
             sx={{ mr: '10px' }}
           />
           <TextField
             label="IP"
             variant="outlined"
-            value={filters.ip}
+            value={filters.ip || ''}
             onChange={(e) => handleFilterChange('ip', e.target.value)}
             sx={{ mr: '10px' }}
           />
           <TextField
             label="ASN NAME"
             variant="outlined"
-            value={filters['asn.name']}
+            value={filters['asn.name'] || ''}
             onChange={(e) => handleFilterChange('asn.name', e.target.value)}
             sx={{ mr: '10px' }}
           />
           <TextField
             label="COUNTRY"
             variant="outlined"
-            value={filters['country.name']}
+            value={filters['country.name'] || ''}
             onChange={(e) => handleFilterChange('country.name', e.target.value)}
             sx={{ mr: '10px' }}
           />
           <TextField
             label="DOMAIN"
             variant="outlined"
-            value={filters.domain}
+            value={filters.domain || ''}
             onChange={(e) => handleFilterChange('domain', e.target.value)}
           />
         </Box>

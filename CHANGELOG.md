@@ -9,8 +9,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - (Console) Added scan button to table rows, on the fly scanning
-- (Console) Clear filters button
 
+
+---
+## [v0.2.3] - 2024-09-04
+
+### Fixed
+- (Console) - XTend Feed page - Click on row did not load report
+### Added
+- (Console) Clear filters button
+### Changed
+- (Console) Navbar now static
+- (Console) UI Changes
+- (API) Returns latest by default
 ---
 ## [v0.2.2] - 2024-09-01
 

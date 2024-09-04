@@ -19,7 +19,7 @@ const AssetsPage = () => {
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
     const [tabValue, setTabValue] = useState(0); // State for managing active tab
-  const [filters, setFilters] = useState({ });
+  const [filters, setFilters] = useState({});
   const { apiKey } = useAuth();
 
    const buildQueryParams = () => {
@@ -110,6 +110,12 @@ function TabPanel(props) {
   };
 
 
+  const handleClearFilters = () => {
+    setFilters({});
+    fetchAssets();
+  };
+
+
 
     const handleTabChange = (event, newValue) => {
       setTabValue(newValue);
@@ -125,12 +131,12 @@ function TabPanel(props) {
                   'x-api-key': apiKey,
                 },
       });
-      const { resource, type } = response.data.resource; // Extract rawData and mime from response
-      if (['image/png', 'image/gif', 'image/webp', 'image/jpeg'].includes(type)) {
-        if (type === 'image/gif') {
+      const { resource, mime_type } = response.data.resource; // Extract rawData and mime from response
+      if (['image/png', 'image/gif', 'image/webp', 'image/jpeg'].includes(mime_type)) {
+        if (mime_type === 'image/gif') {
           setRawData(resource);
         } else {
-          setRawData(`data:${type};base64,${resource}`);
+          setRawData(`data:${mime_type};base64,${resource}`);
         }
       } else {
         // For non-image types, set rawData as is
@@ -150,20 +156,22 @@ function TabPanel(props) {
   };
 
   const columns = [
-    { field: 'type', headerName: 'Type', flex: 0.5, filterable: true },
-    { field: 'sha256', headerName: 'SHA256', flex: 1, filterable: true },
-        { field: 'SUBMISSION', headerName: 'Submission', flex: 1, filterable: true },
-    { field: 'tag', headerName: 'Tag', flex: 1, filterable: true },
-    { field: 'hits', headerName: 'Hits', flex: 1, filterable: true },
-    { field: 'malicious', headerName: 'Malicious', flex: 1, filterable: true },
-
+    { field: 'mime_type', headerName: 'Type', flex: 0.3, filterable: true },
+    { field: 'sha256', headerName: 'SHA256', flex: 0.6, filterable: true },
+        { field: 'date', headerName: 'First Seen', flex: 0.2, filterable: true },
+    { field: 'hits', headerName: 'Hits', flex: 0.2, filterable: true },
+    { field: 'malicious', headerName: 'Malicious', flex: 0.1, filterable: true },
+{ field: 'tag', headerName: 'Tag', flex: 0.3, filterable: true },
   ];
 
   return (
     <Box m="20px">
       <Header title="RESOURCES" subtitle="Web Assets Discovered During Scans" />
       <Box m="40px 0 0 0" height="75vh">
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: '20px'}}>
+                  <Button variant="contained" color="primary" onClick={handleClearFilters}>
+                    Clear Filters
+                  </Button>
           <Button variant="contained" color="primary" onClick={fetchAssets}>
             Refresh
           </Button>
@@ -172,28 +180,28 @@ function TabPanel(props) {
           <TextField
             label="SHA256"
             variant="outlined"
-            value={filters.sha256}
+            value={filters.sha256 || ''}
             onChange={(e) => handleFilterChange('sha256', e.target.value)}
             sx={{ mr: '10px' }}
           />
           <TextField
             label="TAG"
             variant="outlined"
-            value={filters.tag}
+            value={filters.tag || ''}
             onChange={(e) => handleFilterChange('tag', e.target.value)}
             sx={{ mr: '10px' }}
           />
                     <TextField
                       label="COUNTRY"
                       variant="outlined"
-                      value={filters.country}
+                      value={filters.country || ''}
                       onChange={(e) => handleFilterChange('country', e.target.value)}
                       sx={{ mr: '10px' }}
                     />
                               <TextField
                                 label="SERVING IP"
                                 variant="outlined"
-                                value={filters.serving_ip}
+                                value={filters.serving_ip || ''}
                                 onChange={(e) => handleFilterChange('serving_ip', e.target.value)}
                                 sx={{ mr: '10px' }}
                               />
@@ -201,10 +209,10 @@ function TabPanel(props) {
                                 <InputLabel>WHITELISTED</InputLabel>
                                 <Select
                                   label="whitelisted"
-                                  value={filters.scanned}
+                                  value={filters.white_listed || ''}
                                   onChange={(e) => handleFilterChange('white_listed', e.target.value)}
                                 >
-                                  <MenuItem value="">All</MenuItem>
+                                  <MenuItem value="All">All</MenuItem>
                                   <MenuItem value="true">True</MenuItem>
                                   <MenuItem value="false">False</MenuItem>
                                 </Select>
@@ -212,28 +220,28 @@ function TabPanel(props) {
                     <TextField
                       label="NOTES"
                       variant="outlined"
-                      value={filters.notes}
+                      value={filters.notes || ''}
                       onChange={(e) => handleFilterChange('notes', e.target.value)}
                       sx={{ mr: '10px' }}
                     />
 <TextField
             label="Type (MIME)"
             variant="outlined"
-            value={filters.type}
-            onChange={(e) => handleFilterChange('type', e.target.value)}
+            value={filters.mime_type || ''}
+            onChange={(e) => handleFilterChange('mime_type', e.target.value)}
             sx={{ mr: '10px' }}
           />
           <TextField
-            label="SUBMISSION"
+            label="First Seen"
             variant="outlined"
-            value={filters.submission}
-            onChange={(e) => handleFilterChange('submission', e.target.value)}
+            value={filters.submission || ''}
+            onChange={(e) => handleFilterChange('date', e.target.value)}
             sx={{ mr: '10px' }}
           />
           <TextField
             label="RAW DATA"
             variant="outlined"
-            value={filters.raw}
+            value={filters.raw || ''}
             onChange={(e) => handleFilterChange('raw', e.target.value)}
           />
         </Box>
