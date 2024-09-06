@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, TextField, Select, MenuItem, FormControl, InputLabel } from "@mui/material";
+import { Box, TextField, Select, MenuItem, FormControl, InputLabel, Tooltip, CircularProgress, Button } from "@mui/material";
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import Header from '../../../components/Header';
 import axios from 'axios';
@@ -15,6 +15,7 @@ const NewlyRegistered = () => {
   const [rawData, setRawData] = useState('');
   const [results, setResults] = useState([]);
     const { apiKey } = useAuth();
+  const [statusColor, setStatusColor] = useState(''); // State for status color
 
   const [loading, setLoading] = useState(false);
   const [filters, setFilters] = useState({});
@@ -40,7 +41,7 @@ const axiosInstance = axios.create({
 
   const fetchAssets = async () => {
     setLoading(true);
-
+setStatusColor('yellow');
     try {
               const queryParams = buildQueryParams();
       const response = await axiosInstance(`/feed?feed=newly_registered&${queryParams}`, {
@@ -49,20 +50,32 @@ const axiosInstance = axios.create({
         },
         });
 
+if (response.status === 200) {
+        setStatusColor('green');
+      }
+
       const mappedResults = response.data.feed.map((hit) => ({
         ...hit,
       }));
 
       setResults(mappedResults);
       setLoading(false)
-    } catch (err) {
-                    if (err.response && err.response.status === 400) {
-                    setLoading(false)
-                      setResults([]);
-                    }
-                  }
+    }  catch (err) {
+            // Set status color based on error response status
+            if (err.response) {
+              if (err.response.status === 400) {
+                setStatusColor('blue');
+              } else if (err.response.status >= 500) {
+                setStatusColor('red');
+              }
+            } else {
+              setStatusColor('red'); // General error handling
+            }
+            setResults([]);
+          } finally {
+            setLoading(false);
+          }
   };
-
 
 
   useEffect(() => {
@@ -81,60 +94,72 @@ const axiosInstance = axios.create({
   }, [filters]);
 
   const handleFilterChange = (key, value) => {
+  setStatusColor('yellow');
     setFilters({
       ...filters,
       [key]: value,
     });
   };
 
+    const handleClearFilters = () => {
+    setStatusColor('yellow');
+      setFilters({});
+    };
 
 
-  const handleClickOpen = async (rowData) => {
-
-    try {
-      const response = await axiosInstance.post(`/scans/_search`, {
-        size: 1,
-        query: {
-          term: {
-            _id: rowData.id, // Assuming `_id` is the identifier in OpenSearch
-          },
-        },
-        _source: true, // Specify fields to retrieve
-      });
-
-      setRawData(response.data.hits.hits[0]._source)
-
-
-      setOpenDialog(true); // Open the dialog
-    } catch (err) {
-      console.error('Error fetching rawData:', err);
-    }
-  };
-
-  const handleCloseDialog = () => {
-    setOpenDialog(false);
-    setRawData(''); // Clear rawData when closing the dialog
-  };
 
   const columns = [
-    { field: 'domain', headerName: 'Domain', flex: 1, filterable: true }, // Access nested key 'SK' under 'meta'
-    { field: 'scanned', headerName: 'Scanned', flex: 0.3, filterable: true },
-    { field: 'malicious', headerName: 'Malicious', flex: 0.3, filterable: true },
-    { field: 'hosting', headerName: 'Hosting', flex: 0.3, filterable: true },
-    { field: 'date', headerName: 'Date', flex: 0.3, filterable: true },
+    { field: 'domain', headerName: 'Domain', flex: 0.5, filterable: true }, // Access nested key 'SK' under 'meta'
+    { field: 'scanned', headerName: 'Scanned', flex: 0.1, filterable: true },
+    { field: 'malicious', headerName: 'Malicious', flex: 0.1, filterable: true },
+    { field: 'hosting', headerName: 'Hosting', flex: 0.1, filterable: true },
+    { field: 'date', headerName: 'Date', flex: 0.2, filterable: true },
   ];
+
+
+  const statusText = {
+    green: 'Success',
+    blue: 'No Results',
+    red: '5xx Server Error',
+    yellow: 'Loading...',
+    '': 'Idle',
+  };
+
 
   return (
     <Box m="20px" sx={{backgroundColor: '#171b2d'}}>
       <Header title="Daily Registered Domains" subtitle="ICANN Domain Feed" />
       <Box m="40px 0 0 0" height="75vh">
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-        </Box>
+  <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', mb: '20px' }}>
+           {/* Status color indicator with tooltip */}
+           <Tooltip title={statusText[statusColor] || 'Unknown Status'}>
+             <Box
+               sx={{
+                 width: '20px',
+                 height: '20px',
+                 borderRadius: '50%',
+                 backgroundColor: statusColor,
+                 marginRight: '10px',
+                 border: '1px solid #ddd',
+                 cursor: 'pointer'
+               }}
+             />
+           </Tooltip>
+           {loading && <CircularProgress size={20} sx={{ color: '#ffffff' }} />}
+           <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                <Button variant="contained" color="primary" onClick={handleClearFilters} style={{ backgroundColor: "#ffffff", color: "#343b6f", marginLeft: "10px", fontSize: "16px" }}>
+                  Clear Filters
+                </Button>
+                <Button variant="contained" color="primary" onClick={fetchAssets} style={{ backgroundColor: "#ffffff", color: "#343b6f", marginLeft: "10px", fontSize: "16px"  }}>
+                  Refresh
+                </Button>
+           </Box>
+           </Box>
         <Box sx={{ display: 'flex', mb: '20px' }}>
           <TextField
             label="DOMAIN"
             variant="outlined"
-            value={filters.domain}
+            value={filters.domain || ''}
             onChange={(e) => handleFilterChange('domain', e.target.value)}
             sx={{ mr: '10px' }}
           />
@@ -142,7 +167,7 @@ const axiosInstance = axios.create({
             <InputLabel>Scanned</InputLabel>
             <Select
               label="Scanned"
-              value={filters.scanned}
+              value={filters.scanned || ''}
               onChange={(e) => handleFilterChange('scanned', e.target.value)}
             >
               <MenuItem value="">All</MenuItem>
@@ -154,7 +179,7 @@ const axiosInstance = axios.create({
             <InputLabel>Hosting</InputLabel>
             <Select
               label="Hosting"
-              value={filters.hosting}
+              value={filters.hosting || ''}
               onChange={(e) => handleFilterChange('hosting', e.target.value)}
             >
               <MenuItem value="">All</MenuItem>
@@ -167,7 +192,7 @@ const axiosInstance = axios.create({
             <InputLabel>Malicious</InputLabel>
             <Select
               label="Malicious"
-              value={filters.malicious}
+              value={filters.malicious || ''}
               onChange={(e) => handleFilterChange('malicious', e.target.value)}
             >
               <MenuItem value="">All</MenuItem>
@@ -182,14 +207,12 @@ const axiosInstance = axios.create({
           rows={results}
           columns={columns}
           getRowId={(row) => row.id}
-          onRowClick={(params) => handleClickOpen(params.row)}
           disableColumnMenu={false}
           loading={loading}
           components={{ Toolbar: GridToolbar }}
         />
         <ReportDialog
           open={openDialog}
-          onClose={handleCloseDialog}
           rowData={rawData}
         />
       </Box>

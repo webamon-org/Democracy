@@ -1,10 +1,11 @@
-import { Box, Button, TextField } from "@mui/material";
+import { Box, Button, TextField, Tooltip, IconButton, CircularProgress } from "@mui/material";
 import { useState, useEffect } from "react";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import Header from "../../components/Header";
 import axios from 'axios';
 import { useAuth } from '../../AuthContext';
 import debounce from 'lodash.debounce';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 const axiosInstance = axios.create({
   baseURL: 'https://community.webamon.co.uk',
@@ -17,7 +18,7 @@ const ServerPage = () => {
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const { apiKey } = useAuth();
-
+  const [statusColor, setStatusColor] = useState(''); // State for status color
   const [filters, setFilters] = useState({});
 
 
@@ -37,7 +38,7 @@ const ServerPage = () => {
 
   const fetchAssets = async () => {
     setLoading(true);
-
+    setStatusColor('yellow');
     try {
 
               const queryParams = buildQueryParams();
@@ -46,6 +47,10 @@ const ServerPage = () => {
 headers: {
                 'x-api-key': apiKey        },
         });
+
+      if (response.status === 200) {
+        setStatusColor('green');
+      }
 
       const mappedResults = response.data.server.map(hit => ({
         id: hit.id,
@@ -57,12 +62,21 @@ headers: {
 
       setResults(mappedResults);
       setLoading(false);
-    } catch (err) {
-                  if (err.response && err.response.status === 400) {
-                  setLoading(false);
-                    setResults([]);
-                  }
-                }
+    }catch (err) {
+                 // Set status color based on error response status
+                 if (err.response) {
+                   if (err.response.status === 400) {
+                     setStatusColor('blue');
+                   } else if (err.response.status >= 500) {
+                     setStatusColor('red');
+                   }
+                 } else {
+                   setStatusColor('red'); // General error handling
+                 }
+                 setResults([]);
+               } finally {
+                 setLoading(false);
+               }
   };
 
   useEffect(() => {
@@ -81,12 +95,13 @@ headers: {
 
 
     const handleClearFilters = () => {
+    setStatusColor('yellow');
       setFilters({});
-      fetchAssets();
     };
 
 
   const handleFilterChange = (key, value) => {
+  setStatusColor('yellow');
     setFilters({
       ...filters,
       [key]: value,
@@ -94,29 +109,68 @@ headers: {
   };
 
   const columns = [
+           {
+                field: 'expand',
+                headerName: '',
+                flex: 0.05,
+                sortable: false,
+                renderCell: (params) => (
+                  <Tooltip title="Click for more info">
+                    <IconButton>
+                      <ExpandMoreIcon />
+                    </IconButton>
+                  </Tooltip>
+                ),
+              },
     { field: "last_update", headerName: "Last Seen", flex: 0.2, filterable: true },
-        { field: "server", headerName: "Server", flex: 0.3, filterable: true },
-
-    { field: "ip", headerName: "IP", flex: 0.2, filterable: true },
-    { field: "asn_num", headerName: "ASN", flex: 0.1, filterable: true },
+    { field: "server", headerName: "Server", flex: 0.3, filterable: true },
+    { field: "ip", headerName: "IP", flex: 0.3, filterable: true },
+    { field: "asn_num", headerName: "ASN", flex: 0.2, filterable: true },
     { field: "asn_org", headerName: "ASN ORG", flex: 0.3, filterable: true },
     { field: "resource_count", headerName: "Resources", flex: 0.2, filterable: true },
     { field: "country_name", headerName: "Country", flex: 0.2, filterable: true },
     { field: "domain", headerName: "Domain", flex: 0.4, filterable: true },
   ];
 
+  const statusText = {
+    green: 'Success',
+    blue: 'No Results',
+    red: '5xx Server Error',
+    yellow: 'Loading...',
+    '': 'Idle',
+  };
+
+
   return (
     <Box m="20px" sx={{backgroundColor: '#191b2d'}}>
       <Header title="SERVERS" subtitle="Collection of all discovered servers" />
       <Box m="40px 0 0 0" height="75vh">
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: '20px'}}>
-                  <Button variant="contained" color="primary" onClick={handleClearFilters}>
-                    Clear Filters
-                  </Button>
-          <Button variant="contained" color="primary" onClick={fetchAssets}>
-            Refresh
-          </Button>
-        </Box>
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', mb: '20px' }}>
+
+          <Tooltip title={statusText[statusColor] || 'Unknown Status'}>
+            <Box
+              sx={{
+                width: '20px',
+                height: '20px',
+                borderRadius: '50%',
+                backgroundColor: statusColor,
+                marginRight: '10px',
+                border: '1px solid #ddd',
+                cursor: 'pointer'
+              }}
+            />
+          </Tooltip>
+        {loading && <CircularProgress size={20} sx={{ color: '#ffffff' }} />}
+          {/* Box containing the buttons */}
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                <Button variant="contained" color="primary" onClick={handleClearFilters} style={{ backgroundColor: "#ffffff", color: "#343b6f", marginLeft: "10px", fontSize: "16px" }}>
+                  Clear Filters
+                </Button>
+                <Button variant="contained" color="primary" onClick={fetchAssets} style={{ backgroundColor: "#ffffff", color: "#343b6f", marginLeft: "10px", fontSize: "16px"  }}>
+                  Refresh
+                </Button>
+          </Box>
+          </Box>
         <Box sx={{ display: 'flex', mb: '20px' }}>
           <TextField
             label="SERVER NAME"
