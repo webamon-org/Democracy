@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Button, TextField  } from "@mui/material";
+import { Box, Button, TextField, Tooltip, CircularProgress, IconButton  } from "@mui/material";
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import Header from '../../../components/Header';
 import axios from 'axios';
 import ReportDialog from '../../../components/scanDialog.js';
 import { useAuth } from '../../../AuthContext';
 import { debounce } from 'lodash';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 const axiosInstance = axios.create({
   baseURL: 'https://community.webamon.co.uk',
@@ -21,6 +22,8 @@ const WebamonXtend = () => {
   const [rawData, setRawData] = useState('');
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
+    const [statusColor, setStatusColor] = useState(''); // State for status color
+
     const { apiKey } = useAuth();
   const [filters, setFilters] = useState({ });
 
@@ -41,7 +44,7 @@ const WebamonXtend = () => {
 
     const fetchAssets = async () => {
       setLoading(true);
-
+setStatusColor('yellow');
       try {
 
 
@@ -51,6 +54,10 @@ const WebamonXtend = () => {
             'x-api-key': apiKey,
           },
         });
+
+      if (response.status === 200) {
+        setStatusColor('green');
+      }
 
         const mappedResults = response.data.reports.map((hit) => ({
           report_id: hit.meta.report_id,
@@ -65,11 +72,20 @@ const WebamonXtend = () => {
         setResults(mappedResults);
         setLoading(false)
       } catch (err) {
-        if (err.response && err.response.status === 400) {
-        setLoading(false)
-          setResults([]);
-        }
-      }
+             // Set status color based on error response status
+             if (err.response) {
+               if (err.response.status === 400) {
+                 setStatusColor('blue');
+               } else if (err.response.status >= 500) {
+                 setStatusColor('red');
+               }
+             } else {
+               setStatusColor('red'); // General error handling
+             }
+             setResults([]);
+           } finally {
+             setLoading(false);
+           }
     };
 
   useEffect(() => {
@@ -87,11 +103,12 @@ const WebamonXtend = () => {
   }, [filters]);
 
   const handleClearFilters = () => {
+  setStatusColor('yellow');
     setFilters({});
-    fetchAssets();
   };
 
   const handleFilterChange = (key, value) => {
+  setStatusColor('yellow');
     setFilters({
       ...filters,
       [key]: value,
@@ -99,13 +116,15 @@ const WebamonXtend = () => {
   };
 
   const handleClickOpen = async (rowData) => {
-
+  setLoading(true)
+setStatusColor('yellow');
     try {
             const response = await axiosInstance(`/report/${rowData.report_id}`, {
     headers: {
           'x-api-key': apiKey,
         },
         });
+
       setRawData(response.data.report);
             const screenshotResponse = await axiosInstance.get(`/screenshot/${rowData.report_id}`, {
               headers: {
@@ -118,9 +137,22 @@ const WebamonXtend = () => {
               setScreenshotData(false);
             }
       setOpenDialog(true);
+      setLoading(false)
+      setStatusColor('green');
     } catch (err) {
-      console.log('Error fetching rawData');
-    }
+           // Set status color based on error response status
+           setLoading(false)
+           if (err.response) {
+             if (err.response.status === 400) {
+               setStatusColor('blue');
+             } else if (err.response.status >= 500) {
+               setStatusColor('red');
+             }
+           } else {
+             setStatusColor('red'); // General error handling
+           }
+           console.log('Error fetching data');
+         }
   };
 
   const handleCloseDialog = () => {
@@ -129,6 +161,19 @@ const WebamonXtend = () => {
   };
 
   const columns = [
+           {
+                field: 'expand',
+                headerName: '',
+                flex: 0.05,
+                sortable: false,
+                renderCell: (params) => (
+                  <Tooltip title="Click for more info">
+                    <IconButton>
+                      <ExpandMoreIcon />
+                    </IconButton>
+                  </Tooltip>
+                ),
+              },
     { field: 'submission_utc', headerName: 'Scan Time', flex: 0.3, filterable: true },
     { field: 'submission_url', headerName: 'Submission', flex: 0.7, filterable: true },
     { field: 'domain_count', headerName: 'Domains', flex: 0.2, filterable: true },
@@ -137,19 +182,42 @@ const WebamonXtend = () => {
     { field: 'tag', headerName: 'Tag', flex: 0.3, filterable: true },
   ];
 
+  const statusText = {
+    green: 'Success',
+    blue: 'No Results',
+    red: '5xx Server Error',
+    yellow: 'Loading...',
+    '': 'Idle',
+  };
 
   return (
     <Box m="20px" sx={{backgroundColor: '#171b2d'}}>
       <Header title="Webamon Xtend" subtitle="Webamon Enriched Public Feeds" />
       <Box m="40px 0 0 0" height="75vh">
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: '20px'}}>
-                  <Button variant="contained" color="primary" onClick={handleClearFilters}>
-                    Clear Filters
-                  </Button>
-          <Button variant="contained" color="primary" onClick={fetchAssets}>
-            Refresh
-          </Button>
-        </Box>
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', mb: '20px' }}>
+                     <Tooltip title={statusText[statusColor] || 'Unknown Status'}>
+                       <Box
+                         sx={{
+                           width: '20px',
+                           height: '20px',
+                           borderRadius: '50%',
+                           backgroundColor: statusColor,
+                           marginRight: '10px',
+                           border: '1px solid #ddd',
+                           cursor: 'pointer'
+                         }}
+                       />
+                     </Tooltip>
+                     {loading && <CircularProgress size={20} sx={{ color: '#ffffff' }} />}
+                     <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                <Button variant="contained" color="primary" onClick={handleClearFilters} style={{ backgroundColor: "#ffffff", color: "#343b6f", marginLeft: "10px", fontSize: "16px" }}>
+                  Clear Filters
+                </Button>
+                <Button variant="contained" color="primary" onClick={fetchAssets} style={{ backgroundColor: "#ffffff", color: "#343b6f", marginLeft: "10px", fontSize: "16px"  }}>
+                  Refresh
+                </Button>
+                     </Box>
+                     </Box>
         <Box sx={{ display: 'flex', mb: '20px' }}>
           <TextField
                      label="DATE"

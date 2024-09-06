@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Button, TextField } from "@mui/material";
+import { Box, Button, TextField, CircularProgress, Tooltip, IconButton } from "@mui/material";
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import Header from '../../components/Header';
 import axios from 'axios';
 import ReportDialog from '../../components/scanDialog.js';
 import { useAuth } from '../../AuthContext';
 import { debounce } from 'lodash';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 const axiosInstance = axios.create({
   baseURL: 'https://community.webamon.co.uk',
@@ -22,6 +23,8 @@ const Scans = () => {
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [filters, setFilters] = useState({});
+  const [statusColor, setStatusColor] = useState(''); // State for status color
+  const [rowLoading, setRowLoading] = useState(null); // State for row-specific loading
   const { apiKey } = useAuth();
 
   const buildQueryParams = () => {
@@ -39,6 +42,7 @@ const Scans = () => {
 
   const fetchAssets = async () => {
     setLoading(true);
+    setStatusColor('yellow'); // Set status color to yellow when loading
 
     try {
       const queryParams = buildQueryParams();
@@ -47,6 +51,11 @@ const Scans = () => {
           'x-api-key': apiKey,
         },
       });
+
+      // Set status color based on response status
+      if (response.status === 200) {
+        setStatusColor('green');
+      }
 
       const mappedResults = response.data.reports.map((hit) => ({
         report_id: hit.meta.report_id,
@@ -59,12 +68,20 @@ const Scans = () => {
       }));
 
       setResults(mappedResults);
-      setLoading(false);
     } catch (err) {
-      if (err.response && err.response.status === 400) {
-        setLoading(false);
-        setResults([]);
+      // Set status color based on error response status
+      if (err.response) {
+        if (err.response.status === 400) {
+          setStatusColor('blue');
+        } else if (err.response.status >= 500) {
+          setStatusColor('red');
+        }
+      } else {
+        setStatusColor('red'); // General error handling
       }
+      setResults([]);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -81,6 +98,7 @@ const Scans = () => {
   }, [filters]);
 
   const handleFilterChange = (key, value) => {
+    setStatusColor('yellow');
     setFilters({
       ...filters,
       [key]: value,
@@ -89,17 +107,23 @@ const Scans = () => {
 
   // Function to clear filters
   const handleClearFilters = () => {
+    setStatusColor('yellow');
     setFilters({});
-    fetchAssets();
   };
 
   const handleClickOpen = async (rowData) => {
+  setLoading(true)
+    setRowLoading(rowData.report_id); // Set row-specific loading state
+
     try {
+      setStatusColor('yellow'); // Set status color to yellow when fetching
+
       const response = await axiosInstance.get(`/report/${rowData.report_id}`, {
         headers: {
           'x-api-key': apiKey,
         },
       });
+
       setRawData(response.data.report);
 
       const screenshotResponse = await axiosInstance.get(`/screenshot/${rowData.report_id}`, {
@@ -115,8 +139,22 @@ const Scans = () => {
       }
 
       setOpenDialog(true);
+      setStatusColor('green');
     } catch (err) {
+      // Set status color based on error response status
+      if (err.response) {
+        if (err.response.status === 400) {
+          setStatusColor('blue');
+        } else if (err.response.status >= 500) {
+          setStatusColor('red');
+        }
+      } else {
+        setStatusColor('red'); // General error handling
+      }
       console.log('Error fetching data');
+    } finally {
+      setRowLoading(null);
+       setLoading(false)// Reset row-specific loading state
     }
   };
 
@@ -125,7 +163,21 @@ const Scans = () => {
     setRawData('');
     setScreenshotData(false);
   };
+
   const columns = [
+    {
+      field: 'expand',
+      headerName: '',
+      flex: 0.05,
+      sortable: false,
+      renderCell: (params) => (
+        <Tooltip title="Click for more info">
+          <IconButton>
+            <ExpandMoreIcon />
+          </IconButton>
+        </Tooltip>
+      ),
+    },
     { field: 'submission_utc', headerName: 'Scan Time', flex: 0.3, filterable: true },
     { field: 'submission_url', headerName: 'Submission', flex: 0.7, filterable: true },
     { field: 'domain_count', headerName: 'Domains', flex: 0.2, filterable: true },
@@ -134,18 +186,45 @@ const Scans = () => {
     { field: 'tag', headerName: 'Tag', flex: 0.3, filterable: true },
   ];
 
+  // Map status color to text for the tooltip
+  const statusText = {
+    green: 'Success',
+    blue: 'No Results',
+    red: '5xx Server Error',
+    yellow: 'Loading...',
+    '': 'Idle',
+  };
 
   return (
-    <Box m="20px" sx={{backgroundColor: '#191b2d'}}>
+    <Box m="20px" sx={{ backgroundColor: '#191b2d' }}>
       <Header title="Scan Results" subtitle="Query Webamon Scanning Engine Results" />
       <Box m="40px 0 0 0" height="75vh">
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: '20px'}}>
-                  <Button variant="contained" color="primary" onClick={handleClearFilters}>
-                    Clear Filters
-                  </Button>
-          <Button variant="contained" color="primary" onClick={fetchAssets}>
-            Refresh
-          </Button>
+        {/* Container for the buttons and status color indicator */}
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', mb: '20px' }}>
+          {/* Status color indicator with tooltip */}
+          <Tooltip title={statusText[statusColor] || 'Unknown Status'}>
+            <Box
+              sx={{
+                width: '20px',
+                height: '20px',
+                borderRadius: '50%',
+                backgroundColor: statusColor,
+                marginRight: '10px',
+                border: '1px solid #ddd',
+                cursor: 'pointer'
+              }}
+            />
+          </Tooltip>
+          {loading && <CircularProgress size={20} sx={{ color: '#ffffff' }} />} {/* Set inline color */}
+          {/* Box containing the buttons */}
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <Button variant="contained" color="primary" onClick={handleClearFilters} style={{ backgroundColor: "#ffffff", color: "#343b6f", marginLeft: "10px", fontSize: "16px" }}>
+              Clear Filters
+            </Button>
+            <Button variant="contained" color="primary" onClick={fetchAssets} style={{ backgroundColor: "#ffffff", color: "#343b6f", marginLeft: "10px", fontSize: "16px"  }}>
+              Refresh
+            </Button>
+          </Box>
         </Box>
         <Box sx={{ display: 'flex', mb: '20px' }}>
           <TextField
@@ -183,13 +262,13 @@ const Scans = () => {
             onChange={(e) => handleFilterChange('dom', e.target.value)}
             sx={{ mr: '10px' }}
           />
-           <TextField
-              label="Page Title"
-              variant="outlined"
-              value={filters.page_title || ''}
-              onChange={(e) => handleFilterChange('page_title', e.target.value)}
-              sx={{ mr: '10px' }}
-            />
+          <TextField
+            label="Page Title"
+            variant="outlined"
+            value={filters.page_title || ''}
+            onChange={(e) => handleFilterChange('page_title', e.target.value)}
+            sx={{ mr: '10px' }}
+          />
           <TextField
             label="SHA256"
             variant="outlined"
@@ -204,13 +283,13 @@ const Scans = () => {
             onChange={(e) => handleFilterChange('server.ip', e.target.value)}
             sx={{ mr: '10px' }}
           />
-            <TextField
-              label="ASN NAME"
-              variant="outlined"
-              value={filters['server.asn.name'] || ''}
-              onChange={(e) => handleFilterChange('server.asn.name', e.target.value)}
-              sx={{ mr: '10px' }}
-            />
+          <TextField
+            label="ASN NAME"
+            variant="outlined"
+            value={filters['server.asn.name'] || ''}
+            onChange={(e) => handleFilterChange('server.asn.name', e.target.value)}
+            sx={{ mr: '10px' }}
+          />
           <TextField
             label="COUNTRY"
             variant="outlined"
@@ -225,20 +304,20 @@ const Scans = () => {
             onChange={(e) => handleFilterChange('domain.name', e.target.value)}
             sx={{ mr: '10px' }}
           />
-            <TextField
-              label="SERVER"
-              variant="outlined"
-              value={filters['server.server'] || ''}
-              onChange={(e) => handleFilterChange('server.server', e.target.value)}
-              sx={{ mr: '10px' }}
-            />
           <TextField
-          label="TECHNOLOGY"
-          variant="outlined"
-          value={filters['technology.name'] || ''}
-          onChange={(e) => handleFilterChange('technology.name', e.target.value)}
-          sx={{ mr: '10px' }}
-        />
+            label="SERVER"
+            variant="outlined"
+            value={filters['server.server'] || ''}
+            onChange={(e) => handleFilterChange('server.server', e.target.value)}
+            sx={{ mr: '10px' }}
+          />
+          <TextField
+            label="TECHNOLOGY"
+            variant="outlined"
+            value={filters['technology.name'] || ''}
+            onChange={(e) => handleFilterChange('technology.name', e.target.value)}
+            sx={{ mr: '10px' }}
+          />
         </Box>
         <DataGrid
           sx={{ fontSize: '20px' }}

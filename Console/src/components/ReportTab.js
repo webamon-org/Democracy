@@ -10,14 +10,14 @@ import { Box, Tab, Tabs,  Table,
                                   Typography,
                                   Paper,
                                   Button,
-                                  TableRow, } from '@mui/material';
+                                  TableRow,IconButton } from '@mui/material';
 import GraphComponent from './map';
 import DiffViewer from "react-diff-viewer";
 import ClickAwayListener from '@mui/material/ClickAwayListener';
 import Modal from '@mui/material/Modal';
 import ChatBot from './threatai';
 import { useAuth } from '../AuthContext';
-
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 const axiosInstance = axios.create({
   baseURL: 'https://community.webamon.co.uk',
@@ -69,13 +69,13 @@ const sha256 = resource ? resource.sha256 : null;
         <Typography variant="h6" gutterBottom>
           {request.request.method} Request Headers
         </Typography>
-        <HeaderTable data={request.request} />;
+        <HeaderTable data={request.request} />
       </Box>
       <Box flex="1">
         <Typography variant="h6" gutterBottom>
           Response Headers
         </Typography>
-        <HeaderTable data={request.response} />;
+        <HeaderTable data={request.response} />
       </Box>
 
     </Box>
@@ -106,18 +106,18 @@ const sha256 = resource ? resource.sha256 : null;
     </>
 
     <Typography variant="subtitle1" gutterBottom>
-      TYPE:{request.response.mimeType}
+      TYPE:{request.response.mime_type}
     </Typography>
     <Typography variant="subtitle1" gutterBottom>
       FIRST SEEN: 23rd February 2023
     </Typography>
     <Typography variant="subtitle1" gutterBottom>
-      SIZE:{request.response.encodedDataLength}
+      SIZE:{request.response.encoded_data_length}
     </Typography>
     <Typography variant="subtitle1" gutterBottom>
       AVAILABLE: True
     </Typography>
-      <Button onClick={handleButtonClick} variant="outlined" color="primary">
+      <Button onClick={handleButtonClick} variant="outlined" color="primary" style={{ color: 'white', fontWeight: 'bold', border: '2px solid white', borderRadius: '5px' }}>
         Show Raw
       </Button>
     <Button onClick={handleButtonClick} variant="outlined" color="primary">
@@ -135,9 +135,6 @@ const sha256 = resource ? resource.sha256 : null;
         <Button onClick={handleButtonClick} variant="outlined" color="primary">
           DNS LOOKUP
         </Button>
-               <Button onClick={handleButtonClick} variant="outlined"    style={{ color: 'red', fontWeight: 'bold', border: '2px solid red', borderRadius: '5px' }}>
-                 ATTACK
-               </Button>
       {showRawTable &&
 
           <Box display="flex">
@@ -416,24 +413,27 @@ const PageScripts = ({ scripts }) => {
 <div style={{ width: '100%', padding: '10px', border: '1px solid #ccc', borderRadius: '4px' }}>
   <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', marginBottom: '10px' }}>
     <span style={{ fontWeight: 'bold', width: '50%' }}>Technology</span>
-    <span style={{ textAlign: 'right', fontWeight: 'bold', width: '50%' }}>URL</span>
   </div>
   {reportData.technology.map((item, index) => (
     <div key={index} style={{ display: 'flex', justifyContent: 'space-between', width: '100%', marginBottom: '1px' }}>
       <span>{item.name}</span>
-      <span style={{ textAlign: 'right' }}>{item.url}</span>
     </div>
   ))}
 
 </div>
+<div style={{ width: '100%', padding: '10px', border: '1px solid #ccc', borderRadius: '4px' }}>
 
   <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', marginBottom: '10px' }}>
-    <span>Countries:</span>
-    <span style={{ textAlign: 'right' }}>{reportData.resolved_domain}</span>
+    <span style={{ fontWeight: 'bold', width: '50%' }}>Countries</span>
   </div>
 
+{[...new Set(reportData.domain.map(item => item.country.name))].map((countryName, index) => (
+  <div key={index} style={{ display: 'flex', justifyContent: 'space-between', width: '100%', marginBottom: '1px' }}>
+    <span>{countryName}</span>
+  </div>
+))}
 
-
+</div>
 
 </div>
         <ClickAwayListener onClickAway={handleCloseModal}>
@@ -490,6 +490,9 @@ const PageScripts = ({ scripts }) => {
         <Table>
           <TableHead>
             <TableRow>
+                <TableCell sx={{ fontSize: "26px", fontWeight: "bold", whiteSpace: "pre-wrap", width: "1vw" }}>
+                          {/* Expand Icon Header */}
+                        </TableCell>
               <TableCell sx={{ fontSize: "26px", fontWeight: "bold", whiteSpace: "pre-wrap", width: "1vw" }}>
                 METHOD
               </TableCell>
@@ -514,6 +517,11 @@ const PageScripts = ({ scripts }) => {
             {reportData.request.map((request, index) => (
             <>
               <TableRow key={index} onClick={() => handleRowClick(index)}>
+                              <TableCell>
+                                <IconButton size="small">
+                                  {<ExpandMoreIcon />}
+                                </IconButton>
+                              </TableCell>
                               <TableCell sx={{ whiteSpace: "pre-wrap", fontSize: "22px" }}>{request.request.method}</TableCell>
 
 <TableCell
@@ -527,16 +535,16 @@ const PageScripts = ({ scripts }) => {
   {request.request.url}
 </TableCell>
                 <TableCell sx={{ whiteSpace: "pre-wrap", fontSize: "22px" }}>
-                  {request.response ? request.response.remoteIPAddress : "-"}
+                  {request.response ? request.response.ip : "-"}
                 </TableCell>
                 <TableCell sx={{ whiteSpace: "pre-wrap", fontSize: "22px" }}>
-                  {request.response ? request.response.mimeType : "-"}
+                  {request.response ? request.response.mime_type : "-"}
                 </TableCell>
                 <TableCell sx={{ whiteSpace: "pre-wrap", fontSize: "22px" }}>
                   {request.response ? request.response.status : "-"}
                 </TableCell>
                 <TableCell sx={{ whiteSpace: "pre-wrap", fontSize: "22px" }}>
-                  {request.response ? request.response.encodedDataLength : "-"}
+                  {request.response ? request.response.encoded_data_length : "-"}
                 </TableCell>
               </TableRow>
 {expandedRow === index && (
@@ -704,19 +712,11 @@ const PageScripts = ({ scripts }) => {
 
                     )}
       {activeTab === 7 && (
-                      <Box
-                        sx={{
-                          padding: "1rem",
-                          borderRadius: "4px",
-                          overflowY: "auto",
 
-
-                        }}
-                      >
           <div>
             <GraphComponent data={reportData} />
           </div>
-                      </Box>
+
                     )}
 
 {activeTab === 8 && (
