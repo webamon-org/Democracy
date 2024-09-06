@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, TextField, Select, MenuItem, FormControl, InputLabel, Tooltip, CircularProgress, Button } from "@mui/material";
+import { Box, TextField, Select, MenuItem, FormControl, InputLabel, Tooltip, CircularProgress, Button, Alert } from "@mui/material";
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import Header from '../../../components/Header';
 import axios from 'axios';
@@ -15,7 +15,15 @@ const AllDomains = () => {
   const [rawData, setRawData] = useState('');
   const [results, setResults] = useState([]);
     const [statusColor, setStatusColor] = useState(''); // State for status color
+  const [errorMessage, setErrorMessage] = useState('');
+    const [errorDialogOpen, setErrorDialogOpen] = useState(false);
+    const [openReportDialog, setOpenReportDialog] = useState(false);
+  const [selectedRow, setSelectedRow] = useState(null);
 
+  const [error, setError] = useState(null);
+    const [report, setReport] = useState(null);
+  const [validationError, setValidationError] = useState(false);
+  const [screenshotData, setScreenshotData] = useState(false);
     const { apiKey } = useAuth();
 
   const [loading, setLoading] = useState(false);
@@ -41,6 +49,7 @@ const axiosInstance = axios.create({
    };
 
   const fetchAssets = async () => {
+  setError(false)
     setLoading(true);
 setStatusColor('yellow');
 
@@ -110,11 +119,129 @@ if (response.status === 200) {
     };
 
 
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+    setOpenReportDialog(false)
+    setSelectedRow(null);
+  };
+
+  const handleScan = async (event, submission) => {
+  setError(false);
+  setStatusColor('yellow')
+  setLoading(true);
+      event.preventDefault();
+      event.stopPropagation();
+    setReport("");
+    event.preventDefault();
+
+    setValidationError(false);
+
+    try {
+        const endpoint = "https://community.webamon.co.uk/scan";
+
+        const requestData = {
+          'submission_url': submission,
+        };
+
+        const response = await axios.post(endpoint, requestData, {
+          headers: {
+            'x-api-key': apiKey
+          },
+        });
+
+      if (response.status === 200) {
+        const reportID = response.data.report_id;
+        const searchEndpoint = `https://community.webamon.co.uk/report/${reportID}`;
+        let searchResponse;
+        let retryCount = 0;
+        const maxRetries = 62;
+
+        while (retryCount < maxRetries) {
+          try {
+            searchResponse = await axios.get(searchEndpoint, {
+              headers: {
+                'x-api-key': apiKey
+              },
+            });
+            if (searchResponse.status === 200) {
+              const screenshotResponse = await axios.get(`https://community.webamon.co.uk/screenshot/${reportID}`, {
+                headers: {
+                  'x-api-key': apiKey
+                },
+              });
+
+              if (screenshotResponse.data.screenshot) {
+                setScreenshotData(screenshotResponse.data.screenshot.screenshot);
+              } else {
+                setScreenshotData(false);
+              }
+
+              setReport(searchResponse.data.report);
+              setOpenReportDialog(true);
+              setStatusColor('green')
+              break;
+            } else if (searchResponse.status === 404) {
+              retryCount++;
+              await new Promise(resolve => setTimeout(resolve, 1000));
+            } else {
+              throw new Error('Unexpected response status');
+            }
+          } catch (error) {
+            if (error.response && error.response.status === 404 && retryCount < maxRetries) {
+              retryCount++;
+              await new Promise(resolve => setTimeout(resolve, 1000));
+            } else {
+            setStatusColor('red')
+              setError(true);
+              setErrorMessage(error.response.data.error || "An error occurred");
+              break;
+            }
+          }
+        }
+
+        if (retryCount === maxRetries) {
+          setError(true);
+          setErrorMessage("Report not found in OpenSearch after multiple attempts.");
+        }
+      } else if (response.status === 500) {
+        setErrorMessage(response.data.error || "An internal server error occurred");
+        setErrorDialogOpen(true);
+      }
+    } catch (error) {
+      console.error("Error submitting scan:", error);
+      setError(true);
+      setErrorMessage(error.response?.data?.error || error.message || "An error occurred");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const columns = [
     { field: 'domain', headerName: 'Domain', flex: 1, filterable: true }, // Access nested key 'SK' under 'meta'
     { field: 'scanned', headerName: 'Scanned', flex: 0.3, filterable: true },
     { field: 'malicious', headerName: 'Malicious', flex: 0.3, filterable: true },
     { field: 'hosting', headerName: 'Hosting', flex: 0.3, filterable: true },
+    {
+      field: 'scan',
+      headerName: '',
+      flex: 0.1,
+      renderCell: (params) => (
+        <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={(event) => handleScan(event, params.row.domain)}
+            sx={{
+              backgroundColor: "#ffffff",
+              color: "#343b6f",
+              fontSize: "16px",
+            }}
+          >
+            Scan
+          </Button>
+        </Box>
+      ),
+    },
   ];
 
   const statusText = {
@@ -146,6 +273,11 @@ if (response.status === 200) {
                   }}
                 />
               </Tooltip>
+                                                   {error && (
+                                                     <Box sx={{ marginBottom: "1rem" }}>
+                                                       <Alert severity="error">{errorMessage}</Alert>
+                                                     </Box>
+                                                   )}
               {loading && <CircularProgress size={20} sx={{ color: '#ffffff' }} />}
               <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
                 <Button variant="contained" color="primary" onClick={handleClearFilters} style={{ backgroundColor: "#ffffff", color: "#343b6f", marginLeft: "10px", fontSize: "16px" }}>
@@ -217,6 +349,14 @@ if (response.status === 200) {
           rowData={rawData}
         />
       </Box>
+                  {report && (
+                    <ReportDialog
+                      open={openReportDialog}
+                      onClose={handleCloseDialog}
+                      rowData={report}
+                      screenshot={screenshotData}
+                    />
+                  )}
     </Box>
   );
 };

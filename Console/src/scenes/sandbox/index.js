@@ -144,25 +144,32 @@ const ScanPage = () => {
         position: "relative"
       }}
     >
-      {/* Toggle Button for Cloud/Local */}
-      <Box
-        sx={{
-          position: "absolute",
-          top: "1rem",
-          right: "1rem",
-        }}
-      >
-        <FormControlLabel
-          control={
-            <Switch
-              checked={isCloud}
-              onChange={handleToggleChange}
-              color="primary"
-            />
-          }
-          label={isCloud ? "Cloud" : "Local"}
+<Box
+  sx={{
+    position: "absolute",
+    top: "1rem",
+    right: "1rem",
+  }}
+>
+  <Tooltip title={isCloud ? "Switch to Local Sandbox" : "Switch to Webamon Cloud"} arrow>
+    <FormControlLabel
+      control={
+        <Switch
+          checked={isCloud}
+          onChange={handleToggleChange}
+          color="white"
         />
-      </Box>
+      }
+      label={isCloud ? "Cloud" : "Local"}
+      sx={{
+        '& .MuiFormControlLabel-label': { // Target the label element inside the FormControlLabel
+          fontSize: '18px', // Adjust the font size here
+        },
+      }}
+    />
+  </Tooltip>
+</Box>
+
 
       <Dialog open={errorDialogOpen} onClose={() => setErrorDialogOpen(false)}>
         <DialogActions>

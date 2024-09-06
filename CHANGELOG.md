@@ -5,10 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [unreleased] - 2024-09-xx
+- (Console + Engine) Resource Attributes; Country, White|Black list, submission, IP, notes
+- (Console + Engine) Image hashing
+- Threat AI/LLM
+
+## [v0.2.5] - 2024-09-06
 
 ### Added
 - (Console) Added scan button to table rows, on the fly scanning
+- (Console) Domain Dialogue
+- (Console) Server Dialogue
+
+### Changed
+- (Console) Tooltip for Console/Local toggle on scan page
 
 
 ---
@@ -53,7 +63,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - (Sandbox) Added config['source'] == 'openphish' option - pulls and scans current public feed
 
 ### Changed
-- Changed login page & link to github repo
+- Changed login page & link to gitHub repo
 
 ### Fixed
 - setLoading(false) feeds pages + scans + resources loading wheel continued when results returned
