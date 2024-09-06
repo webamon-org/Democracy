@@ -1,4 +1,4 @@
-import { Box, Button, TextField, Tooltip, IconButton, CircularProgress } from "@mui/material";
+import { Box, Button, TextField, Tooltip, IconButton, CircularProgress, Dialog, DialogTitle, DialogContent, DialogContentText } from "@mui/material";
 import { useState, useEffect } from "react";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import Header from "../../components/Header";
@@ -20,6 +20,8 @@ const ServerPage = () => {
   const { apiKey } = useAuth();
   const [statusColor, setStatusColor] = useState(''); // State for status color
   const [filters, setFilters] = useState({});
+  const [openDialog, setOpenDialog] = useState(false);
+  const [selectedRow, setSelectedRow] = useState(null);
 
 
    const buildQueryParams = () => {
@@ -107,6 +109,22 @@ headers: {
       [key]: value,
     });
   };
+
+
+  const handleRowClick = (params) => {
+    setSelectedRow(params.row);
+    setOpenDialog(true);
+  };
+
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+    setSelectedRow(null);
+  };
+
+
+  const formatObject = (obj) => obj ? JSON.stringify(obj, null, 2) : 'N/A';
+
 
   const columns = [
            {
@@ -214,9 +232,89 @@ headers: {
           getRowId={(row) => row.id}
           disableColumnMenu={false}
           loading={loading}
+          onRowClick={handleRowClick}
           components={{ Toolbar: GridToolbar }}
         />
       </Box>
+            <Dialog
+              open={openDialog}
+              onClose={handleCloseDialog}
+              sx={{
+                '& .MuiDialog-paper': {
+                  width: '80vw', // Set the width to 80% of the viewport width
+                  maxWidth: '1200px', // Set a maximum width
+                  resize: 'both', // Allow the dialog to be resizable
+                  overflow: 'auto', // Handle overflow for resizable dialog
+                },
+              }}
+            >
+              <DialogTitle
+                sx={{
+                  fontSize: '22px',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  backgroundColor: '#191b2d',
+                  color: '#ffffff',
+                }}
+              >
+                Server Details
+                <IconButton
+                  onClick={handleCloseDialog}
+                  sx={{
+                    color: '#000',
+                    backgroundColor: '#fff',
+                    '&:hover': {
+                      backgroundColor: '#f0f0f0',
+                    },
+                  }}
+                >
+                  &#10005; {/* This is the Unicode character for the close (X) icon */}
+                </IconButton>
+              </DialogTitle>
+              <DialogContent>
+                {selectedRow ? (
+                  <DialogContentText
+                    sx={{
+                      fontSize: '16px',
+                      lineHeight: '1.5',
+                    }}
+                  >
+                    {Object.entries(selectedRow).map(([key, value]) => (
+                      <Box key={key} sx={{ marginBottom: '16px' }}>
+                        <Box sx={{ fontWeight: 'bold', marginBottom: '4px' }}>
+                          {key.replace(/_/g, ' ')}:
+                        </Box>
+                        <Box
+                          sx={{
+                            backgroundColor: '#191b2d',
+                            padding: '8px',
+                            borderRadius: '4px',
+                            whiteSpace: 'pre-wrap',
+                            fontFamily: 'monospace',
+                            color: '#ffffff'
+                          }}
+                        >
+                          {Array.isArray(value) ? (
+                            <Box component="ul" sx={{ paddingLeft: '20px', margin: '0' }}>
+                              {value.map((item, index) => (
+                                <Box component="li" key={index} sx={{ marginBottom: '4px' }}>
+                                  {typeof item === 'object' ? formatObject(item) : item}
+                                </Box>
+                              ))}
+                            </Box>
+                          ) : typeof value === 'object' ? (
+                            formatObject(value)
+                          ) : value}
+                        </Box>
+                      </Box>
+                    ))}
+                  </DialogContentText>
+                ) : (
+                  <DialogContentText>No details available.</DialogContentText>
+                )}
+              </DialogContent>
+            </Dialog>
     </Box>
   );
 };
