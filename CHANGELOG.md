@@ -12,6 +12,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ---
+## [v0.2.4] - 2024-09-05
+### Added
+- (Console) Loading indicators where required on UI
+- (Console) Expand/Click icons where required on UI
+### Fixed
+- (API) /feeds?feed=all_domains was pointing to wrong backend db location
+### Changed
+- (Console) MAP - Better
+---
 ## [v0.2.3] - 2024-09-04
 
 ### Fixed
