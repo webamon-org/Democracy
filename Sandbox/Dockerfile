@@ -16,6 +16,7 @@ COPY opensearch.py /app/opensearch.py
 COPY community.py /app/community.py
 COPY technology_patterns.txt /app/technology_patterns.txt
 COPY report.py /app/report.py
+COPY threatai.py /app/threatai.py
 COPY requirements.txt /app/requirements.txt
 COPY geoIP /app/geoIP
 ENV PATH="/app:$PATH"
@@ -60,7 +61,8 @@ ENV elastic_query_index=""
 ENV elastic_size=100
 
 # Monitoring and Analysis
-ENV web_ai="False"
+ENV threat_ai="False"
+ENV threat_ai_endpoint=""
 ENV webamon_monitor=""
 ENV monitor_profile=""
 ENV webamon_proxy=""
