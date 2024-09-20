@@ -16,6 +16,7 @@ import AllDomains from "./scenes/feeds/all_domains";
 import ProtectedRoute from './ProtectedRoute';
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { useMode } from "./theme";
+import ChatBot from './components/threatai';
 import './styles.css'; // Import the CSS file here
 
 function App() {
@@ -47,7 +48,7 @@ function App() {
                         <Route path="/support" element={<ProtectedRoute element={<BugReport />} />} />
                         <Route path="/trigger" element={<ProtectedRoute element={<ComingSoon />} />} />
                         <Route path="/dashboard" element={<ProtectedRoute element={<ComingSoon />} />} />
-                        <Route path="/threat-ai" element={<ProtectedRoute element={<ComingSoon />} />} />
+                        <Route path="/threat-ai" element={<ProtectedRoute element={<ChatBot />} />} />
                         <Route path="/resources" element={<ProtectedRoute element={<AssetsPage />} />} />
                         <Route path="/hunting" element={<ProtectedRoute element={<ComingSoon />} />} />
                         <Route path="/campaigns" element={<ProtectedRoute element={<ComingSoon />} />} />

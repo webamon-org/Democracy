@@ -1,14 +1,32 @@
 import React, { useState } from 'react';
 import { Box, TextField, Button, Typography, Paper, List, ListItem, ListItemText, CircularProgress } from '@mui/material';
+import { useAuth } from '../AuthContext';
 
-const getLLMResponse = async (prompt, onData) => {
-  const responseText =  `
-                         Coming soon!
-                       `;
 
-  for (let i = 0; i < responseText.length; i++) {
-    await new Promise((resolve) => setTimeout(resolve, 50));
-    onData(responseText[i]);
+
+const getLLMResponse = async (prompt, apiKey, onData) => {
+  try {
+    const response = await fetch('https://community.webamon.co.uk/threat-ai', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+      },
+      body: JSON.stringify({ prompt }),
+    });
+
+    const data = await response.json();
+
+    if (response.ok && data.reply) {
+      for (let i = 0; i < data.reply.length; i++) {
+        await new Promise((resolve) => setTimeout(resolve, 1));
+        onData(data.reply[i]);
+      }
+    } else {
+      onData('Error: No reply received');
+    }
+  } catch (error) {
+    onData('Error: Unable to fetch response');
   }
 };
 
@@ -16,6 +34,9 @@ const ChatBot = () => {
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState('');
   const [loading, setLoading] = useState(false);
+
+  // Using the useAuth hook inside a React component
+  const { apiKey } = useAuth();
 
   const handleSend = async () => {
     if (inputValue.trim()) {
@@ -34,7 +55,8 @@ const ChatBot = () => {
 
       setMessages((prevMessages) => [...prevMessages, botMessage]);
 
-      await getLLMResponse(userMessage.text, (char) => {
+      // Fetch the bot response and update the message, passing apiKey to getLLMResponse
+      await getLLMResponse(userMessage.text, apiKey, (char) => {
         botMessage.text += char;
         setMessages((prevMessages) => {
           const updatedMessages = [...prevMessages];
@@ -48,11 +70,11 @@ const ChatBot = () => {
   };
 
   return (
-    <Box sx={{ width: '100%', maxWidth: "100%", margin: '0 auto', p: 2 }}>
+    <Box sx={{ width: '100%', maxWidth: "100%", margin: '0 auto', p: 2, }}>
       <Typography variant="h4" align="center" color="#f5f5f5" fontSize="36px" gutterBottom>
-        Webamon Assist
+        Threat AI
       </Typography>
-      <Paper sx={{ height: 600, overflowY: 'auto', p: 2, mb: 2 }}>
+      <Paper sx={{ height: 600, overflowY: 'auto', p: 2, mb: 2, backgroundColor: '#f5f5f5' }}>
         <List>
           {messages.map((message, index) => (
             <ListItem key={index}>
@@ -75,11 +97,6 @@ const ChatBot = () => {
             </ListItem>
           ))}
         </List>
-        {loading && (
-          <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
-            <CircularProgress />
-          </Box>
-        )}
       </Paper>
       <Box sx={{ display: 'flex' }}>
         <TextField

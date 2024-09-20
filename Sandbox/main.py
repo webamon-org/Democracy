@@ -1,7 +1,10 @@
 import os
+import time
+
 import requests
 from report import Formatting, Technology, Resources, Enrichment
 from selenium.common.exceptions import WebDriverException
+from threatai import analyze
 import argparse
 import uuid
 from selenium import webdriver
@@ -50,8 +53,10 @@ def get_config():
                         default=str(os.getenv('save_elastic', "True")))
     parser.add_argument('--save_dom', type=str, help='Save DOM to elastic',
                         default=str(os.getenv('save_dom', "True")))
-    parser.add_argument('--web_ai', type=str, help='Webamon AI analyse final report',
-                        default=str(os.getenv('web_ai', "False")))
+    parser.add_argument('--threat_ai', type=str, help='Webamon AI analyse final report',
+                        default=str(os.getenv('threat_ai', "False")))
+    parser.add_argument('--threat_ai_endpoint', type=str, help='Webamon AI endpoint for LLM',
+                        default=str(os.getenv('threat_ai_endpoint', '')))
     parser.add_argument('--hash_types', type=list, help='List of hash types to compute for resources',
                         default=list(os.getenv('hash_types', ["sha256"])))
     parser.add_argument('--whois', type=str, choices=["ALL", "MAIN", "NONE"], help='Lookup Domain(s) WHOIS info',
@@ -121,7 +126,7 @@ def get_config():
     args['skip_if_exists'] = bool(distutils.util.strtobool(args['skip_if_exists']))
     args['save_resources'] = bool(distutils.util.strtobool(args['save_resources']))
     args['aws_save'] = bool(distutils.util.strtobool(args['aws_save']))
-    args['web_ai'] = bool(distutils.util.strtobool(args['web_ai']))
+    args['threat_ai'] = bool(distutils.util.strtobool(args['threat_ai']))
     args['save_dom'] = bool(distutils.util.strtobool(args['save_dom']))
     args['save_elastic'] = bool(distutils.util.strtobool(args['save_elastic']))
     args['save_screenshot'] = bool(distutils.util.strtobool(args['save_screenshot']))
@@ -165,7 +170,7 @@ def get_openPhish():
         return _urls
     else:
         print(f"Failed to retrieve data: {response.status_code}")
-        sys.exit()
+        return False
 
 
 @app.route('/scan', methods=['POST'])
@@ -200,6 +205,8 @@ def set_cookies(driver, domain):
 
 
 def phuck(url, report_id=''):
+    print(config['threat_ai_endpoint'])
+    time.sleep(2)
     global counter, success, failed
     url = url if url.startswith('https://') or url.startswith('http://') else f'https://{url}'
     start = datetime.datetime.now()
@@ -250,9 +257,9 @@ def phuck(url, report_id=''):
             compressed_image_bytes = buffer.getvalue()
             compressed_image_base64 = base64.b64encode(compressed_image_bytes).decode('utf-8')
             OpenSearch.raw_save('screenshots',
-                     {"screenshot": compressed_image_base64, "page_title": network_data['page_title'],
-                      "domain_name": network_data['domain_name'], "tag": network_data['tag'], 'date': network_data["date"],
-                      "submission_url": network_data['submission_url']}, network_data['report_id'])
+                                {"screenshot": compressed_image_base64, "page_title": network_data['page_title'],
+                                 "domain_name": network_data['domain_name'], "tag": network_data['tag'], 'date': network_data["date"],
+                                 "submission_url": network_data['submission_url']}, network_data['report_id'])
         soup = BeautifulSoup(network_data['dom'], 'html.parser')
         script_tags = soup.find_all('script')
         link_tags = soup.find_all('link')
@@ -292,6 +299,8 @@ def phuck(url, report_id=''):
         network_data['server'] = enrich.server_data(network_data)
         network_data = enrich.scanMeta(network_data)
         network_data['scan_status'] = "success"
+        if config['threat_ai']:
+            network_data['threat_ai'] = analyze(network_data, config['threat_ai_endpoint'])
     except WebDriverException as e:
         if "unknown error: net::ERR_NAME_NOT_RESOLVED" in str(e):
             logger.critical(f"Not Resolved - {url}")
@@ -391,6 +400,8 @@ def main():
             urls = _urls
         elif config['source'] == 'openphish':
             urls = get_openPhish()
+            if not urls:
+                return
         elif config['url']:
             logger.debug('Scanning Single URL')
             urls = [config['url']]
