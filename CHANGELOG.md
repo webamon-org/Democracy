@@ -10,6 +10,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - (Console + Engine) Image hashing
 - Threat AI/LLM
 
+## [v0.3.0] - 2024-09-16
+
+### Added
+- (Console) Threat AI/LLM
+
+
+---
+
 ## [v0.2.5] - 2024-09-06
 
 ### Added
