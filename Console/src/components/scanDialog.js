@@ -57,7 +57,7 @@ function ReportDialog({ open, onClose, rowData, screenshot}) {
         </div>
       </DialogContent>
       <DialogActions style={{ display: 'flex', overflow: 'auto',backgroundColor: '#171b2d' }} >
-              <Button onClick={handleClose} variant="contained" color="primary" size="large">Close</Button>
+              <Button onClick={handleClose} variant="contained" color="primary" size="large" style={{ backgroundColor: "#ffffff", color: "#343b6f",}}>Close</Button>
       </DialogActions>
     </Dialog>
   );
