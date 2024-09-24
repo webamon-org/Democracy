@@ -114,7 +114,7 @@ const ChatBot = () => {
           variant="contained"
           color="primary"
           onClick={handleSend}
-          sx={{ fontSize: '1.25rem', padding: '12px 24px' }}
+          sx={{ fontSize: '1.25rem', padding: '12px 24px', backgroundColor: "#ffffff", color: "#343b6f" }}
         >
           Send
         </Button>

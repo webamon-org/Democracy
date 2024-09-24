@@ -10,7 +10,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - (Console + Engine) Image hashing
 - Threat AI/LLM
 
-## [v0.3.0] - 2024-09-16
+
+## [v0.3.1] - 2024-09-24
+
+### Changed
+- (Console/API) Swagger OpenAPI docs
+- (Console) Simple UI button color changes
+
+
+
+## [v0.3.0] - 2024-09-20
 
 ### Added
 - (Console) Threat AI/LLM
