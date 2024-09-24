@@ -2,14 +2,33 @@
 
 # Webamon - Democratizing Threat Intelligence
 
+
 ## Warning
 
-**Before running the project, ensure you have a VPN running either locally or on your router. Failure to do so may expose your public IP address, which could compromise your privacy and security.**
+**Before running, ensure you have a VPN running either locally or on your router. Failure to do so may expose your public IP address, which could compromise your privacy and security.**
 **Join the Democracy →** [hunt.webamon.co.uk](https://hunt.webamon.co.uk)
 
 ## Overview
 
-Welcome to **Webamon**, where we believe in the power of community-driven threat intelligence. Our mission is to **democratize threat intelligence**, making it accessible, collaborative, and secure for everyone. This open-source project provides a platform where users can contribute, share, and benefit from collective knowledge, strengthening global cybersecurity efforts.
+Welcome to **Webamon**, where we believe in the power of community-driven threat intelligence. Our mission is to **democratize threat intelligence**, making it accessible, collaborative, and secure for everyone. This open-source community release provides a platform where users can contribute, share, and benefit from collective knowledge, strengthening global cybersecurity efforts.
+
+
+
+
+## Features
+
+### **Sandbox Web Scanner**
+![Sandbox](https://s1.gifyu.com/images/SAgMa.gif)
+### **Newly Registered Domains Feed**
+![NewDomains](https://s11.gifyu.com/images/SAgM1.gif)
+### **Xtended & Enriched Community Feeds**
+![NewDomains](https://s11.gifyu.com/images/SAgMG.gif)
+### **The Internets Asset Directory (web resources, domains, servers)**
+![NewDomains](https://s1.gifyu.com/images/SAgMX.gif)
+### **Threat-AI Large Language Model (Mistral)**
+![NewDomains](https://s1.gifyu.com/images/SAgp7.gif)
+
+
 
 ## Features
 
