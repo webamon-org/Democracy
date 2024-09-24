@@ -18,7 +18,7 @@ Welcome to **Webamon**, where we believe in the power of community-driven threat
 ## Features
 
 ### **Sandbox Web Scanner**
-![Sandbox](https://s1.gifyu.com/images/SAgMa.gif)
+![Sandbox](example_gifs/sandbox.gif)
 ### **Newly Registered Domains Feed**
 ![NewDomains](https://s11.gifyu.com/images/SAgM1.gif)
 ### **Xtended & Enriched Community Feeds**
