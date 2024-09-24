@@ -37,12 +37,12 @@ function App() {
                         <Route path="/sandbox" element={<ProtectedRoute element={<ReportDialog />} />} />
                         <Route path="/license" element={<ProtectedRoute element={<ComingSoon />} />} />
                         <Route path="/detections" element={<ProtectedRoute element={<ComingSoon />} />} />
-                        <Route path="/docs" element={<SwaggerDocs />} />
+                        <Route path="/docs" element={<ComingSoon />} />
                         <Route path="/scans" element={<ProtectedRoute element={<Scans />} />} />
                         <Route path="/domains" element={<ProtectedRoute element={<Domains />} />} />
                         <Route path="/schedules" element={<ProtectedRoute element={<ComingSoon />} />} />
                         <Route path="/users" element={<ProtectedRoute element={<ComingSoon />} />} />
-                        <Route path="/api" element={<ProtectedRoute element={<ComingSoon />} />} />
+                        <Route path="/api" element={<ProtectedRoute element={<SwaggerDocs />} />} />
                         <Route path="/servers" element={<ProtectedRoute element={<ServerPage />} />} />
                         <Route path="/sources" element={<ProtectedRoute element={<ComingSoon />} />} />
                         <Route path="/support" element={<ProtectedRoute element={<BugReport />} />} />

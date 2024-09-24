@@ -349,7 +349,8 @@ setLoading(true)
                         </Box>
                       </DialogContent>
                       <DialogActions>
-                        <Button onClick={handleCloseDialog} color="primary">
+                        <Button onClick={handleCloseDialog} color="primary"           style={{ backgroundColor: "#ffffff", color: "#343b6f", marginLeft: "10px", fontSize: "16px" }}
+>
                           Close
                         </Button>
                       </DialogActions>

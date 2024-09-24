@@ -59,7 +59,8 @@ const BugReport = () => {
                     required
                 />
                 <Box mt={2}>
-                    <Button variant="contained" color="primary" type="submit" fullWidth>
+                    <Button variant="contained" color="primary" type="submit" fullWidth           style={{ backgroundColor: "#ffffff", color: "#343b6f", marginLeft: "10px", fontSize: "16px" }}
+>
                         Submit
                     </Button>
                 </Box>
