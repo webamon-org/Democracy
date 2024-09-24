@@ -29,41 +29,6 @@ Welcome to **Webamon**, where we believe in the power of community-driven threat
 ![NewDomains](example_gifs/threat_ai_llm.gif)
 
 
-
-## Features
-
-### 🌍 **Community Contribution**
-- **Shared Knowledge**: All scan results are anonymized and shared with the Webamon community, fostering a collaborative environment.
-- **Global Collaboration**: Engage with a global democracy of threat intelligence experts to stay ahead of emerging threats.
-
-### 🔍 **Search & Query**
-- **Community-Powered Search**: Access a rich dataset of anonymized, community-contributed intelligence for comprehensive search and querying capabilities.
-
-### 🤝 **Collaboration**
-- **Join the Collective**: Collaborate with a worldwide network of security professionals, contributing to a community-driven threat intelligence repository.
-
-### 🔒 **Privacy & Security**
-- **Anonymous Sharing**: Your contributions remain private with anonymized results, ensuring transparency while protecting your identity.
-- **Centralized Security**: Secure, centralized management by Webamon with a hybrid cloud approach, balancing accessibility and security.
-
-### 🚀 **Scalability**
-- **Dynamic Infrastructure**: Our hosted infrastructure scales seamlessly with the needs of the community, ensuring high performance and availability.
-
-### 🎯 **Target Audience**
-- **For the Security-Conscious**: Ideal for those who value democratized intelligence and are keen to contribute to a global community.
-
-### 🛠️ **Deployment & Setup**
-- **Quick Setup**: Easy and quick setup with a Webamon account, allowing you to start contributing and benefiting from the community in no time.
-
-### 🔄 **Continuous Support & Updates**
-- **Community-Driven**: Receive continuous updates and support driven by a passionate community, ensuring the platform evolves with emerging needs.
-
-### 📜 **Open Source Licensing**
-- **Apache 2.0 License**: Fully open source under the Apache 2.0 license, encouraging widespread use and contribution.
-
-### ⚙️ **Performance**
-- **High Performance Sandbox**: Capable of handling 50,000 hourly scans with a robust infrastructure (Ryzen5, 32GB), ensuring you can analyze threats efficiently.
-
 ## Getting Started
 
 1. **Sign Up**: Create your Webamon account at [hunt.webamon.co.uk](https://hunt.webamon.co.uk) to join the community.
