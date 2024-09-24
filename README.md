@@ -20,13 +20,13 @@ Welcome to **Webamon**, where we believe in the power of community-driven threat
 ### **Sandbox Web Scanner**
 ![Sandbox](example_gifs/sandbox.gif)
 ### **Newly Registered Domains Feed**
-![NewDomains](https://s11.gifyu.com/images/SAgM1.gif)
+![NewDomains](example_gifs/newly_reg_feed.gif)
 ### **Xtended & Enriched Community Feeds**
-![NewDomains](https://s11.gifyu.com/images/SAgMG.gif)
+![NewDomains](example_gifs/xtend_feed.gif)
 ### **The Internets Asset Directory (web resources, domains, servers)**
-![NewDomains](https://s1.gifyu.com/images/SAgMX.gif)
+![NewDomains](example_gifs/assets.gif)
 ### **Threat-AI Large Language Model (Mistral)**
-![NewDomains](https://s1.gifyu.com/images/SAgp7.gif)
+![NewDomains](example_gifs/threat_ai_llm.gif)
 
 
 
