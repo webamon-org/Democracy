@@ -150,7 +150,7 @@ const AuthenticationPage = () => {
             {/* Sign Up Dialog with No Bullshit Mode Toggle */}
 <Dialog open={openSignUpDialog} onClose={handleSignUpDialogClose}>
   {/* Title */}
-  <DialogTitle style={{ backgroundColor: '#131629', color: '#fff', textAlign: 'center' }}>
+  <DialogTitle style={{ backgroundColor: '#131629', color: '#fff', textAlign: 'center', fontSize: '22px' }}>
     Join The Democracy - 1000x Daily API Calls
   </DialogTitle>
 
@@ -179,7 +179,7 @@ const AuthenticationPage = () => {
         />
       }
       label="No Bullshit Mode"
-      style={{ marginBottom: '20px', color: '#fff' }}
+      style={{ marginBottom: '20px', color: '#fff'}}
     />
 
     {/* Input Fields */}
@@ -190,9 +190,9 @@ const AuthenticationPage = () => {
       margin="normal"
       value={signUpData.name}
       onChange={(e) => setSignUpData({ ...signUpData, name: e.target.value })}
-      InputLabelProps={{ style: { color: '#bbb' } }}
+      InputLabelProps={{ style: { color: '#bbb', fontSize: "18px" } }}
       InputProps={{ style: { color: '#fff' } }}
-      style={{ marginBottom: '20px', backgroundColor: '#2a2d3e' }}
+      style={{ marginBottom: '20px', backgroundColor: '#2a2d3e'  }}
     />
     <TextField
       label="Email"
@@ -202,7 +202,7 @@ const AuthenticationPage = () => {
       margin="normal"
       value={signUpData.email}
       onChange={(e) => setSignUpData({ ...signUpData, email: e.target.value })}
-      InputLabelProps={{ style: { color: '#bbb' } }}
+      InputLabelProps={{ style: { color: '#bbb', fontSize: "18px" } }}
       InputProps={{ style: { color: '#fff' } }}
       style={{ marginBottom: '20px', backgroundColor: '#2a2d3e' }}
     />
@@ -213,7 +213,7 @@ const AuthenticationPage = () => {
       margin="normal"
       value={signUpData.linkedin}
       onChange={(e) => setSignUpData({ ...signUpData, linkedin: e.target.value })}
-      InputLabelProps={{ style: { color: '#bbb' } }}
+      InputLabelProps={{ style: { color: '#bbb', fontSize: "18px" } }}
       InputProps={{ style: { color: '#fff' } }}
       style={{ marginBottom: '20px', backgroundColor: '#2a2d3e' }}
     />
