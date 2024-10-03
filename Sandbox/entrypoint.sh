@@ -28,14 +28,14 @@ sysctl -w net.ipv4.ip_forward=1
 
 # Ensure that LAN traffic (192.168.1.0/24) bypasses the VPN and goes through eth0
 echo "Setting up split tunneling for LAN traffic (192.168.1.0/24)..."
-ip route add 192.168.1.0/24 via 192.168.1.1 dev $LOCAL_IFACE
+ip route add 192.168.1.0/24 dev $LOCAL_IFACE
 
-# Ensure all other traffic goes through the VPN
+# Set up the default route through the VPN for all other traffic
 echo "Setting default route for all other traffic to go through VPN ($VPN_IFACE)..."
 ip route del default
 ip route add default via 10.100.0.1 dev $VPN_IFACE
 
-# Setup NAT (Network Address Translation) to allow outbound traffic through VPN (tun0)
+# Set up NAT to allow outbound traffic through VPN (tun0)
 echo "Setting up iptables for NAT and LAN access..."
 iptables -t nat -A POSTROUTING -o $VPN_IFACE -j MASQUERADE
 
@@ -46,12 +46,17 @@ iptables -A FORWARD -i $VPN_IFACE -o $LOCAL_IFACE -m state --state RELATED,ESTAB
 # Allow incoming traffic on port 5000 from LAN interface (eth0)
 iptables -A INPUT -i $LOCAL_IFACE -p tcp --dport 5000 -j ACCEPT
 
+# Add a rule to bypass the VPN for incoming internet traffic on port 5000
+echo "Bypassing VPN for incoming traffic on port 5000..."
+iptables -t nat -A PREROUTING -i $LOCAL_IFACE -p tcp --dport 5000 -j DNAT --to-destination 172.17.0.2:5000
+iptables -A FORWARD -p tcp --dport 5000 -j ACCEPT
+
 # Show iptables rules for debugging
 echo "Current iptables rules:"
 iptables -L -n -v
 iptables -t nat -L -n -v
 
-# Show routing table after applying split tunneling rule
+# Show routing table after applying split tunneling rules
 echo "Routing table after adding split tunneling rules:"
 ip route
 
