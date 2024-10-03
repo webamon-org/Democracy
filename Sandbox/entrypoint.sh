@@ -2,7 +2,8 @@
 
 # Start OpenVPN using the NordVPN configuration
 echo "Starting OpenVPN with NordVPN configuration..."
-echo -e "$NORDVPN_USER\n$NORDVPN_PASS" > /etc/openvpn/credentials.txt
+# Use the NordVPN token as the password for authentication
+echo -e "$NORDVPN_USER\n$NORDVPN_TOKEN" > /etc/openvpn/credentials.txt
 openvpn --config /etc/openvpn/nordvpn.ovpn --auth-user-pass /etc/openvpn/credentials.txt &
 
 # Wait for the VPN connection to establish
