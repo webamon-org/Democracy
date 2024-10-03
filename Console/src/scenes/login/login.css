@@ -118,8 +118,13 @@
 }
 
 /* Media Queries for Mobile Devices */
-@media screen and (max-width: 260px) {
-    /* Adjust padding and margins */
+@media screen and (max-width: 768px) {
+    /* Only adjust for mobile devices */
+    .logo {
+        max-width: 300px; /* Smaller logo size for mobile */
+        width: 80%; /* Ensure it scales appropriately */
+    }
+
     .login-page {
         padding: 30px 15px; /* Reduce padding for smaller screens */
     }
@@ -164,13 +169,13 @@
 }
 
 /* Responsive for very small devices */
-@media screen and (max-width: 260px) {
+@media screen and (max-width: 480px) {
     .login-page {
         padding: 20px 10px;
     }
 
-    .logo-container {
-        margin-bottom: 15px;
+    .logo {
+        max-width: 200px; /* Further reduce logo size for small devices */
     }
 
     .auth-form {

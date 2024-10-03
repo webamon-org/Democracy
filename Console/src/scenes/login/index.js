@@ -176,7 +176,6 @@ const AuthenticationPage = () => {
                     />
                 </DialogContent>
                 <DialogActions style={{ backgroundColor: '#131629' }}>
-                    <Button onClick={() => setOpenSignUpDialog(false)} style={{ color: '#fff', fontWeight: 'bold' }}>Cancel</Button>
                     <Button
                         onClick={handleSignUp}
                         disabled={loading}
