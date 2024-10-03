@@ -15,10 +15,14 @@ WORKDIR /app
 
 # Install necessary dependencies
 RUN apt-get update && \
-    apt-get install -y wget unzip curl fonts-liberation libasound2 libatk-bridge2.0-0 libatk1.0-0 libatspi2.0-0 libcups2 libdbus-1-3 libdrm2 libgbm1 libgtk-3-0 libnspr4 libnss3 libxcomposite1 libxdamage1 libxfixes3 libxkbcommon0 libxrandr2 xdg-utils libu2f-udev \
-    # Install NordVPN and other necessary dependencies
-    && apt-get install -y nordvpn && \
-    nordvpn set technology nordlynx
+    apt-get install -y wget unzip curl fonts-liberation libasound2 libatk-bridge2.0-0 libatk1.0-0 libatspi2.0-0 libcups2 libdbus-1-3 libdrm2 libgbm1 libgtk-3-0 libnspr4 libnss3 libxcomposite1 libxdamage1 libxfixes3 libxkbcommon0 libxrandr2 xdg-utils libu2f-udev
+
+# Add NordVPN repository and install NordVPN
+RUN wget -qnc https://repo.nordvpn.com/gpg/nordvpn_public.asc && \
+    apt-key add nordvpn_public.asc && \
+    sh -c 'echo "deb https://repo.nordvpn.com/deb/nordvpn/debian stable main" > /etc/apt/sources.list.d/nordvpn.list' && \
+    apt-get update && \
+    apt-get install -y nordvpn
 
 # Copy Chrome and Chromedriver from the build stage
 COPY --from=build /opt/chrome-linux64 /app/chrome
