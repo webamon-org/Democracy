@@ -272,7 +272,7 @@ const AuthenticationPage = () => {
         - Post-snapshots, we will identify:<br />
         &nbsp;&nbsp;1) Critical, exploitable hosted dependencies consumed by the majority<br />
         &nbsp;&nbsp;2) Tracking & Attributing Threat Actors on the web like never before<br />
-        &nbsp;&nbsp;2) And soooo much more<br /><br />
+        &nbsp;&nbsp;3) And soo much more<br /><br />
       </Typography>
     </DialogContent>
   )}
