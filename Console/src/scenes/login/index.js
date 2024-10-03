@@ -230,7 +230,7 @@ const AuthenticationPage = () => {
   </DialogContent>
 
   {/* Sign Up Button */}
-  <DialogActions style={{ backgroundColor: '#131629', justifyContent: 'center', padding: '20px' }}>
+  <DialogActions style={{ backgroundColor: '#131629', justifyContent: 'right', padding: '20px' }}>
     <Button
       onClick={handleSignUp}
       disabled={loading}
