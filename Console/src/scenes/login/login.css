@@ -119,10 +119,10 @@
 
 /* Media Queries for Mobile Devices */
 @media screen and (max-width: 768px) {
-    /* Only adjust for mobile devices */
+    /* Adjustments for mobile devices */
     .logo {
         max-width: 300px; /* Smaller logo size for mobile */
-        width: 80%; /* Ensure it scales appropriately */
+        width: 80%;
     }
 
     .login-page {
@@ -131,6 +131,9 @@
 
     .logo-container {
         margin-bottom: 20px; /* Reduce the space between the logo and the form */
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 
     .auth-form {
@@ -144,27 +147,29 @@
     }
 
     .auth-form .MuiButton-root {
-        padding: 10px; /* Adjust button padding for smaller screens */
-        font-size: 14px; /* Reduce button font size */
+        padding: 12px; /* Keep button padding */
+        font-size: 16px; /* Increase button font size for mobile */
     }
 
     .button-container {
         gap: 10px; /* Reduce the gap between buttons */
     }
 
-    /* Reduce GitHub button size */
+    /* Adjust GitHub button */
     .github-button {
         width: 100%; /* Make the GitHub button take the full width on mobile */
         padding: 10px; /* Adjust padding */
-        margin-top: 20px; /* Reduce top margin */
+        margin-top: 20px;
+        font-size: 1rem; /* Increase font size */
     }
 
     .subtitle {
-        font-size: 0.8rem; /* Adjust the font size for smaller screens */
+        font-size: 1rem; /* Increase font size */
+        margin-top: 15px;
     }
 
     .error-message {
-        font-size: 0.8rem; /* Adjust the font size for smaller screens */
+        font-size: 1rem; /* Increase error message font size */
     }
 }
 
@@ -175,7 +180,7 @@
     }
 
     .logo {
-        max-width: 200px; /* Further reduce logo size for small devices */
+        max-width: 200px; /* Reduce logo size for very small devices */
     }
 
     .auth-form {
@@ -183,15 +188,16 @@
     }
 
     .auth-form .MuiButton-root {
-        padding: 8px;
-        font-size: 13px;
+        padding: 10px; /* Slightly larger padding */
+        font-size: 15px; /* Larger button text */
     }
 
     .github-button {
-        padding: 8px;
+        padding: 10px;
+        font-size: 0.95rem;
     }
 
     .subtitle, .error-message {
-        font-size: 0.75rem;
+        font-size: 0.9rem; /* Increase text size for small devices */
     }
 }
