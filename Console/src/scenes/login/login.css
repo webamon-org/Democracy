@@ -118,7 +118,7 @@
 }
 
 /* Media Queries for Mobile Devices */
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 260px) {
     /* Adjust padding and margins */
     .login-page {
         padding: 30px 15px; /* Reduce padding for smaller screens */
@@ -164,7 +164,7 @@
 }
 
 /* Responsive for very small devices */
-@media screen and (max-width: 480px) {
+@media screen and (max-width: 260px) {
     .login-page {
         padding: 20px 10px;
     }
