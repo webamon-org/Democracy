@@ -98,12 +98,11 @@ EXPOSE 5000
 # Install Python requirements
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Set up NordVPN auto login and connection
-# Add your NordVPN credentials via environment variables or Docker secrets
-ENV NORDVPN_USER="your_nordvpn_username"
-ENV NORDVPN_PASS="your_nordvpn_password"
-RUN echo "Login to NordVPN..." && \
-    nordvpn login --username $NORDVPN_USER --password $NORDVPN_PASS && \
+# Set up NordVPN auto login and connection using token
+# Add your NordVPN token via environment variables or Docker secrets
+ENV NORDVPN_TOKEN="your_nordvpn_token"
+RUN echo "Login to NordVPN using token..." && \
+    nordvpn login --token $NORDVPN_TOKEN && \
     nordvpn connect && \
     echo "NordVPN connected"
 
