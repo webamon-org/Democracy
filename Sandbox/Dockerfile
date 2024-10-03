@@ -39,19 +39,19 @@ COPY geoIP /app/geoIP
 
 # Set environment variables
 ENV PATH="/app:$PATH"
-ENV source="openphish"
+ENV source=""
 ENV scan_type=""
 ENV scan_timeout=30
-ENV threads=2
+ENV threads=1
 ENV user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.3"
 ENV url=""
-ENV tag=""
+ENV tag="community"
 ENV set_cookies='{}'
 ENV log_level="INFO"
 ENV compare_previous="False"
 ENV skip_if_exists="False"
-ENV queue_worker="False"
-ENV community="True"
+ENV queue_worker="True"
+ENV community="False"
 ENV hash_types='["sha256"]'
 ENV webamon_apikey = ''
 
@@ -60,8 +60,8 @@ ENV save_elastic="True"
 ENV save_images="False"
 ENV save_css="False"
 ENV save_dom="True"
-ENV save_screenshot="False"
-ENV save_resources="False"
+ENV save_screenshot="True"
+ENV save_resources="True"
 
 # AWS Configuration
 ENV aws_save="False"
