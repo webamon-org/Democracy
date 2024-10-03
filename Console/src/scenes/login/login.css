@@ -121,8 +121,9 @@
 @media screen and (max-width: 768px) {
     /* Adjustments for mobile devices */
     .logo {
-        max-width: 300px; /* Smaller logo size for mobile */
-        width: 80%;
+        width: 100%; /* Make the logo fill the mobile device's width */
+        max-width: none; /* Remove the maximum width restriction */
+        height: auto; /* Keep the height proportional */
     }
 
     .login-page {
@@ -180,7 +181,9 @@
     }
 
     .logo {
-        max-width: 200px; /* Reduce logo size for very small devices */
+        width: 100%; /* Make the logo fill the very small device's width */
+        max-width: none; /* Remove the maximum width restriction */
+        height: auto; /* Keep the height proportional */
     }
 
     .auth-form {

@@ -137,8 +137,8 @@ const AuthenticationPage = () => {
             </Container>
 
             {/* Sign Up Dialog with Color Contrast Adjustments */}
-            <Dialog open={openSignUpDialog} onClose={() => setOpenSignUpDialog(false)}>
-                <DialogTitle style={{ backgroundColor: '#131629', color: '#fff' }}>Join The Democracy - Currently Closed Beta</DialogTitle>
+            <Dialog open={openSignUpDialog} onClose={() => setOpenSignUpDialog(false)} >
+                <DialogTitle style={{ backgroundColor: '#131629', color: '#fff' }}>Join The Democracy - 1000x Daily API Calls</DialogTitle>
                 <DialogContent style={{ backgroundColor: '#131629', color: '#fff' }}>
                     <TextField
                         label="Name"
@@ -184,6 +184,7 @@ const AuthenticationPage = () => {
                             color: '#fff',
                             fontWeight: 'bold',
                             padding: '10px 20px',
+
                         }}
                     >
                         {loading ? 'Submitting...' : 'Sign Up'}
