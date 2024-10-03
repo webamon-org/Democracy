@@ -92,24 +92,19 @@ ENV check_dangling="False"
 ENV check_ports=""
 ENV port_check_config="NONE"
 
-# Expose the necessary port for Flask
-EXPOSE 5000
-
 # Install Python requirements
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Set up NordVPN auto login and connection using token
-# Add your NordVPN token via environment variables or Docker secrets
+# Set up NordVPN token as environment variable
 ENV NORDVPN_TOKEN="your_nordvpn_token"
 
-# Start NordVPN service, log in with token, and connect
-RUN echo "Starting NordVPN service..." && \
-    /etc/init.d/nordvpn start && \
-    echo "Login to NordVPN using token..." && \
-    nordvpn login --token $NORDVPN_TOKEN && \
-    nordvpn set technology nordlynx && \
-    nordvpn connect && \
-    echo "NordVPN connected"
+# Use entrypoint script to start NordVPN and application during runtime
+COPY entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
+
+# Expose the necessary port for Flask
+EXPOSE 5000
+
 
 # Start the application
 CMD /etc/init.d/nordvpn start && nordvpn connect && python webamon-sandbox.py > /dev/stdout
