@@ -15,14 +15,14 @@ ip a
 echo "Routing table before adding iptables rules:"
 ip route
 
-# Detect VPN interface (usually tun0) and local interface (e.g., eth0)
-VPN_IFACE=$(ip route | grep default | awk '{print $5}')
-LOCAL_IFACE=$(ip route | grep -m1 -Eo 'dev [^ ]+' | awk '{print $2}')
+# Detect VPN interface (usually tun0) and local interface (eth0)
+VPN_IFACE=$(ip route | grep -m1 -o 'tun[0-9]')
+LOCAL_IFACE=$(ip route | grep default | awk '{print $5}')
 
 echo "VPN interface: $VPN_IFACE"
 echo "Local interface: $LOCAL_IFACE"
 
-# Set up iptables to allow traffic on port 5000 to bypass the VPN
+# Set up iptables to allow traffic on port 5000 on eth0 (LAN interface)
 echo "Setting up iptables to allow LAN access to port 5000..."
 iptables -t nat -A POSTROUTING -o $VPN_IFACE -j MASQUERADE
 iptables -A FORWARD -i $LOCAL_IFACE -p tcp --dport 5000 -j ACCEPT
