@@ -16,6 +16,7 @@
 
 .logo {
     width: auto;
+    max-width: 800px;
     height: auto;
     margin-bottom: 20px;
     transition: transform 0.3s ease;
