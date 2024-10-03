@@ -1,36 +1,191 @@
-/* AuthenticationPage.css */
-.auth-page {
+/* Overall Page Style */
+.login-page {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     min-height: 100vh;
-    position: relative;
-    padding-top: 50px; /* Space for the banner */
+    padding: 60px 20px;
+    background: linear-gradient(135deg, #191b2d, #343b6f); /* Gradient for the background */
 }
 
-.banner {
-    position: absolute;
-    top: 0;
-    width: 100%;
-    background-color: #f5f5f5; /* Adjust to your preferred color */
-    padding: 10px;
-    text-align: center;
-    border-bottom: 1px solid #ddd;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
+/* Logo Styling */
 .logo-container {
-    margin-top: 3000px; /* Adjust based on the height of your banner */
+    margin-bottom: 40px;
 }
 
 .logo {
-    width: 3500px; /* Adjust based on your logo size */
+    width: auto;
     height: auto;
+    margin-bottom: 20px;
+    transition: transform 0.3s ease;
 }
 
+.logo:hover {
+    transform: scale(1.05); /* Slight scaling effect on hover */
+}
+
+/* Form Container */
 .auth-form {
+    width: 100%;
+    max-width: 400px;
     display: flex;
     flex-direction: column;
     align-items: center;
+    background: rgba(25, 27, 45, 0.85); /* Semi-transparent dark background */
+    padding: 40px 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3); /* Shadow for depth */
+}
+
+/* Input Field Styling */
+.auth-form .MuiTextField-root {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+/* Button Container */
+.button-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Ensure spacing between buttons */
+}
+
+/* Button Styling */
+.auth-form .MuiButton-root {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 8px;
+}
+
+.auth-form .MuiButton-containedPrimary {
+    background-color: #3c4b88; /* Darker blue for sign-in button */
+    color: white;
+}
+
+.auth-form .MuiButton-containedSecondary {
+    background-color: #5bbd58; /* Green for sign-up button */
+    color: white;
+}
+
+.auth-form .MuiButton-root:hover {
+    transform: scale(1.02);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Hover effect to add depth */
+}
+
+/* GitHub Button Styling */
+.github-button {
+    background-color: rgba(255, 255, 255, 0.9); /* Slightly transparent white background */
+    color: #000000;
+    border: 1px solid #000000;
+    text-transform: none;
+    padding: 12px;
+    width: 250px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 30px;
+    transition: all 0.3s ease;
+    border-radius: 8px;
+}
+
+.github-button:hover {
+    background-color: rgba(240, 240, 240, 0.9);
+}
+
+.github-button svg {
+    margin-right: 10px;
+}
+
+/* Subtitle and message styling */
+.subtitle {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    color: #b0b0b0; /* Lighter grey for contrast */
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+.error-message {
+    margin-top: 20px;
+    color: red;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+/* Media Queries for Mobile Devices */
+@media screen and (max-width: 768px) {
+    /* Adjust padding and margins */
+    .login-page {
+        padding: 30px 15px; /* Reduce padding for smaller screens */
+    }
+
+    .logo-container {
+        margin-bottom: 20px; /* Reduce the space between the logo and the form */
+    }
+
+    .auth-form {
+        padding: 30px 20px; /* Reduce form padding for mobile */
+        max-width: 100%; /* Make the form take up the full screen width */
+        border-radius: 10px;
+    }
+
+    .auth-form .MuiTextField-root {
+        margin-bottom: 15px; /* Reduce the margin between fields */
+    }
+
+    .auth-form .MuiButton-root {
+        padding: 10px; /* Adjust button padding for smaller screens */
+        font-size: 14px; /* Reduce button font size */
+    }
+
+    .button-container {
+        gap: 10px; /* Reduce the gap between buttons */
+    }
+
+    /* Reduce GitHub button size */
+    .github-button {
+        width: 100%; /* Make the GitHub button take the full width on mobile */
+        padding: 10px; /* Adjust padding */
+        margin-top: 20px; /* Reduce top margin */
+    }
+
+    .subtitle {
+        font-size: 0.8rem; /* Adjust the font size for smaller screens */
+    }
+
+    .error-message {
+        font-size: 0.8rem; /* Adjust the font size for smaller screens */
+    }
+}
+
+/* Responsive for very small devices */
+@media screen and (max-width: 480px) {
+    .login-page {
+        padding: 20px 10px;
+    }
+
+    .logo-container {
+        margin-bottom: 15px;
+    }
+
+    .auth-form {
+        padding: 20px 15px;
+    }
+
+    .auth-form .MuiButton-root {
+        padding: 8px;
+        font-size: 13px;
+    }
+
+    .github-button {
+        padding: 8px;
+    }
+
+    .subtitle, .error-message {
+        font-size: 0.75rem;
+    }
 }
