@@ -101,10 +101,15 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Set up NordVPN auto login and connection using token
 # Add your NordVPN token via environment variables or Docker secrets
 ENV NORDVPN_TOKEN="your_nordvpn_token"
-RUN echo "Login to NordVPN using token..." && \
+
+# Start NordVPN service, log in with token, and connect
+RUN echo "Starting NordVPN service..." && \
+    /etc/init.d/nordvpn start && \
+    echo "Login to NordVPN using token..." && \
     nordvpn login --token $NORDVPN_TOKEN && \
+    nordvpn set technology nordlynx && \
     nordvpn connect && \
     echo "NordVPN connected"
 
 # Start the application
-CMD nordvpn connect && python webamon-sandbox.py > /dev/stdout
+CMD /etc/init.d/nordvpn start && nordvpn connect && python webamon-sandbox.py > /dev/stdout
