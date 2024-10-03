@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, TextField, Container, Typography, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import { Button, TextField, Container, Typography, Dialog, DialogTitle, DialogContent, DialogActions, Switch, FormControlLabel } from '@mui/material';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -13,6 +13,7 @@ const AuthenticationPage = () => {
     const [openSuccessDialog, setOpenSuccessDialog] = useState(false);
     const [loading, setLoading] = useState(false);
     const [signUpData, setSignUpData] = useState({ name: '', email: '', linkedin: '' });
+    const [noBullshitMode, setNoBullshitMode] = useState(false); // Toggle state for No Bullshit mode
 
     const navigate = useNavigate();
     const { setApiKey } = useAuth();
@@ -63,6 +64,11 @@ const AuthenticationPage = () => {
         // Clear form data when closing the dialog
         setSignUpData({ name: '', email: '', linkedin: '' });
         setMessage(''); // Clear any error or success message
+        setNoBullshitMode(false); // Reset the toggle when closing
+    };
+
+    const handleNoBullshitToggle = (event) => {
+        setNoBullshitMode(event.target.checked);
     };
 
     return (
@@ -141,71 +147,138 @@ const AuthenticationPage = () => {
                 </Button>
             </Container>
 
-            {/* Sign Up Dialog with Color Contrast Adjustments */}
-            <Dialog open={openSignUpDialog} onClose={handleSignUpDialogClose}>
-                <DialogTitle style={{ backgroundColor: '#131629', color: '#fff' }}>Join The Democracy - 1000x Daily API Calls</DialogTitle>
-                <DialogContent style={{ backgroundColor: '#131629', color: '#fff' }}>
-                    <TextField
-                        label="Name"
-                        variant="outlined"
-                        fullWidth
-                        margin="normal"
-                        value={signUpData.name}
-                        onChange={(e) => setSignUpData({ ...signUpData, name: e.target.value })}
-                        InputLabelProps={{ style: { color: '#bbb' } }} // Adjust text color
-                        InputProps={{ style: { color: '#fff' } }} // Adjust input text color
-                        style={{ marginBottom: '20px', backgroundColor: '#2a2d3e' }} // Dark input background
-                    />
-                    <TextField
-                        label="Email"
-                        type="email"
-                        variant="outlined"
-                        fullWidth
-                        margin="normal"
-                        value={signUpData.email}
-                        onChange={(e) => setSignUpData({ ...signUpData, email: e.target.value })}
-                        InputLabelProps={{ style: { color: '#bbb' } }} // Adjust text color
-                        InputProps={{ style: { color: '#fff' } }} // Adjust input text color
-                        style={{ marginBottom: '20px', backgroundColor: '#2a2d3e' }} // Dark input background
-                    />
-                    <TextField
-                        label="LinkedIn Profile (Optional)"
-                        variant="outlined"
-                        fullWidth
-                        margin="normal"
-                        value={signUpData.linkedin}
-                        onChange={(e) => setSignUpData({ ...signUpData, linkedin: e.target.value })}
-                        InputLabelProps={{ style: { color: '#bbb' } }} // Adjust text color
-                        InputProps={{ style: { color: '#fff' } }} // Adjust input text color
-                        style={{ marginBottom: '20px', backgroundColor: '#2a2d3e' }} // Dark input background
-                    />
+            {/* Sign Up Dialog with No Bullshit Mode Toggle */}
+<Dialog open={openSignUpDialog} onClose={handleSignUpDialogClose}>
+  {/* Title */}
+  <DialogTitle style={{ backgroundColor: '#131629', color: '#fff', textAlign: 'center' }}>
+    Join The Democracy - 1000x Daily API Calls
+  </DialogTitle>
 
-                    {/* Message displayed inside the Sign-Up dialog */}
-                    {message && (
-                        <Typography
-                            variant="body1"
-                            style={{ color: 'red', marginTop: '20px', textAlign: 'center' }}
-                        >
-                            {message}
-                        </Typography>
-                    )}
-                </DialogContent>
-                <DialogActions style={{ backgroundColor: '#131629' }}>
-                    <Button
-                        onClick={handleSignUp}
-                        disabled={loading}
-                        style={{
-                            backgroundColor: loading ? '#555' : '#4a90e2',
-                            color: '#fff',
-                            fontWeight: 'bold',
-                            padding: '10px 20px',
-                            backgroundImage: 'linear-gradient(135deg, #4a90e2, #343b6f)',
-                        }}
-                    >
-                        {loading ? 'Submitting...' : 'Sign Up'}
-                    </Button>
-                </DialogActions>
-            </Dialog>
+  <DialogContent style={{ backgroundColor: '#131629', color: '#fff' }}>
+    {/* No Bullshit Mode Switch */}
+    <FormControlLabel
+      control={
+        <Switch
+          checked={noBullshitMode}
+          onChange={handleNoBullshitToggle}
+          color="primary"
+          sx={{
+            '& .MuiSwitch-switchBase.Mui-checked': {
+              color: '#4a90e2',
+            },
+            '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
+              backgroundColor: '#ff4d4d',
+            },
+            '& .MuiSwitch-switchBase': {
+              color: '#56CCF2',
+            },
+            '& .MuiSwitch-switchBase + .MuiSwitch-track': {
+              backgroundColor: '#ff6f6f',
+            },
+          }}
+        />
+      }
+      label="No Bullshit Mode"
+      style={{ marginBottom: '20px', color: '#fff' }}
+    />
+
+    {/* Input Fields */}
+    <TextField
+      label="Name"
+      variant="outlined"
+      fullWidth
+      margin="normal"
+      value={signUpData.name}
+      onChange={(e) => setSignUpData({ ...signUpData, name: e.target.value })}
+      InputLabelProps={{ style: { color: '#bbb' } }}
+      InputProps={{ style: { color: '#fff' } }}
+      style={{ marginBottom: '20px', backgroundColor: '#2a2d3e' }}
+    />
+    <TextField
+      label="Email"
+      type="email"
+      variant="outlined"
+      fullWidth
+      margin="normal"
+      value={signUpData.email}
+      onChange={(e) => setSignUpData({ ...signUpData, email: e.target.value })}
+      InputLabelProps={{ style: { color: '#bbb' } }}
+      InputProps={{ style: { color: '#fff' } }}
+      style={{ marginBottom: '20px', backgroundColor: '#2a2d3e' }}
+    />
+    <TextField
+      label="LinkedIn Profile (Optional)"
+      variant="outlined"
+      fullWidth
+      margin="normal"
+      value={signUpData.linkedin}
+      onChange={(e) => setSignUpData({ ...signUpData, linkedin: e.target.value })}
+      InputLabelProps={{ style: { color: '#bbb' } }}
+      InputProps={{ style: { color: '#fff' } }}
+      style={{ marginBottom: '20px', backgroundColor: '#2a2d3e' }}
+    />
+
+    {/* Error Message */}
+    {message && (
+      <Typography
+        variant="body1"
+        style={{ color: 'red', marginTop: '20px', textAlign: 'center' }}
+      >
+        {message}
+      </Typography>
+    )}
+  </DialogContent>
+
+  {/* Sign Up Button */}
+  <DialogActions style={{ backgroundColor: '#131629', justifyContent: 'center', padding: '20px' }}>
+    <Button
+      onClick={handleSignUp}
+      disabled={loading}
+      style={{
+        backgroundColor: noBullshitMode ? '#ff4d4d' : loading ? '#555' : '#4a90e2',
+        color: '#fff',
+        fontWeight: 'bold',
+        padding: '10px 20px',
+        fontSize: '16px',
+        borderRadius: '8px',
+        boxShadow: '0px 4px 10px rgba(0,0,0,0.2)',
+        backgroundImage: noBullshitMode
+          ? 'linear-gradient(135deg, #ff4d4d, #ff6f6f)'
+          : 'linear-gradient(135deg, #4a90e2, #343b6f)',
+      }}
+    >
+      {loading ? 'Submitting...' : 'Sign Up'}
+    </Button>
+  </DialogActions>
+
+  {/* No Bullshit Message - Rendered Beneath the Button */}
+  {noBullshitMode && (
+    <DialogContent style={{ backgroundColor: '#1b2135', padding: '15px 20px', color: '#fff', borderTop: '1px solid #4a90e2' }}>
+      <Typography
+        variant="body1"
+        style={{
+          backgroundColor: '#1b2135',
+          padding: '15px',
+          borderRadius: '8px',
+          fontSize: '16px',
+          lineHeight: '1.5',
+          color: '#bbb',
+        }}
+      >
+        - We are a startup<br />
+        - We are seeking early adopters to influence the solution<br />
+        - No guardrails: Non-attributable accounts will not be permitted<br />
+        - Q1/25 goal: Build Infra for daily snapshots of the entire web<br /><br />
+        - Post-snapshots, we will identify:<br />
+        &nbsp;&nbsp;1) Critical, exploitable hosted dependencies consumed by the majority<br />
+        &nbsp;&nbsp;2) Tracking & Attributing Threat Actors on the web like never before<br />
+        &nbsp;&nbsp;2) And soooo much more<br /><br />
+      </Typography>
+    </DialogContent>
+  )}
+</Dialog>
+
+
 
             {/* Success Dialog with Gradient Styling */}
             <Dialog open={openSuccessDialog} onClose={() => setOpenSuccessDialog(false)}>
