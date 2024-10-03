@@ -1,25 +1,12 @@
 #!/bin/bash
 
-# Start NordVPN service
-echo "Starting NordVPN service..."
-/etc/init.d/nordvpn start
-
-# Login to NordVPN using the token
-echo "Login to NordVPN using token..."
-nordvpn login --token $NORDVPN_TOKEN
-
-# Set VPN technology to NordLynx (or other preferences)
-nordvpn set technology nordlynx
-
-# Connect to NordVPN
-echo "Connecting to NordVPN..."
-nordvpn connect
+# Start OpenVPN using the NordVPN configuration
+echo "Starting OpenVPN with NordVPN configuration..."
+echo -e "$NORDVPN_USER\n$NORDVPN_PASS" > /etc/openvpn/credentials.txt
+openvpn --config /etc/openvpn/nordvpn.ovpn --auth-user-pass /etc/openvpn/credentials.txt &
 
 # Wait for the VPN connection to establish
-sleep 5
-
-# Check VPN status
-nordvpn status
+sleep 10
 
 # Run the main Python application
 echo "Starting the Webamon Sandbox application..."
