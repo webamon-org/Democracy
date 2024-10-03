@@ -286,7 +286,7 @@ const AuthenticationPage = () => {
         - Q1/25 goal: Build Infra for daily snapshots of the entire web<br /><br />
         - Post-snapshots, we will identify:<br />
         &nbsp;&nbsp;1) Critical, exploitable hosted dependencies consumed by the majority<br />
-        &nbsp;&nbsp;2) Tracking & Attributing Threat Actors on the web like never before<br />
+        &nbsp;&nbsp;2) Tracking Threat Actors across the web like never before<br />
         &nbsp;&nbsp;3) And soo much more<br /><br />
       </Typography>
     </DialogContent>
