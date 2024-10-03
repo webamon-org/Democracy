@@ -112,7 +112,7 @@ const AuthenticationPage = () => {
 
                 {/* Adjusted Text Styles for Better Visibility */}
                 <Typography variant="subtitle1" className="subtitle" style={{ marginBottom: '20px', fontWeight: '500', color: '#bbb' }}>
-                    This is an open-source project under the Apache 2.0 License.
+                    This is an open-source solution under the Apache 2.0 License.
                 </Typography>
 
                 {/* Lower Priority GitHub Button */}
