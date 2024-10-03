@@ -1,16 +1,30 @@
+# Use python:3.11 base image for building the project
 FROM python:3.11 as build
 
+# Install Chrome and Chromedriver
 RUN curl -Lo "/tmp/chromedriver-linux64.zip" "https://storage.googleapis.com/chrome-for-testing-public/123.0.6312.86/linux64/chromedriver-linux64.zip" && \
     curl -Lo "/tmp/chrome-linux64.zip" "https://storage.googleapis.com/chrome-for-testing-public/123.0.6312.86/linux64/chrome-linux64.zip" && \
     unzip /tmp/chromedriver-linux64.zip -d /opt/ && \
     unzip /tmp/chrome-linux64.zip -d /opt/
 
+# Use python:3.11 for the final image
 FROM python:3.11
+
+# Set the working directory
 WORKDIR /app
+
+# Install necessary dependencies
 RUN apt-get update && \
-    apt-get install -y wget unzip curl fonts-liberation libasound2 libatk-bridge2.0-0 libatk1.0-0 libatspi2.0-0 libcups2 libdbus-1-3 libdrm2 libgbm1 libgtk-3-0 libnspr4 libnss3 libxcomposite1 libxdamage1 libxfixes3 libxkbcommon0 libxrandr2 xdg-utils libu2f-udev
+    apt-get install -y wget unzip curl fonts-liberation libasound2 libatk-bridge2.0-0 libatk1.0-0 libatspi2.0-0 libcups2 libdbus-1-3 libdrm2 libgbm1 libgtk-3-0 libnspr4 libnss3 libxcomposite1 libxdamage1 libxfixes3 libxkbcommon0 libxrandr2 xdg-utils libu2f-udev \
+    # Install NordVPN and other necessary dependencies
+    && apt-get install -y nordvpn && \
+    nordvpn set technology nordlynx
+
+# Copy Chrome and Chromedriver from the build stage
 COPY --from=build /opt/chrome-linux64 /app/chrome
 COPY --from=build /opt/chromedriver-linux64 /app/
+
+# Copy application files
 COPY main.py /app/webamon-sandbox.py
 COPY opensearch.py /app/opensearch.py
 COPY community.py /app/community.py
@@ -19,9 +33,9 @@ COPY report.py /app/report.py
 COPY threatai.py /app/threatai.py
 COPY requirements.txt /app/requirements.txt
 COPY geoIP /app/geoIP
-ENV PATH="/app:$PATH"
 
-# General Configuration
+# Set environment variables
+ENV PATH="/app:$PATH"
 ENV source="openphish"
 ENV scan_type=""
 ENV scan_timeout=30
@@ -75,8 +89,20 @@ ENV check_dangling="False"
 ENV check_ports=""
 ENV port_check_config="NONE"
 
+# Expose the necessary port for Flask
 EXPOSE 5000
 
+# Install Python requirements
 RUN pip install --no-cache-dir -r requirements.txt
 
-CMD python webamon-sandbox.py > /dev/stdout
+# Set up NordVPN auto login and connection
+# Add your NordVPN credentials via environment variables or Docker secrets
+ENV NORDVPN_USER="your_nordvpn_username"
+ENV NORDVPN_PASS="your_nordvpn_password"
+RUN echo "Login to NordVPN..." && \
+    nordvpn login --username $NORDVPN_USER --password $NORDVPN_PASS && \
+    nordvpn connect && \
+    echo "NordVPN connected"
+
+# Start the application
+CMD nordvpn connect && python webamon-sandbox.py > /dev/stdout

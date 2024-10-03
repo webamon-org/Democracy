@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, TextField, Container, Typography, Dialog, DialogTitle, DialogContent, DialogActions, Switch, FormControlLabel } from '@mui/material';
+import { Button, TextField, Container, Typography, Dialog, DialogTitle, DialogContent, DialogActions, Switch, FormControlLabel, Checkbox } from '@mui/material';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -14,6 +14,7 @@ const AuthenticationPage = () => {
     const [loading, setLoading] = useState(false);
     const [signUpData, setSignUpData] = useState({ name: '', email: '', linkedin: '' });
     const [noBullshitMode, setNoBullshitMode] = useState(false); // Toggle state for No Bullshit mode
+    const [willingToSpeak, setWillingToSpeak] = useState(false); // State for the checkbox
 
     const navigate = useNavigate();
     const { setApiKey } = useAuth();
@@ -32,7 +33,7 @@ const AuthenticationPage = () => {
 
     const handleSignUp = async () => {
         if (!signUpData.name || !signUpData.email) {
-            setMessage('All fields are required.');
+            setMessage('Full name & email');
             return;
         }
 
@@ -51,6 +52,7 @@ const AuthenticationPage = () => {
                 setOpenSignUpDialog(false);
                 // Reset the form data after successful sign-up
                 setSignUpData({ name: '', email: '', linkedin: '' });
+                setWillingToSpeak(false); // Reset the checkbox
             }
         } catch (error) {
             setMessage(`Sign-up failed: ${error.response ? error.response.data.message : error.message}`);
@@ -65,6 +67,7 @@ const AuthenticationPage = () => {
         setSignUpData({ name: '', email: '', linkedin: '' });
         setMessage(''); // Clear any error or success message
         setNoBullshitMode(false); // Reset the toggle when closing
+        setWillingToSpeak(false); // Reset the checkbox
     };
 
     const handleNoBullshitToggle = (event) => {
@@ -147,109 +150,121 @@ const AuthenticationPage = () => {
                 </Button>
             </Container>
 
-            {/* Sign Up Dialog with No Bullshit Mode Toggle */}
-<Dialog open={openSignUpDialog} onClose={handleSignUpDialogClose}>
-  {/* Title */}
-  <DialogTitle style={{ backgroundColor: '#131629', color: '#fff', textAlign: 'center', fontSize: '22px' }}>
-    Join The Democracy - 1000x Daily API Calls
-  </DialogTitle>
+            {/* Sign Up Dialog with No Bulls**t Mode Toggle */}
+            <Dialog open={openSignUpDialog} onClose={handleSignUpDialogClose}>
+                <DialogTitle style={{ backgroundColor: '#131629', color: '#fff', textAlign: 'center', fontSize: '22px' }}>
+                    Join The Democracy - 500x Daily API Calls
+                </DialogTitle>
 
-  <DialogContent style={{ backgroundColor: '#131629', color: '#fff' }}>
-    {/* No Bullshit Mode Switch */}
-    <FormControlLabel
-      control={
-        <Switch
-          checked={noBullshitMode}
-          onChange={handleNoBullshitToggle}
-          color="primary"
-          sx={{
-            '& .MuiSwitch-switchBase.Mui-checked': {
-              color: '#4a90e2',
-            },
-            '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
-              backgroundColor: '#ff4d4d',
-            },
-            '& .MuiSwitch-switchBase': {
-              color: '#56CCF2',
-            },
-            '& .MuiSwitch-switchBase + .MuiSwitch-track': {
-              backgroundColor: '#ff6f6f',
-            },
-          }}
-        />
-      }
-      label="No Bullshit Mode"
-      style={{ marginBottom: '20px', color: '#fff'}}
-    />
+                <DialogContent style={{ backgroundColor: '#131629', color: '#fff' }}>
+                    {/* No Bullshit Mode Switch */}
+                    <FormControlLabel
+                        control={
+                            <Switch
+                                checked={noBullshitMode}
+                                onChange={handleNoBullshitToggle}
+                                color="primary"
+                                sx={{
+                                    '& .MuiSwitch-switchBase.Mui-checked': {
+                                        color: '#4a90e2',
+                                    },
+                                    '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
+                                        backgroundColor: '#ff4d4d',
+                                    },
+                                    '& .MuiSwitch-switchBase': {
+                                        color: '#56CCF2',
+                                    },
+                                    '& .MuiSwitch-switchBase + .MuiSwitch-track': {
+                                        backgroundColor: '#ff6f6f',
+                                    },
+                                }}
+                            />
+                        }
+                        label="No Bullsh*t Mode"
+                        style={{ marginBottom: '20px', color: '#fff'}}
+                    />
 
-    {/* Input Fields */}
-    <TextField
-      label="Name"
-      variant="outlined"
-      fullWidth
-      margin="normal"
-      value={signUpData.name}
-      onChange={(e) => setSignUpData({ ...signUpData, name: e.target.value })}
-      InputLabelProps={{ style: { color: '#bbb', fontSize: "18px" } }}
-      InputProps={{ style: { color: '#fff' } }}
-      style={{ marginBottom: '20px', backgroundColor: '#2a2d3e'  }}
-    />
-    <TextField
-      label="Email"
-      type="email"
-      variant="outlined"
-      fullWidth
-      margin="normal"
-      value={signUpData.email}
-      onChange={(e) => setSignUpData({ ...signUpData, email: e.target.value })}
-      InputLabelProps={{ style: { color: '#bbb', fontSize: "18px" } }}
-      InputProps={{ style: { color: '#fff' } }}
-      style={{ marginBottom: '20px', backgroundColor: '#2a2d3e' }}
-    />
-    <TextField
-      label="LinkedIn Profile (Optional)"
-      variant="outlined"
-      fullWidth
-      margin="normal"
-      value={signUpData.linkedin}
-      onChange={(e) => setSignUpData({ ...signUpData, linkedin: e.target.value })}
-      InputLabelProps={{ style: { color: '#bbb', fontSize: "18px" } }}
-      InputProps={{ style: { color: '#fff' } }}
-      style={{ marginBottom: '20px', backgroundColor: '#2a2d3e' }}
-    />
+                    {/* Input Fields */}
+                    <TextField
+                        label="Name"
+                        variant="outlined"
+                        fullWidth
+                        margin="normal"
+                        value={signUpData.name}
+                        onChange={(e) => setSignUpData({ ...signUpData, name: e.target.value })}
+                        InputLabelProps={{ style: { color: '#bbb', fontSize: "18px" } }}
+                        InputProps={{ style: { color: '#fff' } }}
+                        style={{ marginBottom: '20px', backgroundColor: '#2a2d3e'  }}
+                    />
+                    <TextField
+                        label="Email"
+                        type="email"
+                        variant="outlined"
+                        fullWidth
+                        margin="normal"
+                        value={signUpData.email}
+                        onChange={(e) => setSignUpData({ ...signUpData, email: e.target.value })}
+                        InputLabelProps={{ style: { color: '#bbb', fontSize: "18px" } }}
+                        InputProps={{ style: { color: '#fff' } }}
+                        style={{ marginBottom: '20px', backgroundColor: '#2a2d3e' }}
+                    />
+                    <TextField
+                        label="LinkedIn Profile (Optional)"
+                        variant="outlined"
+                        fullWidth
+                        margin="normal"
+                        value={signUpData.linkedin}
+                        onChange={(e) => setSignUpData({ ...signUpData, linkedin: e.target.value })}
+                        InputLabelProps={{ style: { color: '#bbb', fontSize: "18px" } }}
+                        InputProps={{ style: { color: '#fff' } }}
+                        style={{ marginBottom: '10px', backgroundColor: '#2a2d3e' }}
+                    />
 
-    {/* Error Message */}
-    {message && (
-      <Typography
-        variant="body1"
-        style={{ color: 'red', marginTop: '20px', textAlign: 'center' }}
-      >
-        {message}
-      </Typography>
-    )}
-  </DialogContent>
+                    {/* Willing to Speak to Founder Checkbox */}
+                    <FormControlLabel
+                        control={
+                            <Checkbox
+                                checked={willingToSpeak}
+                                onChange={(e) => setWillingToSpeak(e.target.checked)}
+                                style={{ color: '#4a90e2' }}
+                            />
+                        }
+                        label="Willing to speak to our founder (required)"
+                        style={{ color: '#fff', marginTop: '5px' }}
+                    />
 
-  {/* Sign Up Button */}
-  <DialogActions style={{ backgroundColor: '#131629', justifyContent: 'right', padding: '20px' }}>
-    <Button
-      onClick={handleSignUp}
-      disabled={loading}
-      style={{
-        backgroundColor: noBullshitMode ? '#ff4d4d' : loading ? '#555' : '#4a90e2',
-        color: '#fff',
-        fontWeight: 'bold',
-        padding: '10px 20px',
-        fontSize: '16px',
-        borderRadius: '8px',
-        boxShadow: '0px 4px 10px rgba(0,0,0,0.2)',
-        backgroundImage: noBullshitMode
-          ? 'linear-gradient(135deg, #ff4d4d, #ff6f6f)'
-          : 'linear-gradient(135deg, #4a90e2, #343b6f)',
-      }}
-    >
-      {loading ? 'Submitting...' : 'Sign Up'}
-    </Button>
-  </DialogActions>
+                    {/* Error Message */}
+                    {message && (
+                        <Typography
+                            variant="body1"
+                            style={{ color: 'red', marginTop: '20px', textAlign: 'center' }}
+                        >
+                            {message}
+                        </Typography>
+                    )}
+                </DialogContent>
+
+                {/* Sign Up Button */}
+                <DialogActions style={{ backgroundColor: '#131629', justifyContent: 'right', padding: '20px' }}>
+                    <Button
+                        onClick={handleSignUp}
+                        disabled={loading || !willingToSpeak}  // Disable if checkbox is not checked
+                        style={{
+                            backgroundColor: noBullshitMode ? '#ff4d4d' : loading || !willingToSpeak ? '#555' : '#4a90e2',
+                            color: '#fff',
+                            fontWeight: 'bold',
+                            padding: '10px 20px',
+                            fontSize: '16px',
+                            borderRadius: '8px',
+                            boxShadow: '0px 4px 10px rgba(0,0,0,0.2)',
+                            backgroundImage: noBullshitMode
+                                ? 'linear-gradient(135deg, #ff4d4d, #ff6f6f)'
+                                : 'linear-gradient(135deg, #4a90e2, #343b6f)',
+                        }}
+                    >
+                        {loading ? 'Submitting...' : 'Sign Up'}
+                    </Button>
+                </DialogActions>
 
   {/* No Bullshit Message - Rendered Beneath the Button */}
   {noBullshitMode && (
@@ -265,7 +280,7 @@ const AuthenticationPage = () => {
           color: '#bbb',
         }}
       >
-        - We are a startup<br />
+        - We are a startup & 100% in house<br />
         - We are seeking early adopters to influence the solution<br />
         - No guardrails: Non-attributable accounts will not be permitted<br />
         - Q1/25 goal: Build Infra for daily snapshots of the entire web<br /><br />
@@ -276,7 +291,7 @@ const AuthenticationPage = () => {
       </Typography>
     </DialogContent>
   )}
-</Dialog>
+            </Dialog>
 
 
 
