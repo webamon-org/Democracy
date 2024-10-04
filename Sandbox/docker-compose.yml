@@ -18,13 +18,15 @@ services:
       - custom_net
 
   webamon:
-    build: .
+    build: ./Sandbox
+    cap_add:
+      - NET_ADMIN
     depends_on:
       - vpn
     networks:
-      - custom_net
+      - webamon_net
     ports:
-      - "5001:5000"  # Expose port 5000 on the host as well
+      - "5001:5000"  # Optional, if direct host access is required
 
 networks:
   custom_net:
