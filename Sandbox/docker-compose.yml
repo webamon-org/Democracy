@@ -24,9 +24,7 @@ services:
       - NET_ADMIN
     depends_on:
       - vpn
-    networks:
-      - custom_net
-    network_mode: service:vpn  # Ensures the webamon service uses the VPN container's network
+    network_mode: service:vpn  # Use VPN container's network
     privileged: true
     ports:
       - "5001:5000"  # Optional, if direct host access is required
