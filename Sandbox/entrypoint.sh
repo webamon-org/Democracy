@@ -9,6 +9,7 @@ openvpn --config /etc/openvpn/nordvpn.ovpn --auth-user-pass /etc/openvpn/credent
 # Ensure the VPN is connected before continuing
 sleep 10
 
+
 # Show network info for debugging
 echo "Network interfaces:"
 ip a
