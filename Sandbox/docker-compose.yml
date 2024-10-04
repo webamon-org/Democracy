@@ -22,6 +22,7 @@ services:
     build: ./Sandbox
     cap_add:
       - NET_ADMIN
+      - NET_RAW
     depends_on:
       - vpn
     networks:
