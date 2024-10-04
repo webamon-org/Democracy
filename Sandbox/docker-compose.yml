@@ -19,16 +19,12 @@ services:
 
   webamon:
     build: .
-    environment:
-      - queue_worker=true
-      - tag=community
-      - threat_ai=false
     depends_on:
       - vpn
     networks:
       - custom_net
     ports:
-      - "5000:5000"  # Expose port 5000 on the host as well
+      - "5001:5000"  # Expose port 5000 on the host as well
 
 networks:
   custom_net:
