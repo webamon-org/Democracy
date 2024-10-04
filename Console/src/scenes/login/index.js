@@ -229,7 +229,7 @@ const AuthenticationPage = () => {
                                 style={{ color: '#4a90e2' }}
                             />
                         }
-                        label="Willing to speak to our founder (required)"
+                        label="Willing to speak to our founder or provide feedback (required)"
                         style={{ color: '#fff', marginTop: '5px' }}
                     />
 
