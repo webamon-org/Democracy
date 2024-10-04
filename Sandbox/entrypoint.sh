@@ -1,11 +1,10 @@
 #!/bin/bash
 
-# Start NordVPN using the token
-echo "Logging into NordVPN using token..."
-nordvpn login --token $NORDVPN_TOKEN
-
-# Connect to the VPN
-nordvpn connect
+# Start OpenVPN using the NordVPN configuration
+echo "Starting OpenVPN with NordVPN configuration..."
+# Use the NordVPN email and password for authentication
+echo -e "$NORDVPN_USER\n$NORDVPN_PASS" > /etc/openvpn/credentials.txt
+openvpn --config /etc/openvpn/nordvpn.ovpn --auth-user-pass /etc/openvpn/credentials.txt &
 
 # Ensure the VPN is connected before continuing
 sleep 10
