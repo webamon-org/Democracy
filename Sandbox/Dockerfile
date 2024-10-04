@@ -15,7 +15,7 @@ WORKDIR /app
 
 # Install necessary dependencies and OpenVPN
 RUN apt-get update && \
-    apt-get install -y wget unzip curl gnupg2 lsb-release ca-certificates openvpn fonts-liberation libasound2 libatk-bridge2.0-0 libatk1.0-0 libatspi2.0-0 libcups2 libdbus-1-3 libdrm2 libgbm1 libgtk-3-0 libnspr4 libnss3 libxcomposite1 libxdamage1 libxfixes3 libxkbcommon0 libxrandr2 xdg-utils libu2f-udev
+    apt-get install -y wget unzip curl gnupg2 lsb-release ca-certificates openvpn fonts-liberation libasound2 libatk-bridge2.0-0 libatk1.0-0 libatspi2.0-0 libcups2 libdbus-1-3 libdrm2 libgbm1 libgtk-3-0 libnspr4 libnss3 libxcomposite1 libxdamage1 libxfixes3 libxkbcommon0 libxrandr2 xdg-utils libu2f-udev iproute2 iptables iputils-ping
 
 # Copy Chrome and Chromedriver from the build stage
 COPY --from=build /opt/chrome-linux64 /app/chrome
