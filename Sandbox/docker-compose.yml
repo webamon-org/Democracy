@@ -10,13 +10,13 @@ services:
       - CONNECT=United_States      # Specify the country
       - TECHNOLOGY=NordLynx        # Use NordLynx for better performance
       - NETWORK=192.168.1.0/24     # Allow access from the LAN
+    ports:
+      - "5000:5000"                # Expose port 5000 to the LAN and internet
     sysctls:
       - net.ipv6.conf.all.disable_ipv6=1
     networks:
       - custom_net
     privileged: true
-    ports:
-      - "5000:5000"  # Optional for VPN's direct access (if needed for management)
 
   webamon:
     build: ./Sandbox
@@ -24,7 +24,8 @@ services:
       - NET_ADMIN
     depends_on:
       - vpn
-    network_mode: service:vpn  # Use VPN container's network
+    networks:
+      - custom_net
     privileged: true
     ports:
       - "5001:5000"  # Optional, if direct host access is required
