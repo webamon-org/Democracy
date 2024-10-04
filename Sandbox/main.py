@@ -205,7 +205,6 @@ def set_cookies(driver, domain):
 
 
 def phuck(url, report_id=''):
-    print(config['threat_ai_endpoint'])
     time.sleep(2)
     global counter, success, failed
     url = url if url.startswith('https://') or url.startswith('http://') else f'https://{url}'

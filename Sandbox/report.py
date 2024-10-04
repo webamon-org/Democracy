@@ -259,14 +259,24 @@ class Enrichment:
         report['meta'] = meta
         return report
 
-    def thirdParties(self,raw, resolved_url):
-        root_domain = tldextract.extract(resolved_url).registered_domain
+    def thirdParties(self, raw, resolved_url):
+        # Extract the full domain (subdomain + root domain) and the root domain
+        extracted_url = tldextract.extract(resolved_url)
+        root_domain = extracted_url.registered_domain
+        full_domain = f"{extracted_url.subdomain}.{root_domain}" if extracted_url.subdomain else root_domain
+
+        # Extract the domains from the requests
         domains = list({self.domain_extract(request['request']['url'])[0] for request in raw['request']})
+
         master = []
         for domain in domains:
             analysis = self.domain_info(domain, raw)
-            analysis['root'] = (domain == root_domain)
+
+            # Compare both full domain and root domain with each request domain
+            analysis['root'] = (domain == full_domain) or (domain == root_domain)
+
             master.append(analysis)
+
         return master
 
     def ip2country(self, ip):
