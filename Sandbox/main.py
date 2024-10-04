@@ -214,8 +214,8 @@ def phuck(url, report_id=''):
                     'source': config['source'], "feed": config['feed'], "date": datetime.datetime.utcnow().strftime("%Y-%m-%d"), "save_resources": config['resources'], "engine_id": engine_log['engine_id'], "errors": []}
     network_data['domain_name'], network_data['sub_domain'], network_data['tld'] = enrich.domain_extract(url)
     options = webdriver.ChromeOptions()
-    service = webdriver.ChromeService("/app/chromedriver")
-    options.binary_location = '/app/chrome/chrome'
+    service = webdriver.ChromeService("/production/sandbox/baremetal/chromedriver")
+    options.binary_location = '/production/sandbox/baremetal/chrome/chrome'
     options.add_argument("--headless")
     options.add_argument('--no-sandbox')
     options.add_argument("--disable-gpu")
