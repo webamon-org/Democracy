@@ -89,10 +89,6 @@ ENV port_check_config="NONE"
 # Install Python requirements
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Add OpenVPN credentials and configuration
-ENV NORDVPN_USER="your_nordvpn_username"
-ENV NORDVPN_PASS="your_nordvpn_password"
-COPY nordvpn.ovpn /etc/openvpn/nordvpn.ovpn
 
 # Use entrypoint script to connect to NordVPN with OpenVPN
 COPY entrypoint.sh /app/entrypoint.sh
