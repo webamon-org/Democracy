@@ -7,6 +7,8 @@ RUN curl -Lo "/tmp/chromedriver-linux64.zip" "https://storage.googleapis.com/chr
     unzip /tmp/chromedriver-linux64.zip -d /opt/ && \
     unzip /tmp/chrome-linux64.zip -d /opt/
 
+RUN /etc/init.d/nordvpn start
+
 # Use python:3.11 for the final image
 FROM python:3.11
 
