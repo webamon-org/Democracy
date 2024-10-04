@@ -16,6 +16,7 @@ services:
       - net.ipv6.conf.all.disable_ipv6=1
     networks:
       - custom_net
+    privileged: true
 
   webamon:
     build: ./Sandbox
@@ -25,6 +26,7 @@ services:
       - vpn
     networks:
       - webamon_net
+    privileged: true
     ports:
       - "5001:5000"  # Optional, if direct host access is required
 
