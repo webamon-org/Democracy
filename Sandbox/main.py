@@ -285,7 +285,7 @@ def phuck(url, report_id=''):
                     if sub_name not in _subs:
                         certs.append(network_data['request'][x]['response']['securityDetails'])
                         _subs.append(sub_name)
-                    requestlist.append(network_data['request'][x])
+                requestlist.append(network_data['request'][x])
         for key in keys_to_delete:
             del network_data['request'][key]
         network_data['certificate'] = certs
