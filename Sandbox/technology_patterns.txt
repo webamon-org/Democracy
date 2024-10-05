@@ -1,0 +1,304 @@
+# Frontend Frameworks
+jquery,jQuery
+react\.js,React
+angular\.js,Angular
+vue\.js,Vue.js
+backbone\.js,Backbone.js
+ember\.js,Ember.js
+meteor,Meteor.js
+aurelia,Aurelia
+polymer,Polymer
+svelte,Svelte
+preact,Preact
+stenciljs,Stencil
+lit-element,LitElement
+
+# Web Components and Libraries
+lodash,Lodash
+modernizr,Modernizr
+d3\.js,D3.js
+three\.js,Three.js
+greensock,GSAP (GreenSock Animation Platform)
+paper\.js,Paper.js
+chart\.js,Chart.js
+highcharts,Highcharts
+echarts,ECharts
+p5\.js,p5.js
+anime\.js,Anime.js
+phaser\.io,Phaser
+babylonjs,Babylon.js
+zeptojs,Zepto.js
+
+# UI Components & Frameworks
+bootstrap,Bootstrap
+foundation,Foundation
+materialize,Materialize
+semantic-ui,Semantic UI
+bulma,Bulma
+uikit,UIkit
+ant-design,Ant Design
+tailwindcss,Tailwind CSS
+tachyons,Tachyons
+purecss,PureCSS
+basscss,Basscss
+primer,GitHub Primer
+element-ui,Element UI
+
+# State Management
+redux,Redux
+mobx,MobX
+zustand,Zustand
+vuex,Vuex
+pinia,Pinia (Vue Store)
+recoil,Recoil
+ngrx,NgRx
+effector,Effector
+
+# CSS Frameworks and Utilities
+stylelint,Stylelint
+lesscss,Less
+sass,Sass
+postcss,PostCSS
+styled-components,Styled Components
+emotion,Emotion
+css-modules,CSS Modules
+styled-jsx,Styled JSX
+
+# Build Tools & Task Runners
+webpack,Webpack
+babel,Babel
+eslint,ESLint
+prettier,Prettier
+grunt,Grunt
+gulp,Gulp
+rollup,Rollup.js
+parcel,Parcel
+esbuild,esbuild
+snowpack,Snowpack
+vite,Vite
+broccoli,Broccoli
+brunch,Brunch
+lerna,Lerna
+nx,NX
+turborepo,Turborepo
+
+# Test & Quality Tools
+jest,Jest
+mocha,Mocha
+karma,Karma
+chai,Chai
+cypress,Cypress
+protractor,Protractor
+selenium,Selenium
+qunit,QUnit
+testcafe,TestCafe
+ava,AVA
+puppeteer,Puppeteer
+webdriverio,WebdriverIO
+storybook,Storybook
+axe-core,axe-core
+
+# Analytics & Tracking
+google-analytics\.com,Google Analytics
+hotjar,Hotjar
+mixpanel,Mixpanel
+kissmetrics,KISSmetrics
+heapanalytics,Heap Analytics
+segment,Segment
+crazyegg,Crazy Egg
+clicky,Clicky
+piwik,Matomo (formerly Piwik)
+optimizely,Optimizely
+fullstory,FullStory
+mouseflow,Mouseflow
+sessioncam,SessionCam
+luckyorange,Lucky Orange
+gaug.es,Gauges
+statcounter,StatCounter
+reinvigorate,Reinvigorate
+
+# Advertising Networks
+doubleclick,DoubleClick
+adroll,AdRoll
+criteo,Criteo
+taboola,Taboola
+outbrain,Outbrain
+googleadservices,Google Ads
+yahoo\.com,Yahoo
+media\.net,Media.net
+rubiconproject,Rubicon Project
+pubmatic,PubMatic
+openx,OpenX
+propellerads,PropellerAds
+revcontent,Revcontent
+mediavine,Mediavine
+mediaplex,Mediaplex
+
+# Marketing Automation & CRM
+hubspot,HubSpot
+pardot,Pardot
+marketo,Marketo
+infusionsoft,Infusionsoft
+act-on,Act-On
+drip,Drip
+klaviyo,Klaviyo
+sendgrid,SendGrid
+mailchimp,Mailchimp
+constantcontact,Constant Contact
+getresponse,GetResponse
+aweber,AWeber
+campaignmonitor,Campaign Monitor
+activecampaign,ActiveCampaign
+zoho,Zoho CRM
+salesforce,Salesforce
+zendesk,Zendesk
+freshdesk,Freshdesk
+pipedrive,Pipedrive
+intercom,Intercom
+drift,Drift
+tawk,Tawk.to
+
+# Content Delivery Networks (CDN)
+cloudflare,Cloudflare
+cloudfront,Amazon CloudFront
+maxcdn,MaxCDN
+fastly,Fastly
+stackpath,StackPath
+akamaihd,Akamai
+keycdn,KeyCDN
+jsdelivr,jsDelivr
+googlecdn,Google CDN
+cdnjs,CDNJS
+azureedge,Azure CDN
+limelight,Limelight Networks
+level3,Level 3 Communications
+
+# Content Management Systems (CMS)
+wordpress\.com,WordPress
+wix\.com,Wix
+squarespace\.com,Squarespace
+weebly\.com,Weebly
+shopify\.com,Shopify
+bigcommerce\.com,BigCommerce
+medium\.com,Medium
+blogger\.com,Blogger
+tumblr\.com,Tumblr
+ghost\.org,Ghost
+joomla\.org,Joomla
+drupal\.org,Drupal
+magento\.com,Magento
+prestashop\.com,PrestaShop
+opencart\.com,OpenCart
+oscommerce\.com,osCommerce
+zendesk\.com,Zendesk
+heroku\.com,Heroku
+netlify\.com,Netlify
+vercel\.com,Vercel
+craftcms,Craft CMS
+typo3,TYPO3
+silverstripe,SilverStripe
+concrete5,Concrete5
+umbraco,Umbraco
+dotnetnuke,DotNetNuke
+cmsmadesimple,CMS Made Simple
+zencart,Zen Cart
+contentful,Contentful
+webflow,Webflow
+strapi,Strapi
+sanity,Sanity
+keystonejs,KeystoneJS
+dato,DatoCMS
+
+# E-commerce Platforms
+bigcartel,Big Cartel
+volusion,Volusion
+3dcart,3dcart
+americommerce,AmeriCommerce
+nopcommerce,NopCommerce
+shift4shop,Shift4Shop
+prestashop,PrestaShop
+magento,Magento
+shopware,Shopware
+woocommerce,WooCommerce
+oscommerce,osCommerce
+zencart,Zen Cart
+
+# Payment Processors & Services
+stripe\.com,Stripe
+paypal\.com,PayPal
+squareup\.com,Square
+klarna,Klarna
+afterpay,Afterpay
+affirm,Affirm
+venmo,Venmo
+cashapp,Cash App
+authorize\.net,Authorize.Net
+braintree,Braintree
+adyen,Adyen
+skrill,Skrill
+payoneer,Payoneer
+dwolla,Dwolla
+
+# Hosting Platforms & Services
+bluehost,Bluehost
+hostgator,HostGator
+dreamhost,DreamHost
+siteground,SiteGround
+inmotionhosting,InMotion Hosting
+godaddy,GoDaddy
+wix,Wix
+weebly,Weebly
+digitalocean,DigitalOcean
+linode,Linode
+vultr,Vultr
+heroku,Heroku
+netlify,Netlify
+vercel,Vercel
+fly\.io,Fly.io
+firebase,Firebase Hosting
+surge,Surge.sh
+github\.io,GitHub Pages
+gitlab\.io,GitLab Pages
+bitbucket\.io,Bitbucket Pages
+render\.com,Render
+back4app,Back4App
+platform\.sh,Platform.sh
+
+# Miscellaneous
+favicon.ico,Website Favicon
+apollo,Apollo
+next\.js,Next.js
+nuxt\.js,Nuxt.js
+gatsby,Gatsby
+handlebars,Handlebars
+ember-cli,Ember CLI
+typescript,TypeScript
+googleapis\.com,Google APIs
+cloudinary,Cloudinary
+imgix,Imgix
+mapbox,Mapbox
+leaflet,Leaflet.js
+algolia,Algolia
+elastic\.co,Elastic.co
+sentry,Sentry
+bugsnag,Bugsnag
+rollbar,Rollbar
+firebaseio\.com,Firebase
+awsamazon\.com,Amazon Web Services
+maxcdn\.com,MaxCDN
+bootstrapcdn\.com,BootstrapCDN
+jquery\.com,jQuery
+akamai\.net,Akamai
+ampproject\.org,AMP
+jsdelivr\.net,jsDelivr
+herokuapp\.com,Heroku
+wp\.com,WordPress.com
+hubspot\.com,HubSpot
+github\.io,GitHub Pages
+bitbucket\.io,Bitbucket
+wp-content,WordPress
+gitlab\.io,GitLab
+shortpixel,ShortPixel
+imgix,Imgix
+tinypng,TinyPNG
+kraken\.io,Kraken.io

@@ -118,7 +118,7 @@ const Sidebar = () => {
     >
 
  <ProSidebar collapsed={isCollapsed}>
-        <Typography>v0.3.1</Typography>
+        <Typography>v0.3.2</Typography>
         <Menu iconShape="square">
           {/* LOGO AND MENU ICON */}
           <MenuItem
