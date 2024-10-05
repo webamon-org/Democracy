@@ -11,6 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Threat AI/LLM
 
 
+## [v0.3.2] - 2024-09-24
+
+### Fixed
+- Count 0 Bug for contacted domains - misplaced tab...
+
 ## [v0.3.1] - 2024-09-24
 
 ### Changed
