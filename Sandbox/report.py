@@ -265,11 +265,14 @@ class Enrichment:
         return report
 
     def thirdParties(self,raw, resolved_url):
+        print("raw['request']",raw['request'])
         print('thirdParties start')
         print('resolved_url',resolved_url)
         root_domain = tldextract.extract(resolved_url).registered_domain
         print('root_domain',root_domain)
         domains = list({self.domain_extract(request['request']['url'])[0] for request in raw['request']})
+        if len(domains) == 0:
+            domains = list(self.domain_extract(raw['request']['request']['url'])[0])
         print('domains', domains)
         master = []
         for domain in domains:
