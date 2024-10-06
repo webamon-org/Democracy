@@ -39,10 +39,11 @@ class Helper:
         record = requests.get(f'{self.elastic_base}/{index}/_doc/{_id}', auth=self.auth, verify=False).json()
         return record['_source']
 
-    def raw_save(self, index, data, _id=''):
+    def raw_save(self, index, data, _id='', skip=False):
         print('raw_save START')
         path = f'{index}/_doc'
         if _id:
+            print('id found', _id)
             if self.id_exists(_id, index):
                 self.logger.debug(f'Not saving - Already exists {index}/{_id}')
                 return False
