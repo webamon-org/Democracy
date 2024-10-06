@@ -403,7 +403,7 @@ def main():
                 return
         elif config['url']:
             logger.debug('Scanning Single URL')
-            urls = [config['url']]
+            urls = [config['url'].strip()]
             config['threads'] = 1
             config['source'] = 'url'
         process_chunks_in_parallel(urls)

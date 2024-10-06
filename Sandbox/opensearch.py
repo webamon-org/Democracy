@@ -151,6 +151,8 @@ class Domains(Helper):
         return self.get_record(domain_b64, 'domains')
 
     def update(self, domain_record):
+        print('domain_record')
+        print(domain_record)
         domain = domain_record['name']
         domain_b64 = base64.b64encode(domain.encode('utf-8')).decode('utf-8')
         index = 'domains'
