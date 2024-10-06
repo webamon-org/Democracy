@@ -335,7 +335,7 @@ def chunk_list(lst, num_chunks):
     return chunks
 
 
-def process_chunk(chunk, tag):
+def process_chunk(chunk):
     global counter, success, failed, errors, skipped
 
     for url in chunk:
