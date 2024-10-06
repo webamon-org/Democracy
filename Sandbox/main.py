@@ -209,7 +209,8 @@ def set_cookies(driver, domain):
 
 
 def phuck(url, report_id=''):
-    time.sleep(2)
+    print('phuck')
+    time.sleep(1)
     global counter, success, failed
     url = url if url.startswith('https://') or url.startswith('http://') else f'https://{url}'
     start = datetime.datetime.now()
@@ -359,13 +360,16 @@ def process_chunk(chunk):
             report['scan_status'] = 'success'
 
         if config['community']:
+            print('saving community')
             democracy.save(report)
             return
 
         elif config['save_elastic']:
+            print('saving report')
             OpenSearch.save_report(report)
 
             if 'domain' in report:
+                print(print('saving DOMAIN'))
                 for domain in report['domain']:
                     domains.update(domain)
 
