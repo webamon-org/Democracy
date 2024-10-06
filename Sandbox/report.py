@@ -61,7 +61,7 @@ class Resources:
                         resource_master[sha256] = {"report_id": report_id, "raw_data": response_body['body'],
                                                    "sha256": sha256, "mime_type": data['response']['mimeType'],
                                                    "request_id": request_id, "submission_url": scan_url,
-                                                   "resource_url": data['response']['url']}
+                                                   "resource_url": data['response']['url'], "ip": data['response']['remoteIPAddress']}
                 except:
                     pass
         return mapping, resource_master

@@ -73,23 +73,27 @@ class Helper:
     def format_bulk_data_resources(self, docs, feed, tag):
         bulk_data = ""
         for doc in docs:
-            if not self.id_exists(doc, 'resources'):
-                try:
-                    if not self.save_images and 'image' in docs[doc]['mime_type'].lower():
-                        logging.debug(f"Not saving image resource {doc} - {docs[doc]['mime_type']}")
-                        continue
-                    if not self.save_css and 'css' in docs[doc]['mime_type'].lower():
-                        logging.debug(f"Not saving CSS resource {doc} - {docs[doc]['mime_type']}")
-                        continue
-                    logging.info(f"Saving Resource {doc} - {docs[doc]['mime_type']}")
-                    index_metadata = json.dumps({ "index": {"_index": 'resources', "_id": doc}})
-                    doc_data = json.dumps({"date": datetime.utcnow().strftime("%Y-%m-%d"), "feed": feed, "tag": [tag], "resource": docs[doc]['raw_data'], "mime_type": docs[doc]['mime_type'], 'sha256': doc, "ip": [], "asn": [], "country": [], "domains": [], "notes": []})
-                    bulk_data += f"{index_metadata}\n{doc_data}\n"
-                except Exception as e:
-                    self.logger.critical(f'{e} - happened')
-                    self.logger.critical(docs[doc])
-            else:
-                self.logger.debug(f'Resource - {doc} - Already Exists')
+            exists = self.id_exists(doc, 'resources')
+            try:
+                if not self.save_images and 'image' in docs[doc]['mime_type'].lower():
+                    logging.debug(f"Not saving image resource {doc} - {docs[doc]['mime_type']}")
+                    continue
+                if not self.save_css and 'css' in docs[doc]['mime_type'].lower():
+                    logging.debug(f"Not saving CSS resource {doc} - {docs[doc]['mime_type']}")
+                    continue
+                logging.info(f"Saving Resource {doc} - {docs[doc]['mime_type']}")
+                index_metadata = json.dumps({ "index": {"_index": 'resources', "_id": doc}})
+                doc_data = None
+                if not exists:
+                    doc_data = json.dumps({"last_update": datetime.utcnow().strftime("%Y-%m-%d"), "last_update_utc": str(datetime.now(timezone.utc))[:19], "first_seen_utc": datetime.utcnow().strftime("%Y-%m-%d"), "feed": feed, "tag": [tag], "resource": docs[doc]['raw_data'], "mime_type": docs[doc]['mime_type'], 'sha256': doc, "ip": [docs[doc]['ip']], "asn": [], "country": [], "domains": [], "notes": []})
+                else:
+                    previous = self.get_record(doc, 'resources')
+                    doc_data = json.dumps({"last_update": datetime.utcnow().strftime("%Y-%m-%d"), "last_update_utc": str(datetime.now(timezone.utc))[:19], "first_seen_utc": previous['first_seen_utc'], "feed": feed, "tag": list(set(tag + previous['tag'])), "resource": docs[doc]['raw_data'], "mime_type": docs[doc]['mime_type'], 'sha256': doc, "ip": list(set(docs[doc]['ip'] + previous['ip'])), "asn": [], "country": [], "domains": [], "notes": []})
+                bulk_data += f"{index_metadata}\n{doc_data}\n"
+            except Exception as e:
+                self.logger.critical(f'{e} - happened')
+                self.logger.critical(docs[doc])
+
         return bulk_data if len(bulk_data) > 0 else False
 
     def query(self, index, query_string, limit=2000):
