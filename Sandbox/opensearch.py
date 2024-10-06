@@ -41,6 +41,8 @@ class Helper:
 
     def raw_save(self, index, data, _id='', skip=False):
         print('raw_save START')
+        print('####DATA###')
+        print(json.dumps(data, indent=4))
         path = f'{index}/_doc'
         if _id and skip:
             print('id found', _id)
