@@ -175,6 +175,7 @@ def get_openPhish():
 
 @app.route('/scan', methods=['POST'])
 def enqueue():
+    print('enqueue')
     data = request.json
     report_id = ''
     if 'report_id' in data:
@@ -183,9 +184,12 @@ def enqueue():
     if config['community']:
         democracy.save(Formatting.clean_data(report))
     elif config['save_elastic']:
+        print('save_elastic')
         OpenSearch.save_report(Formatting.clean_data(report))
         if 'domain' in report:
+            print('domain in report')
             for domain in report['domain']:
+                print('updating domains')
                 domains.update(domain)
 
         if 'server' in report:
