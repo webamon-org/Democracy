@@ -166,18 +166,21 @@ class Domains(Helper):
         domain_record.pop('root', False)
         domain_record['last_update'] = datetime.utcnow().strftime("%Y-%m-%d")
         domain_record['last_update_utc'] = str(datetime.now(timezone.utc))[:19]
+        domain_record['first_seen_utc'] = str(datetime.now(timezone.utc))[:19]
+        domain_record['tag'] = [self.config['tag']]
 
         exists = self.id_exists(domain_b64, index)
         if not exists:
-            domain_record['first_seen_utc'] = str(datetime.now(timezone.utc))[:19]
-            domain_record['tag'] = [self.config['tag']]
             save = self.raw_save(index, domain_record, domain_b64)
             return save
 
         old_record = self.get_domain(domain)
 
-        domain_record['first_seen_utc'] = old_record['first_seen_utc']
-        domain_record['tag'] = list(set([self.config['tag']] + old_record['tag']))
+        if 'first_seen_utc' in old_record:
+            domain_record['first_seen_utc'] = old_record['first_seen_utc']
+
+        if 'tag' in old_record:
+            domain_record['tag'] = list(set([self.config['tag']] + old_record['tag']))
 
         hashes = [record['sha256'] for record in domain_record['resource']]
         for resource in old_record['resource']:
@@ -217,17 +220,21 @@ class Servers(Helper):
         server_record.pop('response_code')
         server_record['last_update'] = datetime.utcnow().strftime("%Y-%m-%d")
         server_record['last_update_utc'] = str(datetime.now(timezone.utc))[:19]
+        server_record['tag'] = [self.config['tag']]
+        server_record['first_seen_utc'] = str(datetime.now(timezone.utc))[:19]
 
         exists = self.id_exists(ip_b64, index)
         if not exists:
-            server_record['first_seen_utc'] = str(datetime.now(timezone.utc))[:19]
-            server_record['tag'] = list(set([self.config['tag']] + server_record['tag']))
             save = self.raw_save(index, server_record, ip_b64)
             return save
 
         old_record = self.get_server(ip)
-        server_record['first_seen_utc'] = old_record['first_seen_utc']
-        server_record['tag'] = list(set([self.config['tag']] + old_record['tag']))
+        if 'first_seen_utc' in old_record:
+            server_record['first_seen_utc'] = old_record['first_seen_utc']
+
+        if 'tag' in old_record:
+            server_record['tag'] = list(set([self.config['tag']] + old_record['tag']))
+
         hashes = [record['sha256'] for record in server_record['resource']]
 
         for resource in old_record['resource']:
