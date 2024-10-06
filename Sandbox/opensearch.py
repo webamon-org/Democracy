@@ -151,8 +151,6 @@ class Domains(Helper):
         return self.get_record(domain_b64, 'domains')
 
     def update(self, domain_record):
-        print('domain_record IN')
-        print(domain_record)
         domain = domain_record['name']
         domain_b64 = base64.b64encode(domain.encode('utf-8')).decode('utf-8')
         index = 'domains'
@@ -196,8 +194,6 @@ class Domains(Helper):
                     if dns_record in old_record['dns']:
                         if type(old_record['dns'][dns_record]) is list:
                             domain_record['dns'][dns_record] = list(set(old_record['dns'][dns_record] + domain_record['dns'][dns_record]))
-        print('domain_record OUT')
-        print(domain_record)
         save = self.raw_save(index, domain_record, domain_b64)
         return save
 
@@ -209,8 +205,6 @@ class Servers(Helper):
         return self.get_record(ip_b64, 'servers')
 
     def update(self, server_record):
-        print('server_record IN')
-        print(server_record)
         ip = server_record['ip']
         ip_b64 = base64.b64encode(ip.encode('utf-8')).decode('utf-8')
         index = 'servers'
@@ -243,8 +237,6 @@ class Servers(Helper):
 
         server_record['domain'] = list(set(old_record['domain'] + server_record['domain']))
         server_record['server'] = list(set(old_record['server'] + server_record['server']))
-        print('server_record OUT')
-        print(server_record)
         save = self.raw_save(index, server_record, ip_b64)
         return save
 
