@@ -40,6 +40,7 @@ class Helper:
         return record['_source']
 
     def raw_save(self, index, data, _id=''):
+        print('raw_save START')
         path = f'{index}/_doc'
         if _id:
             if self.id_exists(_id, index):
@@ -49,6 +50,7 @@ class Helper:
         else:
             path += f'/_id'
         response = requests.post(f'{self.config["elastic_base"]}/{path}', headers={'Content-Type': 'application/json'}, auth=self.auth, data=json.dumps(data), verify=False)
+        print(response.text)
         if response.status_code not in [200, 201]:
             self.logger.critical(f'Failed to save {index}/{_id}')
             self.logger.critical(response.text)
