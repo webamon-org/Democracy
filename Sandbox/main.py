@@ -294,7 +294,6 @@ def phuck(url, report_id=''):
         for x in network_data['certificate']:
             x['valid_from_utc'] = str(datetime.datetime.fromtimestamp(x['validFrom'], datetime.UTC))
             x['valid_to_utc'] = str(datetime.datetime.fromtimestamp(x['validTo'], datetime.UTC))
-        print('###############################')
         network_data['domain'] = enrich.thirdParties(network_data, network_data['resolved_url'])
         network_data['server'] = enrich.server_data(network_data)
         network_data = enrich.scanMeta(network_data)
