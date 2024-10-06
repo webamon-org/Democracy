@@ -40,12 +40,8 @@ class Helper:
         return record['_source']
 
     def raw_save(self, index, data, _id='', skip=False):
-        print('raw_save START')
-        print('####DATA###')
-        print(json.dumps(data, indent=4))
         path = f'{index}/_doc'
         if _id:
-            print('id found', _id)
             if self.id_exists(_id, index) and skip:
                 self.logger.debug(f'Not saving - Already exists {index}/{_id}')
                 return False
@@ -53,7 +49,6 @@ class Helper:
         else:
             path += f'/_id'
         response = requests.post(f'{self.config["elastic_base"]}/{path}', headers={'Content-Type': 'application/json'}, auth=self.auth, data=json.dumps(data), verify=False)
-        print(response.text)
         if response.status_code not in [200, 201]:
             self.logger.critical(f'Failed to save {index}/{_id}')
             self.logger.critical(response.text)
@@ -84,11 +79,9 @@ class Helper:
                 logging.info(f"Saving Resource {doc} - {docs[doc]['mime_type']}")
                 index_metadata = json.dumps({ "index": {"_index": 'resources', "_id": doc}})
                 if not exists:
-                    print('resource does not exist')
                     doc_data = json.dumps({"last_update": datetime.utcnow().strftime("%Y-%m-%d"), "last_update_utc": str(datetime.now(timezone.utc))[:19], "first_seen_utc": datetime.utcnow().strftime("%Y-%m-%d"), "feed": feed, "tag": [tag], "resource": docs[doc]['raw_data'], "mime_type": docs[doc]['mime_type'], 'sha256': doc, "ip": [docs[doc]['ip']], "asn": [], "country": [], "domains": [], "notes": []})
                     bulk_data += f"{index_metadata}\n{doc_data}\n"
                 else:
-                    print('resource exists')
                     previous = self.get_record(doc, 'resources')
                     doc_data = json.dumps({"last_update": datetime.utcnow().strftime("%Y-%m-%d"), "last_update_utc": str(datetime.now(timezone.utc))[:19], "first_seen_utc": previous['first_seen_utc'], "feed": feed, "tag": list(set(tag + previous['tag'])), "resource": docs[doc]['raw_data'], "mime_type": docs[doc]['mime_type'], 'sha256': doc, "ip": list(set(docs[doc]['ip'] + previous['ip'])), "asn": [], "country": [], "domains": [], "notes": []})
                     bulk_data += f"{index_metadata}\n{doc_data}\n"
@@ -158,7 +151,8 @@ class Domains(Helper):
         return self.get_record(domain_b64, 'domains')
 
     def update(self, domain_record):
-        print('domains update start')
+        print('domain_record IN')
+        print(domain_record)
         domain = domain_record['name']
         domain_b64 = base64.b64encode(domain.encode('utf-8')).decode('utf-8')
         index = 'domains'
@@ -170,7 +164,6 @@ class Domains(Helper):
         domain_record.pop('request', False)
         domain_record.pop('total_response_size', False)
         domain_record.pop('root', False)
-        print('last_update',str(datetime.now(timezone.utc))[:19])
         domain_record['last_update'] = datetime.utcnow().strftime("%Y-%m-%d")
         domain_record['last_update_utc'] = str(datetime.now(timezone.utc))[:19]
 
@@ -198,11 +191,9 @@ class Domains(Helper):
                     if dns_record in old_record['dns']:
                         if type(old_record['dns'][dns_record]) is list:
                             domain_record['dns'][dns_record] = list(set(old_record['dns'][dns_record] + domain_record['dns'][dns_record]))
-
-        print(domain_record['last_update_utc'])
-        print('saving')
+        print('domain_record OUT')
+        print(domain_record)
         save = self.raw_save(index, domain_record, domain_b64)
-        print(save)
         return save
 
 
@@ -213,6 +204,8 @@ class Servers(Helper):
         return self.get_record(ip_b64, 'servers')
 
     def update(self, server_record):
+        print('server_record IN')
+        print(server_record)
         ip = server_record['ip']
         ip_b64 = base64.b64encode(ip.encode('utf-8')).decode('utf-8')
         index = 'servers'
@@ -239,7 +232,8 @@ class Servers(Helper):
 
         server_record['domain'] = list(set(old_record['domain'] + server_record['domain']))
         server_record['server'] = list(set(old_record['server'] + server_record['server']))
-
+        print('server_record OUT')
+        print(server_record)
         save = self.raw_save(index, server_record, ip_b64)
         return save
 

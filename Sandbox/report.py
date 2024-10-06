@@ -267,7 +267,6 @@ class Enrichment:
             domains = list(self.domain_extract(raw['request']['request']['url'])[0])
         master = []
         for domain in domains:
-            print('domain',domain)
             analysis = self.domain_info(domain, raw)
             analysis['root'] = (domain == root_domain)
             master.append(analysis)
