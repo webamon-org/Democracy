@@ -44,9 +44,9 @@ class Helper:
         print('####DATA###')
         print(json.dumps(data, indent=4))
         path = f'{index}/_doc'
-        if _id and skip:
+        if _id:
             print('id found', _id)
-            if self.id_exists(_id, index):
+            if self.id_exists(_id, index) and skip:
                 self.logger.debug(f'Not saving - Already exists {index}/{_id}')
                 return False
             path += f'/{_id}'
