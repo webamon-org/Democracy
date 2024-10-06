@@ -177,7 +177,7 @@ class Domains(Helper):
         hashes = [record['sha256'] for record in domain_record['resource']]
         for resource in old_record['resource']:
             if resource['sha256'] not in hashes:
-                domain_record['resource'].append(resource['sha256'])
+                domain_record['resource'].append(resource)
 
         for record in domain_record:
             if record == "sub_domain" and record in old_record:
@@ -224,7 +224,7 @@ class Servers(Helper):
 
         for resource in old_record['resource']:
             if resource['sha256'] not in hashes:
-                server_record['resource'].append(resource['sha256'])
+                server_record['resource'].append(resource)
 
         server_record['domain'] = list(set(old_record['domain'] + server_record['domain']))
         server_record['server'] = list(set(old_record['server'] + server_record['server']))
