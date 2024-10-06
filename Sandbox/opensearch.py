@@ -83,13 +83,15 @@ class Helper:
                     continue
                 logging.info(f"Saving Resource {doc} - {docs[doc]['mime_type']}")
                 index_metadata = json.dumps({ "index": {"_index": 'resources', "_id": doc}})
-                doc_data = None
                 if not exists:
+                    print('resource does not exist')
                     doc_data = json.dumps({"last_update": datetime.utcnow().strftime("%Y-%m-%d"), "last_update_utc": str(datetime.now(timezone.utc))[:19], "first_seen_utc": datetime.utcnow().strftime("%Y-%m-%d"), "feed": feed, "tag": [tag], "resource": docs[doc]['raw_data'], "mime_type": docs[doc]['mime_type'], 'sha256': doc, "ip": [docs[doc]['ip']], "asn": [], "country": [], "domains": [], "notes": []})
+                    bulk_data += f"{index_metadata}\n{doc_data}\n"
                 else:
+                    print('resource exists')
                     previous = self.get_record(doc, 'resources')
                     doc_data = json.dumps({"last_update": datetime.utcnow().strftime("%Y-%m-%d"), "last_update_utc": str(datetime.now(timezone.utc))[:19], "first_seen_utc": previous['first_seen_utc'], "feed": feed, "tag": list(set(tag + previous['tag'])), "resource": docs[doc]['raw_data'], "mime_type": docs[doc]['mime_type'], 'sha256': doc, "ip": list(set(docs[doc]['ip'] + previous['ip'])), "asn": [], "country": [], "domains": [], "notes": []})
-                bulk_data += f"{index_metadata}\n{doc_data}\n"
+                    bulk_data += f"{index_metadata}\n{doc_data}\n"
             except Exception as e:
                 self.logger.critical(f'{e} - happened')
                 self.logger.critical(docs[doc])
