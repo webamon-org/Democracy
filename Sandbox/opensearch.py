@@ -147,6 +147,7 @@ class Domains(Helper):
         return self.get_record(domain_b64, 'domains')
 
     def update(self, domain_record):
+        print('domains update start')
         domain = domain_record['name']
         domain_b64 = base64.b64encode(domain.encode('utf-8')).decode('utf-8')
         index = 'domains'
@@ -158,6 +159,7 @@ class Domains(Helper):
         domain_record.pop('request', False)
         domain_record.pop('total_response_size', False)
         domain_record.pop('root', False)
+        print('last_update',str(datetime.now(timezone.utc))[:19])
         domain_record['last_update'] = datetime.utcnow().strftime("%Y-%m-%d")
         domain_record['last_update_utc'] = str(datetime.now(timezone.utc))[:19]
 
@@ -184,8 +186,10 @@ class Domains(Helper):
                         if type(old_record['dns'][dns_record]) is list:
                             domain_record['dns'][dns_record] = list(set(old_record['dns'][dns_record] + domain_record['dns'][dns_record]))
 
-
+        print(domain_record['last_update_utc'])
+        print('saving')
         save = self.raw_save(index, domain_record, domain_b64)
+        print(save)
         return save
 
 
