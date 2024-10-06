@@ -176,6 +176,8 @@ class Domains(Helper):
 
         old_record = self.get_domain(domain)
 
+        domain_record['first_seen_utc'] = old_record['first_seen_utc']
+
         hashes = [record['sha256'] for record in domain_record['resource']]
         for resource in old_record['resource']:
             if resource['sha256'] not in hashes:
@@ -222,6 +224,7 @@ class Servers(Helper):
             return save
 
         old_record = self.get_server(ip)
+        server_record['first_seen_utc'] = old_record['first_seen_utc']
         hashes = [record['sha256'] for record in server_record['resource']]
 
         for resource in old_record['resource']:
