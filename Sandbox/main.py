@@ -139,7 +139,6 @@ def get_config():
 
 
 config = get_config()
-print(config)
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 logging.basicConfig(level=eval(f'logging.{config["log_level"].upper()}'))
 logger = logging.getLogger(__name__)
@@ -205,7 +204,7 @@ def set_cookies(driver, domain):
 
 
 def phuck(url, report_id=''):
-    time.sleep(2)
+    time.sleep(1)
     global counter, success, failed
     url = url if url.startswith('https://') or url.startswith('http://') else f'https://{url}'
     start = datetime.datetime.now()
@@ -294,7 +293,6 @@ def phuck(url, report_id=''):
         for x in network_data['certificate']:
             x['valid_from_utc'] = str(datetime.datetime.fromtimestamp(x['validFrom'], datetime.UTC))
             x['valid_to_utc'] = str(datetime.datetime.fromtimestamp(x['validTo'], datetime.UTC))
-        print('###############################')
         network_data['domain'] = enrich.thirdParties(network_data, network_data['resolved_url'])
         network_data['server'] = enrich.server_data(network_data)
         network_data = enrich.scanMeta(network_data)
@@ -404,7 +402,7 @@ def main():
                 return
         elif config['url']:
             logger.debug('Scanning Single URL')
-            urls = [config['url']]
+            urls = [config['url'].strip()]
             config['threads'] = 1
             config['source'] = 'url'
         process_chunks_in_parallel(urls)

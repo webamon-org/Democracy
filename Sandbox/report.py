@@ -61,7 +61,7 @@ class Resources:
                         resource_master[sha256] = {"report_id": report_id, "raw_data": response_body['body'],
                                                    "sha256": sha256, "mime_type": data['response']['mimeType'],
                                                    "request_id": request_id, "submission_url": scan_url,
-                                                   "resource_url": data['response']['url']}
+                                                   "resource_url": data['response']['url'], "ip": data['response']['remoteIPAddress'], 'domain': tldextract.extract(data['response']['url']).registered_domain}
                 except:
                     pass
         return mapping, resource_master
@@ -167,7 +167,6 @@ class Enrichment:
         self.asn_cache = {}
 
     def domain_info(self, domain, raw):
-        print('domain_info start')
         master = {'hosting_scripts': False,
                   'mime_type': [],
                   'whois': {},
@@ -181,10 +180,7 @@ class Enrichment:
                   'root': False}
 
         for request in raw['request']:
-            print('request',request)
             _domain, sub, tld = self.domain_extract(request['response']['url'])
-            print('domain, sub, tld',domain, sub, tld)
-            print('match:',_domain == domain)
             if _domain == domain:
 
                 url = request['response'].get('url', '')
@@ -265,22 +261,15 @@ class Enrichment:
         return report
 
     def thirdParties(self,raw, resolved_url):
-        print("raw['request']",raw['request'])
-        print('thirdParties start')
-        print('resolved_url',resolved_url)
         root_domain = tldextract.extract(resolved_url).registered_domain
-        print('root_domain',root_domain)
         domains = list({self.domain_extract(request['request']['url'])[0] for request in raw['request']})
         if len(domains) == 0:
             domains = list(self.domain_extract(raw['request']['request']['url'])[0])
-        print('domains', domains)
         master = []
         for domain in domains:
-            print('domain',domain)
             analysis = self.domain_info(domain, raw)
             analysis['root'] = (domain == root_domain)
             master.append(analysis)
-        print('thirdParties end')
         return master
 
     def ip2country(self, ip):
@@ -317,13 +306,8 @@ class Enrichment:
 
     @staticmethod
     def domain_extract(url):
-        print('domain_extract start')
-        print('url',url)
         dirty = urlparse(url).netloc
-        print('dirty',dirty)
         clean = tldextract.extract(dirty)
-        print('clean',clean)
-        print('domain_extract end')
         return clean.registered_domain, clean.subdomain, clean.suffix
 
     @staticmethod
@@ -381,11 +365,12 @@ class Enrichment:
                 if domain['hosting_scripts'] and not results[ip]['hosting_scripts']:
                     results[ip]['hosting_scripts'] = True
 
+
                 if domain['name'] not in results[ip]['domain']:
                     results[ip]['domain'].append(domain['name'])
 
                 if domain['server']:
-                    results[ip]['name'].append(domain['server'])
+                    results[ip]['server'].append(domain['server'])
 
                 for mime in domain['mime_type']:
                     results[ip]['mime_type'].append(mime)

@@ -39,10 +39,10 @@ class Helper:
         record = requests.get(f'{self.elastic_base}/{index}/_doc/{_id}', auth=self.auth, verify=False).json()
         return record['_source']
 
-    def raw_save(self, index, data, _id=''):
+    def raw_save(self, index, data, _id='', skip=False):
         path = f'{index}/_doc'
         if _id:
-            if self.id_exists(_id, index):
+            if self.id_exists(_id, index) and skip:
                 self.logger.debug(f'Not saving - Already exists {index}/{_id}')
                 return False
             path += f'/{_id}'
@@ -68,23 +68,30 @@ class Helper:
     def format_bulk_data_resources(self, docs, feed, tag):
         bulk_data = ""
         for doc in docs:
-            if not self.id_exists(doc, 'resources'):
-                try:
-                    if not self.save_images and 'image' in docs[doc]['mime_type'].lower():
-                        logging.debug(f"Not saving image resource {doc} - {docs[doc]['mime_type']}")
-                        continue
-                    if not self.save_css and 'css' in docs[doc]['mime_type'].lower():
-                        logging.debug(f"Not saving CSS resource {doc} - {docs[doc]['mime_type']}")
-                        continue
-                    logging.info(f"Saving Resource {doc} - {docs[doc]['mime_type']}")
-                    index_metadata = json.dumps({ "index": {"_index": 'resources', "_id": doc}})
-                    doc_data = json.dumps({"date": datetime.utcnow().strftime("%Y-%m-%d"), "feed": feed, "tag": [tag], "resource": docs[doc]['raw_data'], "mime_type": docs[doc]['mime_type'], 'sha256': doc, "ip": [], "asn": [], "country": [], "domains": [], "notes": []})
+            exists = self.id_exists(doc, 'resources')
+            try:
+                if not self.save_images and 'image' in docs[doc]['mime_type'].lower():
+                    logging.debug(f"Not saving image resource {doc} - {docs[doc]['mime_type']}")
+                    continue
+                if not self.save_css and 'css' in docs[doc]['mime_type'].lower():
+                    logging.debug(f"Not saving CSS resource {doc} - {docs[doc]['mime_type']}")
+                    continue
+                logging.info(f"Saving Resource {doc} - {docs[doc]['mime_type']}")
+                index_metadata = json.dumps({ "index": {"_index": 'resources', "_id": doc}})
+                if not exists:
+                    doc_data = json.dumps({"last_update": datetime.utcnow().strftime("%Y-%m-%d"), "last_update_utc": str(datetime.now(timezone.utc))[:19], "first_seen_utc": datetime.utcnow().strftime("%Y-%m-%d"), "feed": feed, "tag": [tag], "resource": docs[doc]['raw_data'], "mime_type": docs[doc]['mime_type'], 'sha256': doc, "ip": [docs[doc]['ip']], "asn": [], "country": [], "domains": [docs[doc]['domain']], "notes": []})
                     bulk_data += f"{index_metadata}\n{doc_data}\n"
-                except Exception as e:
-                    self.logger.critical(f'{e} - happened')
-                    self.logger.critical(docs[doc])
-            else:
-                self.logger.debug(f'Resource - {doc} - Already Exists')
+                else:
+                    first_seen = datetime.utcnow().strftime("%Y-%m-%d")
+                    previous = self.get_record(doc, 'resources')
+                    if 'first_seen_utc' in previous:
+                        first_seen = previous['first_seen_utc']
+                    doc_data = json.dumps({"last_update": datetime.utcnow().strftime("%Y-%m-%d"), "last_update_utc": str(datetime.now(timezone.utc))[:19], "first_seen_utc": first_seen, "feed": feed, "tag": list(set([tag] + previous['tag'])), "resource": docs[doc]['raw_data'], "mime_type": docs[doc]['mime_type'], 'sha256': doc, "ip": list(set([docs[doc]['ip']] + previous['ip'])), "asn": [], "country": [], "domains": list(set([docs[doc]['domain']] + previous['domains'])), "notes": []})
+                    bulk_data += f"{index_metadata}\n{doc_data}\n"
+            except Exception as e:
+                self.logger.critical(f'{e} - happened')
+                self.logger.critical(docs[doc])
+
         return bulk_data if len(bulk_data) > 0 else False
 
     def query(self, index, query_string, limit=2000):
@@ -160,19 +167,26 @@ class Domains(Helper):
         domain_record.pop('root', False)
         domain_record['last_update'] = datetime.utcnow().strftime("%Y-%m-%d")
         domain_record['last_update_utc'] = str(datetime.now(timezone.utc))[:19]
+        domain_record['first_seen_utc'] = str(datetime.now(timezone.utc))[:19]
+        domain_record['tag'] = [self.config['tag']]
 
         exists = self.id_exists(domain_b64, index)
         if not exists:
-            domain_record['first_seen_utc'] = str(datetime.now(timezone.utc))[:19]
             save = self.raw_save(index, domain_record, domain_b64)
             return save
 
         old_record = self.get_domain(domain)
 
+        if 'first_seen_utc' in old_record:
+            domain_record['first_seen_utc'] = old_record['first_seen_utc']
+
+        if 'tag' in old_record:
+            domain_record['tag'] = list(set([self.config['tag']] + old_record['tag']))
+
         hashes = [record['sha256'] for record in domain_record['resource']]
         for resource in old_record['resource']:
             if resource['sha256'] not in hashes:
-                domain_record['resource'].append(resource['sha256'])
+                domain_record['resource'].append(resource)
 
         for record in domain_record:
             if record == "sub_domain" and record in old_record:
@@ -183,8 +197,6 @@ class Domains(Helper):
                     if dns_record in old_record['dns']:
                         if type(old_record['dns'][dns_record]) is list:
                             domain_record['dns'][dns_record] = list(set(old_record['dns'][dns_record] + domain_record['dns'][dns_record]))
-
-
         save = self.raw_save(index, domain_record, domain_b64)
         return save
 
@@ -205,23 +217,29 @@ class Servers(Helper):
         server_record.pop('response_code')
         server_record['last_update'] = datetime.utcnow().strftime("%Y-%m-%d")
         server_record['last_update_utc'] = str(datetime.now(timezone.utc))[:19]
+        server_record['tag'] = [self.config['tag']]
+        server_record['first_seen_utc'] = str(datetime.now(timezone.utc))[:19]
 
         exists = self.id_exists(ip_b64, index)
         if not exists:
-            server_record['first_seen_utc'] = str(datetime.now(timezone.utc))[:19]
             save = self.raw_save(index, server_record, ip_b64)
             return save
 
         old_record = self.get_server(ip)
+        if 'first_seen_utc' in old_record:
+            server_record['first_seen_utc'] = old_record['first_seen_utc']
+
+        if 'tag' in old_record:
+            server_record['tag'] = list(set([self.config['tag']] + old_record['tag']))
+
         hashes = [record['sha256'] for record in server_record['resource']]
 
         for resource in old_record['resource']:
             if resource['sha256'] not in hashes:
-                server_record['resource'].append(resource['sha256'])
+                server_record['resource'].append(resource)
 
         server_record['domain'] = list(set(old_record['domain'] + server_record['domain']))
         server_record['server'] = list(set(old_record['server'] + server_record['server']))
-
         save = self.raw_save(index, server_record, ip_b64)
         return save
 
