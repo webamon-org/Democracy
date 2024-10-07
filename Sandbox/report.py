@@ -380,7 +380,7 @@ class Enrichment:
 
                 if domain['server']:
                     print('debug checkpoint 2')
-                    results[ip]['name'].append(domain['server'])
+                    results[ip]['server'].append(domain['server'])
 
                 for mime in domain['mime_type']:
                     results[ip]['mime_type'].append(mime)
