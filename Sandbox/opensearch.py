@@ -78,15 +78,16 @@ class Helper:
                     continue
                 logging.info(f"Saving Resource {doc} - {docs[doc]['mime_type']}")
                 index_metadata = json.dumps({ "index": {"_index": 'resources', "_id": doc}})
+                utc_now = str(datetime.now(timezone.utc))[:19]
                 if not exists:
-                    doc_data = json.dumps({"last_update": datetime.utcnow().strftime("%Y-%m-%d"), "last_update_utc": str(datetime.now(timezone.utc))[:19], "first_seen_utc": datetime.utcnow().strftime("%Y-%m-%d"), "feed": feed, "tag": [tag], "resource": docs[doc]['raw_data'], "mime_type": docs[doc]['mime_type'], 'sha256': doc, "ip": [docs[doc]['ip']], "asn": [], "country": [], "domains": [docs[doc]['domain']], "notes": []})
+                    doc_data = json.dumps({"last_update": datetime.utcnow().strftime("%Y-%m-%d"), "last_update_utc": utc_now, "first_seen_utc": utc_now, "feed": feed, "tag": [tag], "resource": docs[doc]['raw_data'], "mime_type": docs[doc]['mime_type'], 'sha256': doc, "ip": [docs[doc]['ip']], "asn": [], "country": [], "domains": [docs[doc]['domain']], "notes": []})
                     bulk_data += f"{index_metadata}\n{doc_data}\n"
                 else:
-                    first_seen = datetime.utcnow().strftime("%Y-%m-%d")
+                    first_seen = utc_now
                     previous = self.get_record(doc, 'resources')
                     if 'first_seen_utc' in previous:
                         first_seen = previous['first_seen_utc']
-                    doc_data = json.dumps({"last_update": datetime.utcnow().strftime("%Y-%m-%d"), "last_update_utc": str(datetime.now(timezone.utc))[:19], "first_seen_utc": first_seen, "feed": feed, "tag": list(set([tag] + previous['tag'])), "resource": docs[doc]['raw_data'], "mime_type": docs[doc]['mime_type'], 'sha256': doc, "ip": list(set([docs[doc]['ip']] + previous['ip'])), "asn": [], "country": [], "domains": list(set([docs[doc]['domain']] + previous['domains'])), "notes": []})
+                    doc_data = json.dumps({"last_update": datetime.utcnow().strftime("%Y-%m-%d"), "last_update_utc": utc_now, "first_seen_utc": first_seen, "feed": feed, "tag": list(set([tag] + previous['tag'])), "resource": docs[doc]['raw_data'], "mime_type": docs[doc]['mime_type'], 'sha256': doc, "ip": list(set([docs[doc]['ip']] + previous['ip'])), "asn": [], "country": [], "domains": list(set([docs[doc]['domain']] + previous['domains'])), "notes": []})
                     bulk_data += f"{index_metadata}\n{doc_data}\n"
             except Exception as e:
                 self.logger.critical(f'{e} - happened')
