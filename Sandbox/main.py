@@ -139,7 +139,6 @@ def get_config():
 
 
 config = get_config()
-print(config)
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 logging.basicConfig(level=eval(f'logging.{config["log_level"].upper()}'))
 logger = logging.getLogger(__name__)

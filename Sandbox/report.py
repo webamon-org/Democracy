@@ -39,7 +39,6 @@ class Technology:
             if self.get_technology_from_url(request_data['request']['url'])
         ]
         tech = script_components + link_components + request_components
-        print('techy stuff')
         unique_tech = {comp['name']: comp for comp in tech}
         return list(unique_tech.values())
 
@@ -199,7 +198,6 @@ class Enrichment:
                     master['ip'] = request['response']['remoteIPAddress']
 
                 master['total_response_size'] += float(request['response']['encodedDataLength'])
-                print('_domain',_domain)
                 master['name'] = _domain
                 master['sub_domain'].append(sub)
                 master['tld'] = tld
@@ -208,8 +206,6 @@ class Enrichment:
 
 
                 for header in request['response']['headers']:
-                    print('header')
-                    print(header)
                     if header['name'].lower() == 'server':
                         master['server'] = header['value']
 
@@ -219,7 +215,6 @@ class Enrichment:
                         master['resource'].append(resource)
 
                 for certificate in raw['certificate']:
-                    print('certificate')
                     if certificate['domain_name'] == master['name']:
                         master['certificate'] = certificate
 
@@ -279,7 +274,6 @@ class Enrichment:
 
     def ip2country(self, ip):
         result = self.ip_country.country(ip)
-        print('ip stuff')
         country = {"name": result.country.name, "iso": result.country.iso_code}
         self.country_cache[ip] = country
         return country
@@ -359,7 +353,6 @@ class Enrichment:
 
                 if 'asn' in domain:
                     master['asn'] = domain['asn']
-                print('domain stuff')
                 master['domain'].append(domain['name'])
                 master['total_response_size'] = domain['total_response_size']
                 if domain['server']:
@@ -367,19 +360,16 @@ class Enrichment:
                 results[ip] = master
             else:
                 results[ip]['ip'] = ip
-                print('ip shtufff')
                 results[ip]['domain'].append(domain['name'])
 
                 if domain['hosting_scripts'] and not results[ip]['hosting_scripts']:
                     results[ip]['hosting_scripts'] = True
 
 
-                print('debug checkpoint 1')
                 if domain['name'] not in results[ip]['domain']:
                     results[ip]['domain'].append(domain['name'])
 
                 if domain['server']:
-                    print('debug checkpoint 2')
                     results[ip]['server'].append(domain['server'])
 
                 for mime in domain['mime_type']:
