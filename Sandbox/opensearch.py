@@ -87,7 +87,9 @@ class Helper:
                     previous = self.get_record(doc, 'resources')
                     if 'first_seen_utc' in previous:
                         first_seen = previous['first_seen_utc']
-                    doc_data = json.dumps({"last_update": datetime.utcnow().strftime("%Y-%m-%d"), "last_update_utc": utc_now, "first_seen_utc": first_seen, "feed": feed, "tag": list(set([tag] + previous['tag'])), "resource": docs[doc]['raw_data'], "mime_type": docs[doc]['mime_type'], 'sha256': doc, "ip": list(set([docs[doc]['ip']] + previous['ip'])), "asn": [], "country": [], "domains": list(set([docs[doc]['domain']] + previous['domains'])), "notes": []})
+                    if 'tag' in previous:
+                        tag = list(set([tag] + previous['tag']))
+                    doc_data = json.dumps({"last_update": datetime.utcnow().strftime("%Y-%m-%d"), "last_update_utc": utc_now, "first_seen_utc": first_seen, "feed": feed, "tag": tag, "resource": docs[doc]['raw_data'], "mime_type": docs[doc]['mime_type'], 'sha256': doc, "ip": list(set([docs[doc]['ip']] + previous['ip'])), "asn": [], "country": [], "domains": list(set([docs[doc]['domain']] + previous['domains'])), "notes": []})
                     bulk_data += f"{index_metadata}\n{doc_data}\n"
             except Exception as e:
                 self.logger.critical(f'{e} - happened')
