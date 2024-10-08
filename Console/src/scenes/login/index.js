@@ -153,7 +153,7 @@ const AuthenticationPage = () => {
             {/* Sign Up Dialog with No Bulls**t Mode Toggle */}
             <Dialog open={openSignUpDialog} onClose={handleSignUpDialogClose}>
                 <DialogTitle style={{ backgroundColor: '#131629', color: '#fff', textAlign: 'center', fontSize: '22px' }}>
-                    Join The Democracy - 500x Daily API Calls
+                    Join The Democracy - 1000 Daily API Calls
                 </DialogTitle>
 
                 <DialogContent style={{ backgroundColor: '#131629', color: '#fff' }}>
