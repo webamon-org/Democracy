@@ -6,7 +6,7 @@
 ## Warning
 
 **Before running, ensure you have a VPN running either locally or on your router. Failure to do so may expose your public IP address, which could compromise your privacy and security.**
-**Join the Democracy →** [hunt.webamon.co.uk](https://hunt.webamon.co.uk)
+**Join the Democracy →** [webamon.co.uk](https://webamon.co.uk)
 
 ## Overview
 
@@ -31,7 +31,7 @@ Welcome to **Webamon**, where we believe in the power of community-driven threat
 
 ## Getting Started
 
-1. **Sign Up**: Create your Webamon account at [hunt.webamon.co.uk](https://hunt.webamon.co.uk) to join the community.
+1. **Sign Up**: Create your Webamon account at [webamon.co.uk](https://webamon.co.uk) to join the community.
 2. **Explore**: Use the Webamon console to explore community-contributed threat intelligence.
 3. **Contribute**: Share your scan results with the community anonymously, helping to build a more secure digital world.
 
@@ -41,7 +41,7 @@ We welcome contributions from everyone! Whether it's reporting bugs, suggesting 
 
 ## Community & Support
 
-Join our community  at [hunt.webamon.co.uk](https://hunt.webamon.co.uk) for discussions, support, and more.
+Join our community  at [webamon.co.uk](https://webamon.co.uk) for discussions, support, and more.
 
 ## License
 
